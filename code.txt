@@ -1,0 +1,12 @@
+record test_Record{
+	int a = 0;
+	int b = 044;
+	int c = 0x8F;
+	char d = 't';
+	string s = "String";
+	int array[10];
+	float e = 3.1415926;
+}
+while(a <= 10) {
+    a++; /* test the comment */
+}

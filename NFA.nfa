@@ -1,0 +1,258 @@
+# 格式
+# [当前状态 输入符号 下一状态]
+# 优先度是可选项
+# 因为有可能在转化到DFA中会出现[INT,ID]这种合并后的状态
+# 这样的状态可能有两个在原来NFA转换表中的终结符
+# 那么此时的token将会选择优先度较高状态对应的token进行输出
+# 默认每一个token的优先度为0
+# 终结状态对应的token的定义格式为：
+# [终结状态;<种别码, 属性值>;(优先度)]
+# 优先度为可选项，中间不含空格，以英文分号‘;’隔开
+
+# any表示任何字符
+# letter表示a-z、A-Z共52个字母
+# number表示0-9共10个数字
+# 以上三个关键字后接-[...]代表不包括字符...
+# 如any-[ab]代表除了ab的任何字符
+# $表示空格或回车
+# null表示空串
+# start表示初始状态
+# stringValue表示属性值为当前终结状态识别的字符串(除空格)
+# intNumberValue表示属性值为当前终结状态识别的整型常数(除空格)
+# floatNumberValue表示属性值为当前终结状态识别的浮点常数(除空格)
+# scienceNumberValue表示属性值为当前终结状态识别的科学常数(除空格)
+# numberValue表示属性值为当前终结状态中字符串中的数字(除空格)
+
+# 忽略一些空格
+start $ start
+
+# 标识符id
+start letter ID
+start _ ID
+ID letter ID
+ID _ ID
+ID number ID
+ID;<ID,[a-z_]\w*>;-1
+
+# 关键字int
+start i i
+i n in
+in t int
+int $ INT
+INT;<INT,->
+
+# 关键字float
+start f f
+f l fl
+fl o flo
+flo a floa
+floa t float
+float $ FLOAT
+FLOAT;<FLOAT,->
+
+# 关键字bool
+start b b
+b o bo
+bo o boo
+boo l bool
+bool $ BOOL
+BOOL;<BOOL,->
+
+# 关键字char
+start c c
+c h ch
+ch a cha
+cha r CHAR
+CHAR;<CHAR,->
+
+# 关键字string
+start s s
+s t st
+st r str
+str i stri
+stri n strin
+strin g STRING
+STRING;<SRING,->
+
+# 关键字record
+start r r
+r e re
+re c rec
+rec o reco
+reco r recor
+recor d record
+record $ RECORD
+RECORD;<RECORD,->
+
+# 关键字if
+start i i
+i f IF
+IF;<IF,->
+
+# 关键字else
+start e e
+e l el
+el s els
+els e ELSE
+ELSE;<ELSE,->
+
+# 关键字do
+start d d
+d o DO
+DO;<DO,->
+
+# 关键字while
+start w w
+w h wh
+wh i whi
+whi l whil
+whil e WHILE
+WHILE;<WHILE,->
+
+# 关键字declare(过程声明)
+start d d
+d e de
+de c dec
+dec l decl
+decl a decla
+decla r declar
+declar e DECLARE
+DECLARE;<DECLARE,->
+
+# 关键字call(过程调用)
+start c c
+c a ca
+ca l cal
+cal l CALL
+CALL;<CALL,->
+
+# 算术运算符+,-,*,/,++,--
+start + PLUS
+start - LESS
+start * MULTPLY
+start / DIVIDE
+PLUS + INC
+LESS - DEC
+
+PLUS;<PLUS,->
+LESS;<LESS,->
+MULTPLY;<MULTPLY,->
+DIVIDE;<DIVIDE,->
+INC;<INC,->
+DEC;<DEC,->
+
+# 关系运算符(ASSIGN是赋值符)
+start > GT
+start < LT
+start = ASSIGN
+ASSIGN = EQ
+start ! !
+! = NE
+GT = GE
+LT = LE
+
+GT;<GT,->
+LT;<LT,->
+ASSIGN;<ASSIGN,->
+EQ;<EQ,->
+NE;<NE,->
+GE;<GE,->
+LE;<LE,->
+
+# 逻辑运算符
+start & AND
+start | OR
+start ~ NOT
+
+AND;<AND,->
+OR;<OR,->
+NOT;<NOT,->
+
+# 界符
+start ; END
+start . POINT
+start ( LP
+start ) RP
+start [ LB
+start ] RB
+start { LC
+start } RC
+
+END;<END,->
+POINT;<POINT,->
+LP;<LP,->
+RP;<RP,->
+LB;<LB,->
+RB;<RB,->
+LC;<LC,->
+RC;<RC,->
+
+# 常数
+start number INT_NUMBER
+INT_NUMBER number INT_NUMBER
+INT_NUMBER . float_number
+float_number number FLOAT_NUMBER
+FLOAT_NUMBER number FLOAT_NUMBER
+INT_NUMBER e e?
+FLOAT_NUMBER e e?
+e? - e-?
+e? number science_number
+e-? number science_number
+science_number number SCIENCE_NUMBER
+start ' '
+' any-['] '..
+'.. any-['] '..
+'.. ' CHAR_CON
+start " "
+" any-["] "..
+".. any-["] "..
+".. " STRING_CON
+start 0 0
+0 number-[89] OCT
+OCT number OCT
+0 x hex
+0 X hex
+hex number HEX
+hex a HEX
+hex A HEX
+hex b HEX
+hex B HEX
+hex c HEX
+hex C HEX
+hex d HEX
+hex D HEX
+hex e HEX
+hex E HEX
+hex f HEX
+hex F HEX
+HEX number HEX
+HEX a HEX
+HEX A HEX
+HEX b HEX
+HEX B HEX
+HEX c HEX
+HEX C HEX
+HEX d HEX
+HEX D HEX
+HEX e HEX
+HEX E HEX
+HEX f HEX
+HEX F HEX
+
+INT_NUMBER;<INT_NUMBER,\d+>
+FLOAT_NUMBER;<FLOAT_NUMBER,\d+\.\d*>
+SCIENCE_NUMBER;<SCIENCE_NUMBER,\d+\.?\d*e-?\d+>
+CHAR_CON;<STRING_CON,[^']>
+STRING_CON;<STRING_CON,[^"]+>
+OCT;<OCT,0[1-7]\d*>;1
+HEX;<HEX,0[xX][\da-fA-F]+>
+
+# 注释
+DIVIDE * /*
+/* any-[*] /*
+/* * /**
+/** any-[/*] /*
+/** * /**
+/** / COMMENT
+
+COMMENT;<COMMENT,->
