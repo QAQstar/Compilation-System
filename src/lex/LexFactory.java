@@ -27,7 +27,7 @@ public class LexFactory {
 	 */
 	public static DFA creator(String filePath) {
 		//文件格式必须为[状态 输入 下一状态]
-		File file = new File(filePath);
+		File file = new File(filePath);		
 		
 		List<Integer[]> table = new ArrayList<>();
 		List<String> status = new ArrayList<>();

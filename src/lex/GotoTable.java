@@ -168,6 +168,8 @@ public class GotoTable {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println((int)'\r');
+		int i,a=1;
+		for(i=1;i<=10;i++) a*=i;
+		System.out.println(i);
 	}
 }
