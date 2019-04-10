@@ -1,4 +1,4 @@
-package lex;
+package lexical;
 
 import java.io.BufferedWriter;
 import java.io.File;

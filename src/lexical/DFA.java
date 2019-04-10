@@ -1,4 +1,4 @@
-package lex;
+package lexical;
 
 import java.io.File;
 import java.util.Map;
@@ -14,6 +14,7 @@ public class DFA {
 	//记录词法分析时读到哪个字符了
 	private int index = 0;
 	private int startIndex = 0; //上一次开始状态时读取到的字符
+	private int lineNumber = 1; //记录当前的行号
 	private char[] chars = null;
 	
 	private int curStatus = 0; //记录当前状态，开始时初始状态的序号为0
@@ -36,6 +37,7 @@ public class DFA {
 		this.gotoTable = gotoTable;
 		this.tokenMap = tokenMap;
 		this.curStatus = 0;
+		this.lineNumber = 1;
 		this.path = new StringBuilder(gotoTable.getStatus(0));
 	}
 	
@@ -47,6 +49,7 @@ public class DFA {
 		index = 0;
 		startIndex = 0;
 		curStatus = 0;
+		lineNumber = 1;
 		chars = (str+'$').toCharArray(); //在代码末尾自动添加一个终止符
 	}
 	
@@ -56,8 +59,10 @@ public class DFA {
 	 */
 	public Token getNext() {
 		for(; index < chars.length; index++) {
-			if(chars[index] == ' ' || chars[index] == '\n' || chars[index] == '\t'|| chars[index] == '\r') //将所有的回车、空格和制表符换成终止符$
+			if(chars[index] == ' ' || chars[index] == '\n' || chars[index] == '\t'|| chars[index] == '\r') { //将所有的回车、空格和制表符换成终止符$
+				if(chars[index] == '\n') lineNumber++;
 				chars[index] = '$';
+			}
 			
 			curStatus = gotoTable.nextStatus(curStatus, chars[index]); //执行跳转动作
 			
@@ -86,9 +91,9 @@ public class DFA {
 					Pattern pattern = Pattern.compile(tokenType.getValue());
 					Matcher matcher = pattern.matcher(morpheme);
 					matcher.find();
-					result = new Token(morpheme, tokenType.getType(), matcher.group(matcher.groupCount()), path.toString());
+					result = new Token(morpheme, tokenType.getType(), matcher.group(matcher.groupCount()), path.toString(), lineNumber);
 				} else { //此时属性值为空
-					result = new Token(morpheme, tokenType.getType(), null, path.toString());;
+					result = new Token(morpheme, tokenType.getType(), null, path.toString(), lineNumber);;
 				}
 				curStatus = 0; //重置到开始状态
 				path = new StringBuilder(gotoTable.getStatus(0)); //重置路径
@@ -139,6 +144,14 @@ public class DFA {
 	 */
 	public int getStatusNum() {
 		return gotoTable.getStatusNum();
+	}
+	
+	/**
+	 * 得到该token所在的行号
+	 * @return 该token所在的行号
+	 */
+	public int getLineNumber() {
+		return lineNumber;
 	}
 	
 	/**

@@ -26,9 +26,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import lex.DFA;
-import lex.LexFactory;
-import lex.Token;
+import lexical.DFA;
+import lexical.LexFactory;
+import lexical.Token;
 
 public class GUI extends Application{
 	private DFA dfa = LexFactory.creatorUseNFA("NFA.nfa");

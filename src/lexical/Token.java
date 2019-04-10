@@ -1,4 +1,4 @@
-package lex;
+package lexical;
 
 public class Token {
 	/**
@@ -6,9 +6,11 @@ public class Token {
 	 * type为种别码，value为属性值
 	 * 当value为null时，则该token无属性值
 	 * path为从start转换至终结状态得到该token的路径
+	 * lineNumber为该token所在的行号
 	 */
 	
 	private String morpheme, type, value, path;
+	private int lineNumber;
 	
 	/**
 	 * 利用token字符串创建一个token
@@ -54,7 +56,7 @@ public class Token {
 	 * @param value 属性值;"-"或null则属性值为空
 	 * @param path 对应的终结状态的路径记录
 	 */
-	public Token(String morpheme, String type, String value, String path) {
+	public Token(String morpheme, String type, String value, String path, int lineNumber) {
 		if(type.equals("COMMENT")) { //注释没必要保留内容
 			this.morpheme = "/*...*/";
 		} else if(morpheme.charAt(morpheme.length()-1) == '$') { //终止符$没必要记录
@@ -64,6 +66,7 @@ public class Token {
 		}
 		this.type = type;
 		this.path = path;
+		this.lineNumber = lineNumber;
 		if(value == null || value.equals("-")) {
 			this.value = null;
 		} else {

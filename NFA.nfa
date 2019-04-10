@@ -40,6 +40,13 @@ in t int
 int $ INT
 INT;<INT,->
 
+# 关键字real
+start r r
+r e re
+re a rea
+rea l REAL
+REAL;<REAL,->
+
 # 关键字float
 start f f
 f l fl
@@ -108,15 +115,12 @@ whi l whil
 whil e WHILE
 WHILE;<WHILE,->
 
-# 关键字declare(过程声明)
-start d d
-d e de
-de c dec
-dec l decl
-decl a decla
-decla r declar
-declar e DECLARE
-DECLARE;<DECLARE,->
+# 关键字proc(过程声明)
+start p p
+p r pr
+pr o pro
+pro c PROCEDURE
+PROCEDURE;<PROCEDURE,->
 
 # 关键字call(过程调用)
 start c c
@@ -187,6 +191,15 @@ LC;<LC,->
 RC;<RC,->
 
 # 常数
+start T
+T r Tr
+Tr u Tru
+Tru e TRUE
+start F F
+F a Fa
+Fa l Fal
+Fal s Fals
+Fals e FALSE
 start number INT_NUMBER
 INT_NUMBER number INT_NUMBER
 INT_NUMBER . float_number
@@ -238,6 +251,8 @@ HEX E HEX
 HEX f HEX
 HEX F HEX
 
+TRUE;<BOOL_CON,True>
+FLASE;<BOOL_CON,False>
 INT_NUMBER;<INT_NUMBER,\d+>
 FLOAT_NUMBER;<FLOAT_NUMBER,\d+\.\d*>
 SCIENCE_NUMBER;<SCIENCE_NUMBER,\d+\.?\d*e-?\d+>
