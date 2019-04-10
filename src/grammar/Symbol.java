@@ -20,8 +20,12 @@ public class Symbol {
 		this.name = name;
 	}
 	
-	public boolean getIsFinal() {
+	public boolean isFinal() {
 		return isFinal;
+	}
+	
+	public void setIsFinal(boolean isFinal) {
+		this.isFinal = isFinal;
 	}
 	
 	public String getName() {
@@ -30,6 +34,7 @@ public class Symbol {
 	
 	@Override
 	public boolean equals(Object o) {
+		if(o == this) return true;
 		if(!(o instanceof Symbol)) {
 			return o.toString().equals(name);
 		}

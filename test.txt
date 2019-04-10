@@ -1,38 +1,6 @@
-# 格式
-# 非终结状态 [当前状态 输入符号 下一状态]
-# 终结状态 [当前状态 输入符号 下一状态 <种别码,属性值> 优先度]
-# 优先度是可选项
-# 因为有可能在转化到DFA中会出现[INT,ID]这种合并后的状态
-# 这样的状态可能有两个在原来NFA转换表中的终结符
-# 那么此时的token将会选择优先度较高状态对应的token进行输出
-# 默认每一个token的优先度为0
-
-# letter表示a-z、A-Z共52个字母
-# number表示0-9共10个数字
-# $表示空格或回车
-# null表示空串
-# start表示初始状态
-# stringValue表示属性值为当前终结状态识别的字符串(除空格)
-# intNumberValue表示属性值为当前终结状态识别的整型常数(除空格)
-# floatNumberValue表示属性值为当前终结状态识别的浮点常数(除空格)
-# scienceNumberValue表示属性值为当前终结状态识别的科学常数(除空格)
-# numberValue表示属性值为当前终结状态中字符串中的数字(除空格)
-
-# 忽略一些空格
-start $ start
-
-# 常数
-start number int_number
-int_number number int_number
-int_number $ INT_NUMBER <INT_NUMBER,\d+>
-int_number . float_num
-float_num number float_number
-float_number number float_number
-float_number $ FLOAT_NUMBER <FLOAT_NUMBER,\d+\.\d*>
-int_number e e?
-float_num e e?
-e? - e-?
-e? number science_number
-e-? number science_number
-science_number number science_number
-science_number $ SCIENCE_NUMBER <SCIENCE_NUMBER,\d+[\.]e[-]\d+>
+S'->S
+S->L = R
+S->R
+L->* R
+L->id
+R->L
