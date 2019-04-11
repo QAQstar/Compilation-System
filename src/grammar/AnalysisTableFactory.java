@@ -101,6 +101,7 @@ public class AnalysisTableFactory {
 					projectStr.add(nextProjectSet.toString());
 					queue.offer(nextProjectSet);
 					indexMap.put(nextProjectSet.toString(), projects.size()-1);
+					table.add(new HashMap<>());
 				}
 				if(GOTOtable.containsKey(indexMap.get(I.toString()))) { //跳转表中有I了
 					GOTOtable.get(indexMap.get(I.toString())).put(X, indexMap.get(nextProjectSet.toString()));
@@ -110,6 +111,14 @@ public class AnalysisTableFactory {
 					GOTOtable.put(indexMap.get(I.toString()), mapTemp);
 				}
 			}
+		}
+		
+		for(int i=0; i<table.size(); i++) {
+			Set<Symbol> canGo = GOTOtable.get(i).keySet();
+			int flag = 0;
+			
+			Item itemTemp = new Item(flag, status)
+			Map<Symbol, Item> mapTemp = new HashMap<>();
 		}
 		
 		for(int i=0; i<projects.size(); i++)
