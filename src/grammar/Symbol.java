@@ -35,8 +35,8 @@ public class Symbol {
 	@Override
 	public boolean equals(Object o) {
 		if(o == this) return true;
-		if(!(o instanceof Symbol)) {
-			return o.toString().equals(name);
+		if(o instanceof Symbol) {
+			return ((Symbol)o).name.equals(name);
 		}
 		return false;
 	}

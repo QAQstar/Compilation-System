@@ -80,32 +80,47 @@ public class AnalysisTableFactory {
 		startProject.add(start);
 		startProject = CLOSURE(firstSet, productionMap, startProject);
 		ProjectSet startProjectSet = new ProjectSet(startProject);
+		Map<Integer, Map<Symbol, Integer>> GOTOtable = new HashMap<>(); //存储每个项目集之间的跳转
+		Map<ProjectSet, Integer> indexMap = new HashMap<>(); //记录每个项目集在projects中的编号
 		
 		projects.add(startProjectSet);
-		Set<String> projectSet = new HashSet<>(); //用来去重的项目集，与projects等价
-		Set<ProjectSet> increment = new HashSet<>(); //新增的项目集
-		projectSet.add(startProjectSet.toString());
-		increment.add(startProjectSet);
+		Set<String> projectStr = new HashSet<>(); //用来去重的项目集，与projects等价
+		projectStr.add(startProjectSet.toString());
+		Queue<ProjectSet> queue = new LinkedList<>();
+		indexMap.put(startProjectSet, 0);
+		queue.offer(startProjectSet);
+		int index = 1;
 		
-		boolean flag = true;
-		while(flag) {
-			flag = false;
-			Set<ProjectSet> newIncrement = new HashSet<>(); //下一次循环新增的项目集
-			for(ProjectSet I : increment) { //C中的每个项集I
-				for(Symbol X : symbolMap.values()) {
-					ProjectSet nextProjectSet = new ProjectSet(GOTO(firstSet, productionMap, I.getProjects(), X));
-					if(nextProjectSet != null && !projectSet.contains(nextProjectSet.toString())) { //GOTO(I, X)非空且不在C中
-						projects.add(nextProjectSet);
-						projectSet.add(nextProjectSet.toString());
-						newIncrement.add(nextProjectSet);
-						flag = true;
-					}
+		while(!queue.isEmpty()) {
+			ProjectSet I = queue.poll(); //C中的每个项集I
+			for(Symbol X : I.canGoto()) { //每个文法符号X
+				ProjectSet nextProjectSet = new ProjectSet(GOTO(firstSet, productionMap, I.getProjects(), X));
+				if(!projectStr.contains(nextProjectSet.toString())) { //GOTO(I, X)非空且不在C中
+					projects.add(nextProjectSet);
+					projectStr.add(nextProjectSet.toString());
+					queue.offer(nextProjectSet);
+					indexMap.put(nextProjectSet, index);
+					
+					Map<Symbol, Integer> mapTemp = new HashMap<>();
+					mapTemp.put(X, index);
+					GOTOtable.put(indexMap.get(I), mapTemp);
+					index++;
+				} else { //GOTO(I, X)已经在C中了，只是这个跳转没存
+					GOTOtable.get(indexMap.get(I)).put(X, indexMap.get(nextProjectSet));
 				}
 			}
-			increment = newIncrement;
 		}
 		
-		System.out.println(projects);
+		for(int i=0; i<projects.size(); i++)
+			System.out.println("  I"+i+":\n"+projects.get(i).toString()+"\n");
+		
+		for(Integer i : GOTOtable.keySet()) {
+			System.out.println("  I"+i);
+			for(Symbol b : GOTOtable.get(i).keySet()) {
+				System.out.println("--"+b+"-> I"+GOTOtable.get(i).get(b));
+			}
+		}
+		
 		
 		return new AnalysisTable(table);
 	}
@@ -185,22 +200,27 @@ public class AnalysisTableFactory {
 	private static Set<Project> CLOSURE(Map<Symbol, Set<Symbol>> firstSet, Map<Symbol, Set<List<Symbol>>> productionMap, Set<Project> I) {
 		Set<Project> result = new HashSet<>();
 		Queue<Project> queue = new LinkedList<>();
-//		Set<Project> increment = new HashSet<>(); //每次新增的项目
+		
 		result.addAll(I);
 		queue.addAll(I);
-//		increment.addAll(I);
+		Symbol nilSymbol = new Symbol(true, "nil");
 		while(!queue.isEmpty()) {
 			Project A = queue.poll();
+			if(A.isReduce()) continue; //规约项目
 			Symbol B = A.getPosSymbol();
-			if(B == null) continue;
 			if(!B.isFinal()) { //非终结符
 				for(List<Symbol> l : productionMap.get(B)) { //G'的每个产生式B->γ
 					List<Symbol> list = new ArrayList<>();
+					Set<Symbol> FIRST = new HashSet<>(); //FIRST(βa)
 					if(A.getBehindPos() != null) {
 						list.addAll(A.getBehindPos());
+						FIRST = First(firstSet, list);
 					}
-					list.addAll(A.getOutlook());
-					for(Symbol b : First(firstSet, list)) { //FIRST(βa)中的每个符号b
+					if(FIRST.size() == 0 || FIRST.contains(nilSymbol)) {
+						FIRST.remove(nilSymbol);
+						FIRST.addAll(A.getOutlook());
+					}
+					for(Symbol b : FIRST) { //FIRST(βa)中的每个符号b
 						Set<Symbol> outlook = new HashSet<>();
 						outlook.add(b);
 						Project newProject = new Project(B, l, outlook, 0);
@@ -211,42 +231,11 @@ public class AnalysisTableFactory {
 				}
 			}
 		}
-//		
-//		boolean flag = true;
-//		while(flag) {
-//			flag = false;
-//			Set<Project> nextIncrement = new HashSet<>();
-//			for(Project A : increment) { //result中的每个项[A->α·Bβ, a]
-//				Symbol B = A.getPosSymbol();
-//				if(B == null) continue;
-//				if(!B.isFinal()) { //非终结符
-//					for(List<Symbol> l : productionMap.get(B)) { //G'的每个产生式B->γ
-//						List<Symbol> list = new ArrayList<>();
-//						if(A.getBehindPos() != null) {
-//							list.addAll(A.getBehindPos());
-//						}
-//						list.addAll(A.getOutlook());
-//						for(Symbol b : First(firstSet, list)) { //FIRST(βa)中的每个符号b
-//							Set<Symbol> outlook = new HashSet<>();
-//							outlook.add(b);
-//							Project newProject = new Project(B, l, outlook, 0);
-//							if(result.add(newProject)) { //将[B->·γ, b]加入到集合result中
-//								flag = true; //说明又有新的项目添加到项目集中
-//								nextIncrement.add(newProject);
-//							}
-//						}
-//					}
-//				}
-//			}
-//			increment = nextIncrement;
-//		}
 		
 		return compress(result);
 	}
 	
 	public static Set<Project> GOTO(Map<Symbol, Set<Symbol>> firstSet, Map<Symbol, Set<List<Symbol>>> productionMap, Set<Project> I, Symbol X) {
-		if(I.size() == 0) return null;
-		
 		Set<Project> result = new HashSet<>();
 		for(Project p : I) {
 			if(p.isReduce() || !p.getPosSymbol().equals(X)) continue; //规约项目没有后继项目集或·后的符号不是X
@@ -335,6 +324,19 @@ class ProjectSet {
 		return projects;
 	}
 	
+	public Set<Symbol> canGoto() {
+		Set<Symbol> result = new HashSet<>();
+		for(Project p : projects) {
+			Symbol b = p.getPosSymbol();
+			if(b != null) result.add(b);
+		}
+		return result;
+	}
+	
+	public boolean isEmpty() {
+		return projects == null || projects.size() == 0;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -348,7 +350,7 @@ class ProjectSet {
 	public boolean equals(Object o) {
 		if(o == this) return true;
 		if(o instanceof ProjectSet) {
-			return ((Project)o).toString().equals(this.toString());
+			return ((ProjectSet)o).toString().equals(this.toString());
 		}
 		return false;
 	}

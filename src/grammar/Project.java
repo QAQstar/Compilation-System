@@ -1,5 +1,6 @@
 package grammar;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -31,15 +32,31 @@ public class Project {
 	 */
 	public Project(Symbol leftSymbol, List<Symbol> production, Set<Symbol> outlook, int pos) {
 		this.leftSymbol = leftSymbol;
+//		if(production.get(0).equals("nil")) { //空产生式
+//			this.production = new ArrayList<>();
+//		} else {
 		this.production = production;
+//		}
 		this.outlook = outlook;
-		this.pos = pos;
+		if(production.get(0).equals(new Symbol(true, "nil"))) //空产生式，那么pos=1
+			this.pos = 1;
+		else
+			this.pos = pos;
 	}
 	
 	/**
 	 * @return ·的下一个符号；如A->BC·D，将会返回D；若该项目是规约项目，则返回null
 	 */
 	public Symbol getPosSymbol() {
+		if(pos >= production.size()) return null;
+		return production.get(pos);
+	}
+	
+	/**
+	 * @param pos 指定位置
+	 * @return 指定位置的符号
+	 */
+	public Symbol getPosSymbol(int pos) {
 		if(pos >= production.size()) return null;
 		return production.get(pos);
 	}
@@ -120,6 +137,9 @@ public class Project {
 			for(int i=0; i<production.size(); i++) {
 				if(i == pos) sb.append("·");
 				sb.append(production.get(i).toString());
+			}
+			if(pos == production.size()) {
+				sb.append("·");
 			}
 		}
 		sb.append(" [");
