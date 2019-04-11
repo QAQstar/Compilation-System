@@ -255,7 +255,7 @@ public class GUI extends Application{
 		
 		TableView<Token> tableView = new TableView<>(list);
 		
-		TableColumn<Token, String> tc_morpheme = new TableColumn<>("词素");
+		TableColumn<Token, String> tc_morpheme = new TableColumn<>("单词");
 		tc_morpheme.setStyle("-fx-alignment:center;");
 		tc_morpheme.setCellValueFactory(new PropertyValueFactory<>("morpheme")); //利用反射机制
 		

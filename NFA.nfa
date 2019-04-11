@@ -191,7 +191,7 @@ LC;<LC,->
 RC;<RC,->
 
 # 常数
-start T
+start T T
 T r Tr
 Tr u Tru
 Tru e TRUE

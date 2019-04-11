@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import com.sun.prism.PhongMaterial.MapType;
+
 public class AnalysisTableFactory {
 	/**
 	 * 该类从文件中读取文法，并生成LALR分析的分析表
@@ -81,15 +83,14 @@ public class AnalysisTableFactory {
 		startProject = CLOSURE(firstSet, productionMap, startProject);
 		ProjectSet startProjectSet = new ProjectSet(startProject);
 		Map<Integer, Map<Symbol, Integer>> GOTOtable = new HashMap<>(); //存储每个项目集之间的跳转
-		Map<ProjectSet, Integer> indexMap = new HashMap<>(); //记录每个项目集在projects中的编号
+		Map<String, Integer> indexMap = new HashMap<>(); //记录每个项目集在projects中的编号
 		
 		projects.add(startProjectSet);
 		Set<String> projectStr = new HashSet<>(); //用来去重的项目集，与projects等价
 		projectStr.add(startProjectSet.toString());
 		Queue<ProjectSet> queue = new LinkedList<>();
-		indexMap.put(startProjectSet, 0);
+		indexMap.put(startProjectSet.toString(), 0);
 		queue.offer(startProjectSet);
-		int index = 1;
 		
 		while(!queue.isEmpty()) {
 			ProjectSet I = queue.poll(); //C中的每个项集I
@@ -99,14 +100,14 @@ public class AnalysisTableFactory {
 					projects.add(nextProjectSet);
 					projectStr.add(nextProjectSet.toString());
 					queue.offer(nextProjectSet);
-					indexMap.put(nextProjectSet, index);
-					
+					indexMap.put(nextProjectSet.toString(), projects.size()-1);
+				}
+				if(GOTOtable.containsKey(indexMap.get(I.toString()))) { //跳转表中有I了
+					GOTOtable.get(indexMap.get(I.toString())).put(X, indexMap.get(nextProjectSet.toString()));
+				} else { //跳转表中还没I
 					Map<Symbol, Integer> mapTemp = new HashMap<>();
-					mapTemp.put(X, index);
-					GOTOtable.put(indexMap.get(I), mapTemp);
-					index++;
-				} else { //GOTO(I, X)已经在C中了，只是这个跳转没存
-					GOTOtable.get(indexMap.get(I)).put(X, indexMap.get(nextProjectSet));
+					mapTemp.put(X, projects.size()-1);
+					GOTOtable.put(indexMap.get(I.toString()), mapTemp);
 				}
 			}
 		}
@@ -168,8 +169,8 @@ public class AnalysisTableFactory {
 			}
 		}
 		
-		for(Symbol s : firstMap.keySet())
-			System.out.println("FIRST("+s+") = "+firstMap.get(s));
+//		for(Symbol s : firstMap.keySet())
+//			System.out.println("FIRST("+s+") = "+firstMap.get(s));
 		
 		return firstMap;
 	}
