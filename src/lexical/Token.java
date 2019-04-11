@@ -52,9 +52,11 @@ public class Token {
 	/**
 	 * 根据种别码和属性值构造Token
 	 * 同时接收至对应的终结状态的路径记录在path中
+	 * @param morpheme 单词
 	 * @param type 种别码
 	 * @param value 属性值;"-"或null则属性值为空
 	 * @param path 对应的终结状态的路径记录
+	 * @param lineNumber 该Token所在的行号
 	 */
 	public Token(String morpheme, String type, String value, String path, int lineNumber) {
 		if(type.equals("COMMENT")) { //注释没必要保留内容
@@ -67,7 +69,7 @@ public class Token {
 		this.type = type;
 		this.path = path;
 		this.lineNumber = lineNumber;
-		if(value == null || value.equals("-")) {
+		if(this.value == null || value.equals("-")) {
 			this.value = null;
 		} else {
 			this.value = value;

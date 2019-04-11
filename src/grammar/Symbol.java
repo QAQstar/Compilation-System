@@ -12,10 +12,10 @@ public class Symbol {
 	
 	/**
 	 * 构造一个文法符号
-	 * @param isFinal 指示该状态是否是终结符
 	 * @param name 该状态的名字
+	 * @param isFinal 指示该状态是否是终结符
 	 */
-	public Symbol(boolean isFinal, String name) {
+	public Symbol(String name, boolean isFinal) {
 		this.isFinal = isFinal;
 		this.name = name;
 	}

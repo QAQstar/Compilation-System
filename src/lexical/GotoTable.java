@@ -47,6 +47,7 @@ public class GotoTable {
 	public int nextStatus(int lastStatus, char input) {
 //		if(input == ' ' || input == '\n' || input == '\r') //将所有的回车和空格换成终止符$
 //			input = '$';
+		if(input >= 126 || input <= 32) return -1;
 		Integer nextStatus = table.get(lastStatus)[input-32];
 		return nextStatus == null ? -1 : nextStatus;
 	}
@@ -60,6 +61,7 @@ public class GotoTable {
 	public int nextStatus(int lastStatus, int input) {
 //		if(input == 32 || input == 10 || input == 13) //将所有的回车和空格换成终止符$
 //			input = 36;
+		if(input >= 126 || input <= 32) return -1;
 		Integer nextStatus = table.get(lastStatus)[input-32];
 		return nextStatus == null ? -1 : nextStatus;
 	}

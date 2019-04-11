@@ -109,6 +109,7 @@ public class GUI extends Application{
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("保存DFA转换表文件");
 			fileChooser.setInitialFileName("rule");
+//			fileChooser.setInitialDirectory(new File("E:/Code/"));
 			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("FA文件", "*.dfa"));
 			File file = fileChooser.showSaveDialog(primaryStage);
 			if (file != null) {

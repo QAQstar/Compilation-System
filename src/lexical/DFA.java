@@ -58,18 +58,28 @@ public class DFA {
 	 * @return 下一个token；分析结束或错误后返回null
 	 */
 	public Token getNext() {
+		boolean nextLine = false;
 		for(; index < chars.length; index++) {
 			if(chars[index] == ' ' || chars[index] == '\n' || chars[index] == '\t'|| chars[index] == '\r') { //将所有的回车、空格和制表符换成终止符$
-				if(chars[index] == '\n') lineNumber++;
+				if(chars[index] == '\n') nextLine = true;
 				chars[index] = '$';
 			}
 			
 			curStatus = gotoTable.nextStatus(curStatus, chars[index]); //执行跳转动作
 			
-			if(curStatus == -1) return null; //没有此跳转，则返回null表示错误
+			if(curStatus == -1) { //没有此跳转，输出一个代表错误的token
+				String morpheme = String.valueOf(chars, startIndex, index-startIndex+1);
+				Token errorToken = new Token(morpheme, "ERROR", null, null, lineNumber);
+				index++;
+				startIndex = index;
+				curStatus = 0;
+				if(nextLine) lineNumber++;
+				return errorToken;
+			}
 			
 			if(curStatus == 0) { //跳转的时候遇到空格
 				startIndex = index+1;
+				if(nextLine) lineNumber++;
 				continue;
 			}
 			
@@ -79,7 +89,8 @@ public class DFA {
 			if(tokenMap.containsKey(curStatus)) {
 				if(index < chars.length-1) {
 					if(chars[index+1] == ' ' || chars[index+1] == '\n' || chars[index+1] == '\t' || chars[index+1] == '\r') //将所有的回车、空格和制表符换成终止符$
-						chars[index+1] = '$';
+						if(gotoTable.nextStatus(curStatus, '$') != -1)//如果还有下一个状态，那么就继续走，不返回当前的Token
+							continue;
 					if(gotoTable.nextStatus(curStatus, chars[index+1]) != -1)//如果还有下一个状态，那么就继续走，不返回当前的Token
 						continue;
 				}
@@ -99,6 +110,7 @@ public class DFA {
 				path = new StringBuilder(gotoTable.getStatus(0)); //重置路径
 				index++;
 				startIndex = index;
+				if(nextLine) lineNumber++;
 				return result;
 			}
 		}
@@ -165,18 +177,7 @@ public class DFA {
 	public static void main(String[] args) {
 		DFA dfa = LexFactory.creator("DFA.dfa");
 //		DFA dfa = LexFactory.creator("NFA.nfa");
-		dfa.initAnalys("record test_Record{\r\n" + 
-				"	int a = 0;\r\n" + 
-				"	int b = 044;\r\n" + 
-				"	int c = 0x8F;\r\n" + 
-				"	char d = 't';\r\n" + 
-				"	string s = \"String\";\r\n" + 
-				"	int array[10];\r\n" + 
-				"	float e = 3.1415926;\r\n" + 
-				"}\r\n" + 
-				"while(a <= 10) {\r\n" + 
-				"    a++; /* test the comment */\r\n" + 
-				"}");
+		dfa.initAnalys("intint\n\n\n\nint");
 		Token t;
 		while((t=dfa.getNext()) != null) {
 			System.out.println(t);
