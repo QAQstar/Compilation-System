@@ -1,10 +1,38 @@
 package grammar;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Project {
+class Production {
+	/**
+	 * 记录一个产生式
+	 * leftSymbol表示产生式左部的符号
+	 * rightSymbols表示产生式右部的符号
+	 */
+	
+	Symbol leftSymbol;
+	List<Symbol> rightSymbols;
+	
+	public Production(Symbol leftSymbol, List<Symbol> rightSymbols) {
+		this.leftSymbol = leftSymbol;
+		this.rightSymbols = rightSymbols;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(leftSymbol.toString()+"->");
+		for(Symbol s : rightSymbols) {
+			sb.append(s.toString()+" ");
+		}
+		sb.delete(sb.length()-1, sb.length());
+		return sb.toString();
+	}
+}
+
+class Project {
 	/**
 	 * 该类是一个项目类
 	 * 每个项目中都含有一个产生式和一个位置信息
@@ -105,6 +133,14 @@ public class Project {
 	}
 	
 	/**
+	 * 得到该项目的产生式
+	 * @return 该项目的产生式
+	 */
+	public Production production() {
+		return new Production(leftSymbol, production);
+	}
+	
+	/**
 	 * 判断两个状态是否是可合并的
 	 * @param p 另一个项目
 	 * @return
@@ -148,5 +184,57 @@ public class Project {
 		}
 		sb.replace(sb.length()-1, sb.length(), "]");
 		return sb.toString();
+	}
+}
+
+class ProjectSet {
+	/**
+	 * 该类维护项目集
+	 */
+	
+	Set<Project> projects = null;
+	
+	public ProjectSet(Set<Project> projects) {
+		this.projects = projects;
+	}
+	
+	public Set<Project> getProjects() {
+		return projects;
+	}
+	
+	public Set<Symbol> canGoto() {
+		Set<Symbol> result = new HashSet<>();
+		for(Project p : projects) {
+			Symbol b = p.getPosSymbol();
+			if(b != null) result.add(b);
+		}
+		return result;
+	}
+	
+	public boolean isEmpty() {
+		return projects == null || projects.size() == 0;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for(Project p : projects) {
+			sb.append(p.toString() + "\n");
+		}
+		return sb.toString();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o == this) return true;
+		if(o instanceof ProjectSet) {
+			return ((ProjectSet)o).toString().equals(this.toString());
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.toString().hashCode();
 	}
 }

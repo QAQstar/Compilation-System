@@ -29,10 +29,11 @@ public class AnalysisTableFactory {
 	public static AnalysisTable creator(String path) {
 		List<Map<Symbol, Item>> table = new ArrayList<>(); //记录分析表，格式详情见AnalysisTable类
 		List<Production> productions = new ArrayList<>(); //记录所有的产生式
+		Map<Production, Integer> productionIndex = new HashMap<>(); //记录产生式对应的标号
 		Map<Symbol, Set<List<Symbol>>> productionMap = new HashMap<>(); //记录非终结符和产生式右部的关系
 		Map<String, Symbol> symbolMap = new HashMap<>(); //记录String和Symbol的关系
 		Map<Symbol, Set<Symbol>> firstSet = null; //记录每个非终结符对应的FIRST集
-		List<ProjectSet> projects = new ArrayList<>(); //记录项目集合
+		List<ProjectSet> projectSetList = new ArrayList<>(); //记录项目集合
 		
 		//文件的格式为:A->B c D
 		File file = new File(path);
@@ -66,7 +67,9 @@ public class AnalysisTableFactory {
 					}
 					rightSymbols.add(rightSymbol);
 				}
-				productions.add(new Production(leftSymbol, rightSymbols));
+				Production newProduction = new Production(leftSymbol, rightSymbols);
+				productions.add(newProduction);
+				productionIndex.put(newProduction, productions.size()-1);
 				productionMap.get(leftSymbol).add(rightSymbols);
 			}
 		} catch(IOException e) {
@@ -85,7 +88,7 @@ public class AnalysisTableFactory {
 		Map<Integer, Map<Symbol, Integer>> GOTOtable = new HashMap<>(); //存储每个项目集之间的跳转
 		Map<String, Integer> indexMap = new HashMap<>(); //记录每个项目集在projects中的编号
 		
-		projects.add(startProjectSet);
+		projectSetList.add(startProjectSet);
 		Set<String> projectStr = new HashSet<>(); //用来去重的项目集，与projects等价
 		projectStr.add(startProjectSet.toString());
 		Queue<ProjectSet> queue = new LinkedList<>();
@@ -97,32 +100,45 @@ public class AnalysisTableFactory {
 			for(Symbol X : I.canGoto()) { //每个文法符号X
 				ProjectSet nextProjectSet = new ProjectSet(GOTO(firstSet, productionMap, I.getProjects(), X));
 				if(!projectStr.contains(nextProjectSet.toString())) { //GOTO(I, X)非空且不在C中
-					projects.add(nextProjectSet);
+					projectSetList.add(nextProjectSet);
 					projectStr.add(nextProjectSet.toString());
 					queue.offer(nextProjectSet);
-					indexMap.put(nextProjectSet.toString(), projects.size()-1);
+					indexMap.put(nextProjectSet.toString(), projectSetList.size()-1);
 					table.add(new HashMap<>());
 				}
 				if(GOTOtable.containsKey(indexMap.get(I.toString()))) { //跳转表中有I了
 					GOTOtable.get(indexMap.get(I.toString())).put(X, indexMap.get(nextProjectSet.toString()));
 				} else { //跳转表中还没I
 					Map<Symbol, Integer> mapTemp = new HashMap<>();
-					mapTemp.put(X, projects.size()-1);
+					mapTemp.put(X, projectSetList.size()-1);
 					GOTOtable.put(indexMap.get(I.toString()), mapTemp);
 				}
 			}
 		}
 		
 		for(int i=0; i<table.size(); i++) {
-			Set<Symbol> canGo = GOTOtable.get(i).keySet();
-			int flag = 0;
-			
-			Item itemTemp = new Item(flag, status)
-			Map<Symbol, Item> mapTemp = new HashMap<>();
+			Set<Symbol> canGo = GOTOtable.get(i).keySet(); //从这个状态集能够接受啥样的符号
+			for(Symbol s : canGo) {
+				Item item = null;
+				if(s.isFinal()) { //该符号是终结符
+					item = new Item(-1, GOTOtable.get(i).get(s));
+				} else { //该符号是非终结符
+					item = new Item(0, GOTOtable.get(i).get(s));
+				}
+				table.get(i).put(s, item);
+				for(Project p : projectSetList.get(i).projects) { //看看项目集中有没有可归约的项目集
+					if(p.isReduce()) { //可归约的项目
+						for(Symbol outlook : p.getOutlook()) { //把每一个展望符加入到表中
+							Item item2 = new Item(1, productionIndex.get(p.production()));
+							table.get(i).put(outlook, item2);
+						}
+					}
+				}
+			}
 		}
 		
-		for(int i=0; i<projects.size(); i++)
-			System.out.println("  I"+i+":\n"+projects.get(i).toString()+"\n");
+		for(int i=0; i<projectSetList.size(); i++)
+			System.out.println("  I"+i+":\n"+projectSetList.get(i).toString()+"\n");
 		
 		for(Integer i : GOTOtable.keySet()) {
 			System.out.println("  I"+i);
@@ -289,84 +305,5 @@ public class AnalysisTableFactory {
 	
 	public static void main(String[] args) {
 		creator("test.txt");
-	}
-}
-
-class Production {
-	/**
-	 * 记录一个产生式
-	 * leftSymbol表示产生式左部的符号
-	 * rightSymbols表示产生式右部的符号
-	 */
-	
-	Symbol leftSymbol;
-	List<Symbol> rightSymbols;
-	
-	public Production(Symbol leftSymbol, List<Symbol> rightSymbols) {
-		this.leftSymbol = leftSymbol;
-		this.rightSymbols = rightSymbols;
-	}
-	
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(leftSymbol.toString()+"->");
-		for(Symbol s : rightSymbols) {
-			sb.append(s.toString()+" ");
-		}
-		sb.delete(sb.length()-1, sb.length());
-		return sb.toString();
-	}
-}
-
-class ProjectSet {
-	/**
-	 * 该类维护项目集
-	 */
-	
-	Set<Project> projects = null;
-	
-	public ProjectSet(Set<Project> projects) {
-		this.projects = projects;
-	}
-	
-	public Set<Project> getProjects() {
-		return projects;
-	}
-	
-	public Set<Symbol> canGoto() {
-		Set<Symbol> result = new HashSet<>();
-		for(Project p : projects) {
-			Symbol b = p.getPosSymbol();
-			if(b != null) result.add(b);
-		}
-		return result;
-	}
-	
-	public boolean isEmpty() {
-		return projects == null || projects.size() == 0;
-	}
-	
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for(Project p : projects) {
-			sb.append(p.toString() + "\n");
-		}
-		return sb.toString();
-	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if(o == this) return true;
-		if(o instanceof ProjectSet) {
-			return ((ProjectSet)o).toString().equals(this.toString());
-		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode() {
-		return this.toString().hashCode();
 	}
 }
