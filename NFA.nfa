@@ -130,15 +130,15 @@ cal l CALL
 CALL;<CALL,->
 
 # 算术运算符+,-,*,/,++,--
-start + PLUS
-start - LESS
+start + ADD
+start - SUB
 start * MULTPLY
 start / DIVIDE
-PLUS + INC
-LESS - DEC
+ADD + INC
+SUB - DEC
 
-PLUS;<PLUS,->
-LESS;<LESS,->
+ADD;<ADD,->
+SUB;<SUB,->
 MULTPLY;<MULTPLY,->
 DIVIDE;<DIVIDE,->
 INC;<INC,->
