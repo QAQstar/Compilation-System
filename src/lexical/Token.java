@@ -69,7 +69,7 @@ public class Token {
 		this.type = type;
 		this.path = path;
 		this.lineNumber = lineNumber;
-		if(this.value == null || value.equals("-")) {
+		if(value == null || value.equals("-")) {
 			this.value = null;
 		} else {
 			this.value = value;

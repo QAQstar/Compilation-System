@@ -61,7 +61,7 @@ public class DFA {
 		boolean nextLine = false;
 		for(; index < chars.length; index++) {
 			if(chars[index] == ' ' || chars[index] == '\n' || chars[index] == '\t'|| chars[index] == '\r') { //将所有的回车、空格和制表符换成终止符$
-				if(chars[index] == '\n') nextLine = true;
+				if(chars[index] == '\n') lineNumber++;
 				chars[index] = '$';
 			}
 			
@@ -73,13 +73,11 @@ public class DFA {
 				index++;
 				startIndex = index;
 				curStatus = 0;
-				if(nextLine) lineNumber++;
 				return errorToken;
 			}
 			
 			if(curStatus == 0) { //跳转的时候遇到空格
 				startIndex = index+1;
-				if(nextLine) lineNumber++;
 				continue;
 			}
 			
@@ -110,7 +108,6 @@ public class DFA {
 				path = new StringBuilder(gotoTable.getStatus(0)); //重置路径
 				index++;
 				startIndex = index;
-				if(nextLine) lineNumber++;
 				return result;
 			}
 		}
@@ -177,7 +174,18 @@ public class DFA {
 	public static void main(String[] args) {
 		DFA dfa = DFAFactory.creator("DFA.dfa");
 //		DFA dfa = LexFactory.creator("NFA.nfa");
-		dfa.init("intint\n\n\n\nint");
+		dfa.init("record test_Record{\r\n" + 
+				"	int a = 0;\r\n" + 
+				"	int b = 044;\r\n" + 
+				"	int c = 0x8F;\r\n" + 
+				"	char d = 't';\r\n" + 
+				"	string s = \"String\";\r\n" + 
+				"	int array[10];\r\n" + 
+				"	float e = 3.1415926;\r\n" + 
+				"}\r\n" + 
+				"while(a <=@ 10) {\r\n" + 
+				"    a++; /* test the comment */\r\n" + 
+				"}");
 		Token t;
 		while((t=dfa.getNext()) != null) {
 			System.out.println(t);
