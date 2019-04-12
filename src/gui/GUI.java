@@ -27,11 +27,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lexical.DFA;
-import lexical.LexFactory;
+import lexical.DFAFactory;
 import lexical.Token;
 
 public class GUI extends Application{
-	private DFA dfa = LexFactory.creatorUseNFA("NFA.nfa");
+	private DFA dfa = DFAFactory.creatorUseNFA("NFA.nfa");
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -71,9 +71,9 @@ public class GUI extends Application{
 			File file = fileChooser.showOpenDialog(primaryStage);
 			if (file != null) {
 				if(file.getName().charAt(file.getName().length()-3) == 'd') { //由DFA转换表文件构建
-					dfa = LexFactory.creator(file.getPath());
+					dfa = DFAFactory.creator(file.getPath());
 				} else { //由NFA转换表文件构建
-					dfa = LexFactory.creatorUseNFA(file.getPath());
+					dfa = DFAFactory.creatorUseNFA(file.getPath());
 				}
 				//以下弹出提示，提示用户成功构建有穷自动机
 				DialogPane tip = new DialogPane();
@@ -246,7 +246,7 @@ public class GUI extends Application{
 			return stage;
 		}
 		
-		dfa.initAnalys(code);
+		dfa.init(code);
 		
 		Token token = null;
 		ObservableList<Token> list = FXCollections.observableArrayList();

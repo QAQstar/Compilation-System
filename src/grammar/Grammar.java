@@ -487,13 +487,14 @@ class Project {
 		} else {
 			for(int i=0; i<production.size(); i++) {
 				if(i == pos) sb.append("·");
+				else sb.append(" ");
 				sb.append(production.get(i).toString());
 			}
 			if(pos == production.size()) {
 				sb.append("·");
 			}
 		}
-		sb.append(" [");
+		sb.append("   [");
 		for(Symbol s : outlook) {
 			sb.append(s.toString() + " ");
 		}

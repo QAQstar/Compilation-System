@@ -33,7 +33,7 @@ public class DFA {
 	 * @param tokenMap 终结状态序号对应的Token序列
 	 * @param isDFA 若传入的是由DFA原生构建的转换表，则为true；若是由NFA构建的转换表，则为false
 	 */
-	public DFA(GotoTable gotoTable, Map<Integer, Token> tokenMap) {
+	protected DFA(GotoTable gotoTable, Map<Integer, Token> tokenMap) {
 		this.gotoTable = gotoTable;
 		this.tokenMap = tokenMap;
 		this.curStatus = 0;
@@ -45,7 +45,7 @@ public class DFA {
 	 * 初始化DFA，向DFA的输入流中写入待分析的字符串
 	 * @param str 待分析的字符串
 	 */
-	public void initAnalys(String str) {
+	public void init(String str) {
 		index = 0;
 		startIndex = 0;
 		curStatus = 0;
@@ -175,9 +175,9 @@ public class DFA {
 	}
 	
 	public static void main(String[] args) {
-		DFA dfa = LexFactory.creator("DFA.dfa");
+		DFA dfa = DFAFactory.creator("DFA.dfa");
 //		DFA dfa = LexFactory.creator("NFA.nfa");
-		dfa.initAnalys("intint\n\n\n\nint");
+		dfa.init("intint\n\n\n\nint");
 		Token t;
 		while((t=dfa.getNext()) != null) {
 			System.out.println(t);

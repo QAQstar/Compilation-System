@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-public class LexFactory {
+public class DFAFactory {
 	/**
 	 * 该工厂类用于根据转换文件来构造有穷自动机
 	 * 支持根据NFA转换文件以及DFA转换文件

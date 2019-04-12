@@ -23,7 +23,7 @@ public class AnalysisTableFactory {
 	/**
 	 * 从文件中读取文法，并生成分析表
 	 * @param path 文件路径
-	 * @return LALR分析表
+	 * @return LR分析表
 	 */
 	public static AnalysisTable creator(String path) {
 		List<Map<Symbol, Item>> table = new ArrayList<>(); //记录分析表，格式详情见AnalysisTable类
@@ -137,7 +137,9 @@ public class AnalysisTableFactory {
 			}
 		}
 		
-//		System.out.println(projectSetList);
+		System.out.println(productions);
+		
+		System.out.println(projectSetList);
 		
 		return new AnalysisTable(table, productions, projectSetList);
 	}
@@ -280,6 +282,6 @@ public class AnalysisTableFactory {
 	}
 	
 	public static void main(String[] args) {
-		creator("test.txt");
+		creator("grammar.txt");
 	}
 }
