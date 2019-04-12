@@ -69,7 +69,7 @@ public class DFA {
 			
 			if(curStatus == -1) { //没有此跳转，输出一个代表错误的token
 				String morpheme = String.valueOf(chars, startIndex, index-startIndex+1);
-				Token errorToken = new Token(morpheme, "ERROR", null, null, lineNumber);
+				Token errorToken = new Token(morpheme, "ERROR", String.valueOf(lineNumber), null, lineNumber);
 				index++;
 				startIndex = index;
 				curStatus = 0;
