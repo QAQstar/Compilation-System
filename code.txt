@@ -1,12 +1,15 @@
 record test_Record{
 	int a = 0;
-	int b = 044;
-	int c = 0x8F;
+	int b = 044; /* OCT */
+	int c = 0x8F; /* HEX */
+	int wro@ng; /* test wrong input */
 	char d = 't';
 	string s = "String";
 	int array[10];
 	float e = 3.1415926;
+	float f = 3e8;
+	bool flag = true;
 }
 while(a <= 10) {
-    a++; /* test the comment */
+    a++;
 }

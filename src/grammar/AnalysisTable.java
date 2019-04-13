@@ -6,7 +6,7 @@ import java.util.Map;
 
 import lexical.DFA;
 import lexical.DFAFactory;
-import lexical.LexFactory;
+import lexical.DFAFactory;
 import lexical.Token;
 
 

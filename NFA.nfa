@@ -208,9 +208,9 @@ FLOAT_NUMBER number FLOAT_NUMBER
 INT_NUMBER e e?
 FLOAT_NUMBER e e?
 e? - e-?
-e? number science_number
-e-? number science_number
-science_number number SCIENCE_NUMBER
+e? number SCIENCE_NUMBER
+e-? number SCIENCE_NUMBER
+SCIENCE_NUMBER number SCIENCE_NUMBER
 start ' '
 ' any-['] '..
 '.. any-['] '..
@@ -256,7 +256,7 @@ FLASE;<BOOL_CON,False>
 INT_NUMBER;<INT_NUMBER,\d+>
 FLOAT_NUMBER;<FLOAT_NUMBER,\d+\.\d*>
 SCIENCE_NUMBER;<SCIENCE_NUMBER,\d+\.?\d*e-?\d+>
-CHAR_CON;<STRING_CON,[^']>
+CHAR_CON;<CHAR_CON,[^']>
 STRING_CON;<STRING_CON,[^"]+>
 OCT;<OCT,0[1-7]\d*>;1
 HEX;<HEX,0[xX][\da-fA-F]+>

@@ -22,6 +22,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -31,7 +32,7 @@ import lexical.DFAFactory;
 import lexical.Token;
 
 public class GUI extends Application{
-	private DFA dfa = DFAFactory.creatorUseNFA("NFA.nfa");
+	private DFA dfa = null;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -57,6 +58,7 @@ public class GUI extends Application{
 		
 		Scene scene = new Scene(mainPane, 600, 400);
 		primaryStage.setScene(scene);
+		primaryStage.getIcons().add(new Image("file:/E:/Code/JAVA/Compilation-System/icon/icon.png"));
 		primaryStage.setTitle("1160300708-周宇星-编译系统实验");
 		primaryStage.show();
 		
@@ -104,28 +106,28 @@ public class GUI extends Application{
 				tipStage.initOwner(primaryStage);
 				tipStage.initModality(Modality.WINDOW_MODAL);
 				tipStage.show();
-			}
-			
-			FileChooser fileChooser = new FileChooser();
-			fileChooser.setTitle("保存DFA转换表文件");
-			fileChooser.setInitialFileName("rule");
-			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("FA文件", "*.dfa"));
-			File file = fileChooser.showSaveDialog(primaryStage);
-			if (file != null) {
-				dfa.write2File(file);
-				//以下弹出提示，提示用户成功导出DFA规则文件
-				DialogPane tip = new DialogPane();
-				Label tipLabel = new Label("成功导出DFA转换表！");
-				tipLabel.setStyle("-fx-font-size:18;"
-								+ "-fx-font-weight:bold;"
-								+ "-fx-text-fill:#1E90FF;");
-				tip.setContent(tipLabel);
-				Stage tipStage = new Stage();
-				tipStage.setScene(new Scene(tip));
-				tipStage.initOwner(primaryStage);
-				tipStage.initModality(Modality.WINDOW_MODAL);
-				tipStage.setResizable(false);
-				tipStage.show();
+			} else {
+				FileChooser fileChooser = new FileChooser();
+				fileChooser.setTitle("保存DFA转换表文件");
+				fileChooser.setInitialFileName("rule");
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("FA文件", "*.dfa"));
+				File file = fileChooser.showSaveDialog(primaryStage);
+				if (file != null) {
+					dfa.write2File(file);
+					//以下弹出提示，提示用户成功导出DFA规则文件
+					DialogPane tip = new DialogPane();
+					Label tipLabel = new Label("成功导出DFA转换表！");
+					tipLabel.setStyle("-fx-font-size:18;"
+									+ "-fx-font-weight:bold;"
+									+ "-fx-text-fill:#1E90FF;");
+					tip.setContent(tipLabel);
+					Stage tipStage = new Stage();
+					tipStage.setScene(new Scene(tip));
+					tipStage.initOwner(primaryStage);
+					tipStage.initModality(Modality.WINDOW_MODAL);
+					tipStage.setResizable(false);
+					tipStage.show();
+				}
 			}
 		});
 		

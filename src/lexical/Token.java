@@ -2,7 +2,7 @@ package lexical;
 
 public class Token {
 	/**
-	 * morpheme为识别出来的词素
+	 * morpheme为识别出来的单词
 	 * type为种别码，value为属性值
 	 * 当value为null时，则该token无属性值
 	 * path为从start转换至终结状态得到该token的路径

@@ -17,7 +17,6 @@ public class DFA {
 	private int lineNumber = 1; //记录当前的行号
 	private char[] chars = null;
 	
-	private int curStatus = 0; //记录当前状态，开始时初始状态的序号为0
 	private StringBuilder path = null; //记录状态转移路径
 	
 	//转换表的格式为<状态, <输入, 下一状态>>
@@ -36,7 +35,6 @@ public class DFA {
 	protected DFA(GotoTable gotoTable, Map<Integer, Token> tokenMap) {
 		this.gotoTable = gotoTable;
 		this.tokenMap = tokenMap;
-		this.curStatus = 0;
 		this.lineNumber = 1;
 		this.path = new StringBuilder(gotoTable.getStatus(0));
 	}
@@ -48,7 +46,6 @@ public class DFA {
 	public void init(String str) {
 		index = 0;
 		startIndex = 0;
-		curStatus = 0;
 		lineNumber = 1;
 		chars = (str+'$').toCharArray(); //在代码末尾自动添加一个终止符
 	}
@@ -58,7 +55,7 @@ public class DFA {
 	 * @return 下一个token；分析结束或错误后返回null
 	 */
 	public Token getNext() {
-		boolean nextLine = false;
+		int curStatus = 0; //记录当前状态，开始时初始状态的序号为0
 		for(; index < chars.length; index++) {
 			if(chars[index] == ' ' || chars[index] == '\n' || chars[index] == '\t'|| chars[index] == '\r') { //将所有的回车、空格和制表符换成终止符$
 				if(chars[index] == '\n') lineNumber++;
