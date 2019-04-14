@@ -110,6 +110,10 @@ public class Token {
 		return path;
 	}
 	
+	public int getLineNumber() {
+		return lineNumber;
+	}
+	
 	/**
 	 * 判断两个种别码是否是同一类
 	 * @return 两个Token有着相同的种别码时返回true；否则返回false
@@ -118,6 +122,13 @@ public class Token {
 		if(!tokenType.type.equals(type)) return false;
 		if(tokenType.value == null || value == null) return true; //不需要判断属性值
 		return tokenType.value.equals(value);
+	}
+	
+	public String forGrammar() {
+		if(value != null) {
+			return type+"("+value+")";
+		}
+		return type;
 	}
 	
 	@Override
@@ -137,5 +148,11 @@ public class Token {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		if(value == null) return type.hashCode();
+		return (type+value).hashCode();
 	}
 }

@@ -38,7 +38,7 @@ public class AnalysisTableFactory {
 		Map<String, Symbol> str2Symbol = new HashMap<>(); //记录String和Symbol的关系
 		Map<Symbol, Set<Symbol>> firstSet = null; //记录每个非终结符对应的FIRST集
 		
-		Map<Symbol, Token> symbol2Token = new HashMap<>(); //记录终结符和Token的关系
+		Map<Token, Symbol> token2Symbol = new HashMap<>(); //记录Token和终结符的关系
 		
 		//文件的格式为:A->B c D
 		File file = new File(grammarPath);
@@ -51,7 +51,7 @@ public class AnalysisTableFactory {
 					int index = line.indexOf(':');
 					String symbolStr = line.substring(0, index);
 					Token token = new Token(line.substring(index+1));
-					symbol2Token.put(str2Symbol.get(symbolStr), token);
+					token2Symbol.put(token, str2Symbol.get(symbolStr));
 				} else {
 					int index = line.indexOf("->");
 					String left = line.substring(0, index);
@@ -161,17 +161,17 @@ public class AnalysisTableFactory {
 			}
 		}
 		
-		System.out.println(productions);
-		
-		System.out.println(projectSetList);
-		
-		for(int i=0; i<table.size(); i++) {
-			System.out.println("  "+i+":");
-			for(Symbol s : table.get(i).keySet()) {
-				System.out.println(s+": "+table.get(i).get(s));
-			}
-			System.out.println();
-		}
+//		System.out.println(productions);
+//		
+//		System.out.println(projectSetList);
+//		
+//		for(int i=0; i<table.size(); i++) {
+//			System.out.println("  "+i+":");
+//			for(Symbol s : table.get(i).keySet()) {
+//				System.out.println(s+": "+table.get(i).get(s));
+//			}
+//			System.out.println();
+//		}
 		
 		DFA dfa;
 		if(FAPath.charAt(FAPath.length()-3) == 'n') { //NFA
@@ -180,7 +180,7 @@ public class AnalysisTableFactory {
 			dfa = DFAFactory.creator(FAPath);
 		}
 		
-		return new AnalysisTable(table, productions, projectSetList, symbol2Token, dfa);
+		return new AnalysisTable(table, productions, projectSetList, token2Symbol, dfa);
 	}
 	
 	/**

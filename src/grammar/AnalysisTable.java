@@ -7,7 +7,6 @@ import java.util.Stack;
 
 import lexical.DFA;
 import lexical.DFAFactory;
-import lexical.DFAFactory;
 import lexical.Token;
 
 
@@ -24,7 +23,7 @@ public class AnalysisTable {
 	private List<Map<Symbol, Item>> table;
 	private ProductionList productions;
 	private ProjectSetList projectSets;
-	private Map<Symbol, Token> symbol2Token;
+	private Map<Token, Symbol> token2Symbol;
 	private DFA dfa;
 	
 	/**
@@ -35,34 +34,64 @@ public class AnalysisTable {
 	 * @param symbol2Token 终结符对应Token的映射
 	 * @param dfa DFA实例
 	 */
-	public AnalysisTable(List<Map<Symbol, Item>> table, ProductionList productions, ProjectSetList projectSets, Map<Symbol, Token> symbol2Token, DFA dfa) {
+	public AnalysisTable(List<Map<Symbol, Item>> table, ProductionList productions, ProjectSetList projectSets, Map<Token, Symbol> token2Symbol, DFA dfa) {
 		this.table = table;
 		this.productions = productions;
 		this.projectSets = projectSets;
-		this.symbol2Token = symbol2Token;
+		this.token2Symbol = token2Symbol;
 		this.dfa = dfa;
 	}
 	
 	/**
 	 * 对输入的代码进行分析
 	 * @param code 需要分析的代码
-	 * @return 分析树
+	 * @return 符号树
 	 */
-	public List<SymbolTree> analysis(String code) {
-		List<SymbolTree> result = new ArrayList<>();
+	@SuppressWarnings("unused")
+	public SymbolTree analysis(String code) {
 		dfa.init(code);
 		
-		Stack<Symbol> symbolStack = new Stack<>(); //符号栈
-		Stack<Integer> statusStack = new Stack<>(); //状态栈
-		symbolStack.push(new Symbol("$", true));
-		statusStack.push(0);
+		LRStack stack = new LRStack(productions);
+		stack.init();
 		
-		Token token = null;
-		while((token=dfa.getNext()) != null) {
+		Token token = dfa.getNext();
+		while(true) {
+			if(token.getType().equals("COMMENT") || token.getType().equals("ERROR")) { //注释和错误Token不进行读取
+				continue;
+			}
 			
+			int topStatus = stack.peekStatus(); //栈顶状态
+			Symbol curSymbol = null;
+			
+			if(token == null) { //得到了所有的token
+				curSymbol = new Symbol("$", true); //那么最后一个符号为$
+			} else {
+				curSymbol = token2Symbol.get(token); //当前符号
+			}
+			Item item = table.get(topStatus).get(curSymbol);
+			if(item.statusIndex == -1) { //代表可以接收了，语法分析完成
+				SymbolTree start = new SymbolTree(productions.productions.get(0).leftSymbol, null);
+				start.addChild(stack.peekSymbolTree());
+				return start;
+			} else if(item.type == ItemType.SHIFT) { //移入
+				stack.shift(item.statusIndex, curSymbol, token);
+				token = dfa.getNext();
+			} else if(item.type == ItemType.REDUCE) { //规约
+				stack.reduce(table, item.statusIndex);
+			} else { //错误
+				
+			}
 		}
-		
-		return result;
+	}
+	
+	/**
+	 * 得到分析表中的某一项
+	 * @param statusIndex 分析表的状态序号
+	 * @param symbol 该状态接收的符号
+	 * @return 分析表中对应的项
+	 */
+	public Item getItem(int statusIndex, Symbol symbol) {
+		return table.get(statusIndex).get(symbol);
 	}
 	
 	public String productions2String() {
@@ -71,6 +100,11 @@ public class AnalysisTable {
 	
 	public String projectSets2String() {
 		return projectSets.toString();
+	}
+	
+	public static void main(String[] args) {
+		AnalysisTable test = AnalysisTableFactory.creator("testGrammar.txt", "testNFA.nfa");
+		System.out.println(test.analysis("bab"));
 	}
 }
 
@@ -120,21 +154,155 @@ enum ItemType {
 
 class LRStack {
 	/**
-	 * 作为一个LR的栈，栈中需要存储符号和状态
+	 * 作为一个LR语法分析的栈，栈中需要存储符号和状态
 	 * 虽然符号不是必须存的，但是为了方便还是存了
 	 */
+
+	private List<Production> productions;
+	private Stack<SymbolTree> symbolStack = new Stack<>(); //符号栈
+	private Stack<Integer> statusStack = new Stack<>(); //状态栈
+	
+	public LRStack(ProductionList productions) {
+		this.productions = productions.productions;
+	}
+	
+	/**
+	 * 初始化栈
+	 */
+	public void init() {
+		symbolStack.push(new SymbolTree(new Symbol("$", true), null));
+		statusStack.push(0);
+	}
+	
+	/**
+	 * 对栈进行移入操作
+	 * @param status 移入的状态码
+	 * @param symbol 移入的符号
+	 * @param token 非终结状态则为null，终结状态则为对应的Token
+	 */
+	public void shift(int status, Symbol symbol, Token token) {
+		statusStack.push(status);
+		SymbolTree st = new SymbolTree(symbol, token);
+		symbolStack.push(st);
+	}
+	
+	/**
+	 * 采用产生式productionIndex进行规约
+	 * @param table LR分析表
+	 * @param productionIndex 规约的产生式的编号
+	 * @return 若成功规约则返回true；若栈顶的符号不满足产生式则返回false
+	 */
+	public boolean reduce(final List<Map<Symbol, Item>> table, int productionIndex) {
+		Stack<SymbolTree> test = new Stack<>();
+		Production p = productions.get(productionIndex);
+		SymbolTree leftSymbol = new SymbolTree(p.leftSymbol, null);
+
+		for(int i=productions.size()-1; i>=0; i--) {
+			statusStack.pop();
+			SymbolTree st = symbolStack.pop();
+			test.push(st);
+			if(!st.getSymbol().equals(p.rightSymbols.get(i))) {
+				while(!test.isEmpty()) { //进行恢复
+					symbolStack.push(test.pop());
+				}
+				return false;
+			}
+			leftSymbol.addChild(st);
+		}
+		symbolStack.push(leftSymbol);
+		statusStack.push(table.get(statusStack.peek()).get(leftSymbol.getSymbol()).statusIndex);
+		return true;
+	}
+	
+	public SymbolTree peekSymbolTree() {
+		return symbolStack.peek();
+	}
+	
+	public Symbol popSymbol() {
+		return symbolStack.pop().getSymbol();
+	}
+	
+	public int popStatus() {
+		return statusStack.pop();
+	}
+	
+	public Symbol peekSymbol() {
+		return symbolStack.peek().getSymbol();
+	}
+	
+	public int peekStatus() {
+		return statusStack.peek();
+	}
 }
 
 class SymbolTree {
 	/**
-	 * 作为栈中的符号
+	 * 作为符号栈中的符号
 	 * 每个符号有以下属性
-	 * name 它的名字
+	 * symbol 它对应的符号
+	 * token 它对应的token，若是非终结符则为null
 	 * lineNumber 对应的行号
+	 * index 用来表示唯一的一个符号
 	 * child 它的孩子符号
+	 * isVisited 用来递归遍历的时候作为是否访问过的标记
 	 */
 	
-	String name;
-	int lineNumber;
-	List<SymbolTree> child;
+	private Symbol symbol;
+	private Token token;
+	private int lineNumber, index;
+	private List<SymbolTree> children;
+	private boolean isVisited = false;
+	
+	public SymbolTree(Symbol symbol, Token token) {
+		this.symbol = symbol;
+		this.token = token;
+		if(token == null) lineNumber = 0;
+		else this.lineNumber = token.getLineNumber();
+		this.children = null;
+	}
+	
+	public Symbol getSymbol() {
+		return symbol;
+	}
+	
+	public int lineNumber() {
+		return lineNumber;
+	}
+	
+	public boolean addChild(SymbolTree child) {
+		if(children == null) {
+			children = new ArrayList<>();
+			this.lineNumber = child.lineNumber; //父节点符号的行号为第一个子节点的行号
+		}
+		return children.add(child);
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		Stack<SymbolTree> stack = new Stack<>();
+		stack.push(this);
+		StringBuffer tab = new StringBuffer();
+		
+		while(!stack.isEmpty()) {
+			SymbolTree top = stack.peek();
+			if(top.isVisited) { //子树已经遍历结束
+				stack.pop();
+				top.isVisited = false; //重置
+				tab.delete(tab.length()-2, tab.length());
+			} else {
+				for(SymbolTree st : top.children) {
+					stack.push(st);
+					st.isVisited = true;
+					if(st.symbol.isFinal()) {
+						sb.append(tab.toString()+st.symbol.getName()+"("+lineNumber+")"+st.token.forGrammar());
+					} else {
+						sb.append(tab.toString()+st.symbol.getName());
+					}
+				}
+				tab.append("  ");
+			}
+		}
+		return sb.toString();
+	}
 }
