@@ -15,7 +15,7 @@ public class Token {
 	/**
 	 * 利用token字符串创建一个token
 	 * 这类Token不具有具体意义的属性值和词素，因为代表的是一类Token
-	 * 属性值一般为从接受字符串中提取的正则子串
+	 * 属性值一般为从接受字符串中提取的正则子串或为空
 	 * @param token 格式为<种别码,属性值>；属性值为"-"或"null"则属性值为空
 	 */
 	public Token(String token) {
@@ -29,6 +29,7 @@ public class Token {
 			this.value = valueTemp;
 		}
 		this.path = null;
+		this.lineNumber = 0;
 	}
 	
 	/**
@@ -47,6 +48,7 @@ public class Token {
 		} else {
 			this.value = value;
 		}
+		this.lineNumber = 0;
 	}
 	
 	/**
@@ -77,15 +79,15 @@ public class Token {
 	}
 	
 	/**
-	 * 得到该token的词素
-	 * @return 词素
+	 * 得到该Token的单词
+	 * @return 单词
 	 */
 	public String getMorpheme() {
 		return morpheme;
 	}
 	
 	/**
-	 * 得到Token序列的种别码
+	 * 得到Token的种别码
 	 * @return 种别码
 	 */
 	public String getType() {
@@ -93,15 +95,29 @@ public class Token {
 	}
 	
 	/**
-	 * 得到Token序列的属性值
+	 * 得到Token的属性值
 	 * @return 属性值，若属性值为空则返回null
 	 */
 	public String getValue() {
 		return value;
 	}
 	
+	/**
+	 * 得到Token的转移路径
+	 * @return
+	 */
 	public String getPath() {
 		return path;
+	}
+	
+	/**
+	 * 判断两个种别码是否是同一类
+	 * @return 两个Token有着相同的种别码时返回true；否则返回false
+	 */
+	public boolean isSameType(Token tokenType) {
+		if(!tokenType.type.equals(type)) return false;
+		if(tokenType.value == null || value == null) return true; //不需要判断属性值
+		return tokenType.value.equals(value);
 	}
 	
 	@Override

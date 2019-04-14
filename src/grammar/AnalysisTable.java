@@ -3,6 +3,7 @@ package grammar;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import lexical.DFA;
 import lexical.DFAFactory;
@@ -23,33 +24,43 @@ public class AnalysisTable {
 	private List<Map<Symbol, Item>> table;
 	private ProductionList productions;
 	private ProjectSetList projectSets;
+	private Map<Symbol, Token> symbol2Token;
+	private DFA dfa;
 	
-	public AnalysisTable(List<Map<Symbol, Item>> table, ProductionList productions, ProjectSetList projectSets) {
+	/**
+	 * 构造一个新的LR分析表
+	 * @param table 分析表实体
+	 * @param productions 产生式集
+	 * @param projectSets 项目集列表
+	 * @param symbol2Token 终结符对应Token的映射
+	 * @param dfa DFA实例
+	 */
+	public AnalysisTable(List<Map<Symbol, Item>> table, ProductionList productions, ProjectSetList projectSets, Map<Symbol, Token> symbol2Token, DFA dfa) {
 		this.table = table;
 		this.productions = productions;
 		this.projectSets = projectSets;
+		this.symbol2Token = symbol2Token;
+		this.dfa = dfa;
 	}
 	
 	/**
 	 * 对输入的代码进行分析
 	 * @param code 需要分析的代码
-	 * @param faFilePath fa文件路径
 	 * @return 分析树
 	 */
-	public List<SymbolTree> analysis(String code, String faFilePath) {
+	public List<SymbolTree> analysis(String code) {
 		List<SymbolTree> result = new ArrayList<>();
-		DFA dfa = null;
-		if(faFilePath.indexOf(faFilePath.length()-3) == 'd') { //由DFA转换表文件构建
-			dfa = DFAFactory.creator(faFilePath);
-		} else { //由NFA转换表文件构建
-			dfa = DFAFactory.creatorUseNFA(faFilePath);
-		}
 		dfa.init(code);
 		
-//		Token token = null;
-//		while((token=dfa.getNext()) != null) {
-//			
-//		}
+		Stack<Symbol> symbolStack = new Stack<>(); //符号栈
+		Stack<Integer> statusStack = new Stack<>(); //状态栈
+		symbolStack.push(new Symbol("$", true));
+		statusStack.push(0);
+		
+		Token token = null;
+		while((token=dfa.getNext()) != null) {
+			
+		}
 		
 		return result;
 	}
@@ -76,11 +87,30 @@ class Item {
 	/**
 	 * 代表了分析表中的一项
 	 * @param flag flag表示该项是s(-1)还是r(1);若该项是GOTO表中的元素，那么flag为0
-	 * @param status 表示跳转到的项目集标号
+	 * @param status 表示跳转到的项目集标号，-1表示接收
 	 */
 	public Item(int flag, int status) {
 		this.flag = flag;
 		this.status = status;
+	}
+	
+	@Override
+	public String toString() {
+		String str = null;
+		if(status == -1) return "acc";
+		switch(flag) {
+		case -1:
+			str = "ACTION(s"+status+")";
+			break;
+		case 0:
+			str = "GOTO("+status+")";
+			break;
+		case 1:
+			str = "ACTION(r"+status+")";
+			break;
+		}
+		
+		return str;
 	}
 }
 

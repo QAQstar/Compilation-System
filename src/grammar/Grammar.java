@@ -578,6 +578,15 @@ class ProjectSet {
 		projects = resultMerge;
 	}
 	
+	/**
+	 * 查询项目集中是否包含某项目
+	 * @param p 需要查询的项目p
+	 * @return 若该项目集中包含p则返回true；否则返回false
+	 */
+	public boolean contains(Project p) {
+		return projects.contains(p);
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

@@ -107,7 +107,6 @@ public class DFAFactory {
 						break;
 					default:
 						table.get(statusMap.get(segment[0]))[(segment[1]).charAt(0)-32] = statusMap.get(segment[2]);
-						
 					}
 				} else {
 					segment = line.split(";");

@@ -95,6 +95,13 @@ start i i
 i f IF
 IF;<IF,->
 
+# 关键字then
+start t t
+t h th
+th e the
+the n THEN
+THEN;<THEN,->
+
 # 关键字else
 start e e
 e l el
@@ -174,6 +181,7 @@ NOT;<NOT,->
 # 界符
 start ; END
 start . POINT
+start , COMMA
 start ( LP
 start ) RP
 start [ LB
@@ -183,6 +191,7 @@ start } RC
 
 END;<END,->
 POINT;<POINT,->
+COMMA;<COMMA,->
 LP;<LP,->
 RP;<RP,->
 LB;<LB,->

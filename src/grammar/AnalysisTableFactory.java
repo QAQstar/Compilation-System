@@ -13,6 +13,10 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import lexical.DFA;
+import lexical.DFAFactory;
+import lexical.Token;
+
 public class AnalysisTableFactory {
 	/**
 	 * 该类从文件中读取文法，并生成LALR分析的分析表
@@ -22,10 +26,11 @@ public class AnalysisTableFactory {
 	
 	/**
 	 * 从文件中读取文法，并生成分析表
-	 * @param path 文件路径
+	 * @param grammarPath 文法文件路径
+	 * @param FAPath FA文件路径
 	 * @return LR分析表
 	 */
-	public static AnalysisTable creator(String path) {
+	public static AnalysisTable creator(String grammarPath, String FAPath) {
 		List<Map<Symbol, Item>> table = new ArrayList<>(); //记录分析表，格式详情见AnalysisTable类
 		ProductionList productions = new ProductionList(); //所有的产生式集
 		ProjectSetList projectSetList = new ProjectSetList(); //所有的项目集(项目集列表)
@@ -33,40 +38,49 @@ public class AnalysisTableFactory {
 		Map<String, Symbol> str2Symbol = new HashMap<>(); //记录String和Symbol的关系
 		Map<Symbol, Set<Symbol>> firstSet = null; //记录每个非终结符对应的FIRST集
 		
+		Map<Symbol, Token> symbol2Token = new HashMap<>(); //记录终结符和Token的关系
+		
 		//文件的格式为:A->B c D
-		File file = new File(path);
+		File file = new File(grammarPath);
 		try(FileReader fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr)) {
 			String line = null;
 			while((line=br.readLine()) != null) {
 				if(line.length() == 0 || line.charAt(0) == '#') continue;	//文本中的注释和空行不读取
-				
-				int index = line.indexOf("->");
-				String left = line.substring(0, index);
-				Symbol leftSymbol = str2Symbol.get(left);
-				if(leftSymbol == null) { //第一次读到该非终结符的产生式
-					leftSymbol = new Symbol(left, false);
-					str2Symbol.put(left, leftSymbol);
-				} else if(leftSymbol.isFinal() == true) { //被错误地设置成了终结符
-					leftSymbol.setIsFinal(false);
-				}
-				
-				String rightStr = line.substring(index+2).trim();
-				List<Symbol> rightSymbols = new ArrayList<>();
-				String right[] = rightStr.split(" ");
-					
-				for(String s : right) {
-					Symbol rightSymbol = str2Symbol.get(s);
-					if(rightSymbol == null) {
-						rightSymbol = new Symbol(s, true);
-						str2Symbol.put(s, rightSymbol);
+				if(line.charAt(line.length()-1) == '>') { //终结符对应Token序列
+					int index = line.indexOf(':');
+					String symbolStr = line.substring(0, index);
+					Token token = new Token(line.substring(index+1));
+					symbol2Token.put(str2Symbol.get(symbolStr), token);
+				} else {
+					int index = line.indexOf("->");
+					String left = line.substring(0, index);
+					Symbol leftSymbol = str2Symbol.get(left);
+					if(leftSymbol == null) { //第一次读到该非终结符的产生式
+						leftSymbol = new Symbol(left, false);
+						str2Symbol.put(left, leftSymbol);
+					} else if(leftSymbol.isFinal() == true) { //被错误地设置成了终结符
+						leftSymbol.setIsFinal(false);
 					}
-					rightSymbols.add(rightSymbol);
+					
+					String rightStr = line.substring(index+2).trim();
+					List<Symbol> rightSymbols = new ArrayList<>();
+					String right[] = rightStr.split(" ");
+						
+					for(String s : right) {
+						Symbol rightSymbol = str2Symbol.get(s);
+						if(rightSymbol == null) {
+							rightSymbol = new Symbol(s, true);
+							str2Symbol.put(s, rightSymbol);
+						}
+						rightSymbols.add(rightSymbol);
+					}
+					if(rightSymbols.get(0).getName().equals("nil")) //空产生式
+						rightSymbols = null;
+					Production newProduction = new Production(leftSymbol, rightSymbols);
+					productions.add(newProduction);
 				}
-				if(rightSymbols.get(0).getName().equals("nil")) //空产生式
-					rightSymbols = null;
-				Production newProduction = new Production(leftSymbol, rightSymbols);
-				productions.add(newProduction);
+				
 			}
 		} catch(IOException e) {
 			e.printStackTrace();
@@ -115,14 +129,22 @@ public class AnalysisTableFactory {
 			}
 		}
 		
+		boolean isFindFinalStatus = false; //是否找到了移入$能够接收
 		for(int i=0; i<table.size(); i++) {
-			if(GOTOtable.get(i) == null) continue; //没有后继状态
+			if(GOTOtable.get(i) == null) { //没有后继状态
+				if(!isFindFinalStatus && projectSetList.projectSets.get(i).contains(startProject)) {
+					isFindFinalStatus = true;
+					Item item = new Item(1, -1);
+					table.get(i).put(new Symbol("$", true), item);
+				}
+				continue;
+			}
 			Set<Symbol> canGo = GOTOtable.get(i).keySet(); //从这个状态集能够接受啥样的符号
 			for(Project p : projectSetList.projectSets.get(i).projects) { //看看项目集中有没有可归约的项目集
 				if(p.isReduce) { //可归约的项目
 					for(Symbol outlook : p.outlook) { //把每一个展望符加入到表中
-						Item item2 = new Item(1, p.productionIndex);
-						table.get(i).put(outlook, item2);
+						Item item = new Item(1, p.productionIndex);
+						table.get(i).put(outlook, item);
 					}
 				}
 			}
@@ -141,7 +163,23 @@ public class AnalysisTableFactory {
 		
 		System.out.println(projectSetList);
 		
-		return new AnalysisTable(table, productions, projectSetList);
+		System.out.println(projectSetList.projectSets.get(2).contains(startProject));
+		
+//		for(int i=0; i<table.size(); i++) {
+//			System.out.println("  "+i+":");
+//			for(Symbol s : table.get(i).keySet()) {
+//				System.out.println(s+": "+table.get(i).get(s));
+//			}
+//		}
+		
+		DFA dfa;
+		if(FAPath.charAt(FAPath.length()-3) == 'n') { //NFA
+			dfa = DFAFactory.creatorUseNFA(FAPath);
+		} else { //DFA
+			dfa = DFAFactory.creator(FAPath);
+		}
+		
+		return new AnalysisTable(table, productions, projectSetList, symbol2Token, dfa);
 	}
 	
 	/**
@@ -282,6 +320,6 @@ public class AnalysisTableFactory {
 	}
 	
 	public static void main(String[] args) {
-		creator("grammar.txt");
+		creator("test.txt", "NFA.nfa");
 	}
 }

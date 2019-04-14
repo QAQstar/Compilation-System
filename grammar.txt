@@ -45,3 +45,8 @@ B->false
 S->call id ( Elist )
 Elist->Elist , E
 Elist->E
+
+# 终结符对应的Token
+id:<ID,->
+int:<INT,->
+real:<REAL,->
