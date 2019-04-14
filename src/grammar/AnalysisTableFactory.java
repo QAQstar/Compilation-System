@@ -132,9 +132,11 @@ public class AnalysisTableFactory {
 		boolean isFindFinalStatus = false; //是否找到了移入$能够接收
 		for(int i=0; i<table.size(); i++) {
 			if(GOTOtable.get(i) == null) { //没有后继状态
-				if(!isFindFinalStatus && projectSetList.projectSets.get(i).contains(startProject)) {
+				if(!isFindFinalStatus &&
+				   projectSetList.projectSets.get(i).projects.size() == 1 &&
+				   projectSetList.projectSets.get(i).projects.iterator().next().isNextProject(startProject)) { //为接收时赋值
 					isFindFinalStatus = true;
-					Item item = new Item(1, -1);
+					Item item = new Item(null, -1);
 					table.get(i).put(new Symbol("$", true), item);
 				}
 				continue;
@@ -143,7 +145,7 @@ public class AnalysisTableFactory {
 			for(Project p : projectSetList.projectSets.get(i).projects) { //看看项目集中有没有可归约的项目集
 				if(p.isReduce) { //可归约的项目
 					for(Symbol outlook : p.outlook) { //把每一个展望符加入到表中
-						Item item = new Item(1, p.productionIndex);
+						Item item = new Item(ItemType.REDUCE, p.productionIndex);
 						table.get(i).put(outlook, item);
 					}
 				}
@@ -151,9 +153,9 @@ public class AnalysisTableFactory {
 			for(Symbol s : canGo) {
 				Item item = null;
 				if(s.isFinal()) { //该符号是终结符
-					item = new Item(-1, GOTOtable.get(i).get(s));
+					item = new Item(ItemType.SHIFT, GOTOtable.get(i).get(s));
 				} else { //该符号是非终结符
-					item = new Item(0, GOTOtable.get(i).get(s));
+					item = new Item(ItemType.GOTO, GOTOtable.get(i).get(s));
 				}
 				table.get(i).put(s, item);
 			}
@@ -163,14 +165,13 @@ public class AnalysisTableFactory {
 		
 		System.out.println(projectSetList);
 		
-		System.out.println(projectSetList.projectSets.get(2).contains(startProject));
-		
-//		for(int i=0; i<table.size(); i++) {
-//			System.out.println("  "+i+":");
-//			for(Symbol s : table.get(i).keySet()) {
-//				System.out.println(s+": "+table.get(i).get(s));
-//			}
-//		}
+		for(int i=0; i<table.size(); i++) {
+			System.out.println("  "+i+":");
+			for(Symbol s : table.get(i).keySet()) {
+				System.out.println(s+": "+table.get(i).get(s));
+			}
+			System.out.println();
+		}
 		
 		DFA dfa;
 		if(FAPath.charAt(FAPath.length()-3) == 'n') { //NFA
@@ -310,7 +311,7 @@ public class AnalysisTableFactory {
 		ProjectSet result = new ProjectSet(index);
 		for(Project p : I.projects) {
 			if(p.isReduce || !p.getPosSymbol().equals(X)) continue; //规约项目没有后继项目集或·后的符号不是X
-			result.add(new Project(p.leftSymbol, p.production, p.outlook, p.pos+1, index));
+			result.add(new Project(p.leftSymbol, p.production, p.outlook, p.pos+1, p.productionIndex));
 		}
 		
 		result = CLOSURE(firstSet, productions, result, index);

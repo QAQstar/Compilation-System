@@ -464,6 +464,24 @@ class Project {
 		return p.toString().substring(0, p.toString().indexOf("[", 3)-1).equals(this.toString().substring(0, this.toString().indexOf("[", 3)-1));
 	}
 	
+	/**
+	 * 判断该状态是否是另一个状态的前一个状态
+	 * @param p 
+	 * @return 若该状态是状态p的前置状态则返回true；否则返回false
+	 */
+	public boolean isFrontProject(Project p) {
+		return productionIndex == p.productionIndex && pos == p.pos-1;
+	}
+	
+	/**
+	 * 判断该状态是否是另一个状态的下一个状态
+	 * @param p 
+	 * @return 若该状态是状态p的后续状态则返回true；否则返回false
+	 */
+	public boolean isNextProject(Project p) {
+		return productionIndex == p.productionIndex && pos == p.pos+1;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if(obj == this) return true;

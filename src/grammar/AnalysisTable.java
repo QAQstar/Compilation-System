@@ -77,41 +77,45 @@ public class AnalysisTable {
 class Item {
 	/**
 	 * 代表了分析表中的一项
-	 * flag表示该项是s(-1)还是r(1)
-	 * 若该项是GOTO表中的元素，那么flag为0
-	 * status表示跳转到哪个状态
+	 * 若该项是ACTION表中的元素，那么type表示该项是SHIFT(移入)还是REDUCE(规约)
+	 * 若该项是GOTO表中的元素，那么type为null
+	 * statusIndex表示跳转到哪个状态的编号，接收状态为-1
 	 */
 	
-	int flag, status;
+	ItemType type;
+	int statusIndex;
 	
 	/**
-	 * 代表了分析表中的一项
-	 * @param flag flag表示该项是s(-1)还是r(1);若该项是GOTO表中的元素，那么flag为0
-	 * @param status 表示跳转到的项目集标号，-1表示接收
+	 * 创建一个分析表中的一项
+	 * @param type type表示该项是SHIFT(移入)还是REDUCE(规约)还是跳转(GOTO)
+	 * @param statusIndex 表示执行动作后跳转到的项目集标号(状态号)，-1表示接收
 	 */
-	public Item(int flag, int status) {
-		this.flag = flag;
-		this.status = status;
+	public Item(ItemType type, int statusIndex) {
+		this.type = type;
+		this.statusIndex = statusIndex;
 	}
 	
 	@Override
 	public String toString() {
+		if(statusIndex == -1) return "acc";
 		String str = null;
-		if(status == -1) return "acc";
-		switch(flag) {
-		case -1:
-			str = "ACTION(s"+status+")";
+		switch(type) {
+		case SHIFT:
+			str = "ACTION(s"+statusIndex+")";
 			break;
-		case 0:
-			str = "GOTO("+status+")";
+		case REDUCE:
+			str = "ACTION(r"+statusIndex+")";
 			break;
-		case 1:
-			str = "ACTION(r"+status+")";
-			break;
+		case GOTO:
+			str = "GOTO("+statusIndex+")";
 		}
 		
 		return str;
 	}
+}
+
+enum ItemType {
+	SHIFT, REDUCE, GOTO
 }
 
 class LRStack {
