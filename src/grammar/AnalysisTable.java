@@ -2,13 +2,11 @@ package grammar;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
 import lexical.DFA;
-import lexical.DFAFactory;
 import lexical.Token;
 
 
@@ -59,12 +57,15 @@ public class AnalysisTable {
 		LRStack stack = new LRStack(productions);
 		
 		Token token = dfa.getNext();
+		Symbol finalSymbol = new Symbol("$", true);
+		boolean isReduce = false; //前一个动作是否是规约 用来加速的
+		Symbol curSymbol = null;
 		while(true) {
-			Symbol curSymbol = null;
 			if(token == null) { //得到了所有的token
-				curSymbol = new Symbol("$", true); //那么最后一个符号为$
-			} else {
+				curSymbol = finalSymbol; //那么最后一个符号为$
+			} else if (!isReduce){ //如果之前的状态是规约状态，那么输入没变，不用重新获取一次
 				if(token.getType().equals("COMMENT") || token.getType().equals("ERROR")) { //注释和错误Token不进行读取
+					token = dfa.getNext();
 					continue;
 				}
 				curSymbol = getSymbolFromToken(token); //当前符号
@@ -82,8 +83,10 @@ public class AnalysisTable {
 			} else if(item.type == ItemType.SHIFT) { //移入
 				stack.shift(item.statusIndex, curSymbol, token);
 				token = dfa.getNext();
+				isReduce = false;
 			} else if(item.type == ItemType.REDUCE) { //规约
 				stack.reduce(table, item.statusIndex);
+				isReduce = true;
 			} else { //错误
 				
 			}
@@ -123,8 +126,12 @@ public class AnalysisTable {
 	
 	public static void main(String[] args) {
 		AnalysisTable test = AnalysisTableFactory.creator("grammar.txt", "NFA.nfa");
-		SymbolTree root = test.analysis("int a = 10");
-		System.out.println(root);
+		SymbolTree root = test.analysis("int a;\n"
+				+ "a = 5;"
+				+ "while(a<=10) do a=10;");
+//		AnalysisTable test = AnalysisTableFactory.creator("testGrammar.txt", "testNFA.nfa");
+//		SymbolTree root = test.analysis("b\na\nb");
+		System.out.println(root.getResultString());
 	}
 }
 
@@ -273,13 +280,13 @@ class SymbolTree {
 	private Symbol symbol;
 	private Token token;
 	private int lineNumber;
-	private LinkedList<SymbolTree> children;
+	private List<SymbolTree> children;
 	private boolean isVisited = false;
 	
 	public SymbolTree(Symbol symbol, Token token) {
 		this.symbol = symbol;
 		this.token = token;
-		if(token == null) lineNumber = 0;
+		if(token == null) lineNumber = -1;
 		else this.lineNumber = token.getLineNumber();
 		this.children = null;
 	}
@@ -294,10 +301,12 @@ class SymbolTree {
 	
 	public void addChild(SymbolTree child) {
 		if(children == null) {
-			children = new LinkedList<>();
-			this.lineNumber = child.lineNumber; //父节点符号的行号为第一个子节点的行号
+			children = new ArrayList<>();
 		}
-		children.addFirst(child);
+		if(child.lineNumber != -1) { //父节点符号的行号为第一个非空产生式的子节点的行号
+			this.lineNumber = child.lineNumber;
+		}
+		children.add(child);
 	}
 	
 	public String getResultString() {
@@ -308,23 +317,32 @@ class SymbolTree {
 		
 		while(!stack.isEmpty()) {
 			SymbolTree top = stack.peek();
-			if(top.isVisited) { //子树已经遍历结束
+			if(top.isVisited) { //子树已经压入栈中
 				stack.pop();
 				top.isVisited = false; //重置
 				tab.delete(tab.length()-2, tab.length());
-			} else {
-				for(SymbolTree st : top.children) {
-					stack.push(st);
-					st.isVisited = true;
-					if(st.symbol.isFinal()) {
-						sb.append(tab.toString()+st.symbol.getName()+"("+lineNumber+")"+st.token.forGrammar());
-					} else {
-						sb.append(tab.toString()+st.symbol.getName());
+			} else { //子树还没压入栈
+				if(top.children == null) { //终结符或者是空产生式
+					if(top.symbol.isFinal()) { //终结符
+						sb.append(tab.toString()+top.symbol.getName()+"("+top.lineNumber+"):"+top.token.forGrammar()+"\n");
+						top.isVisited = false;
+					} else { //空产生式
+						sb.append(tab.toString()+top.symbol.getName()+"("+top.lineNumber+")\n");
+						sb.append(tab.toString()+"  nil\n");
+						top.isVisited = false;
+					}
+					stack.pop();
+				} else { //非空产生式
+					sb.append(tab.toString()+top.symbol.getName()+"("+top.lineNumber+")\n");
+					tab.append("  ");
+					top.isVisited = true;
+					for(SymbolTree st : top.children) { //展开子树
+						stack.push(st);
 					}
 				}
-				tab.append("  ");
 			}
 		}
+		sb.delete(sb.length()-1, sb.length());//去掉最后的换行
 		return sb.toString();
 	}
 	
