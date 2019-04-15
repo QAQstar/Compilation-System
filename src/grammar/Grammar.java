@@ -366,6 +366,10 @@ class ProductionList {
 		return result;
 	}
 	
+	public Set<Symbol> getAllSymbol() {
+		return symbol2ProductionIndex.keySet();
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -404,7 +408,7 @@ class Project {
 	 * 如产生式A->·BCD
 	 * 那么leftSymbol=A
 	 * production=BCD
-	 * pos=0
+	 * pos = 0
 	 */
 	
 	Symbol leftSymbol;

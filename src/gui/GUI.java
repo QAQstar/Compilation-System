@@ -41,10 +41,12 @@ public class GUI extends Application{
 		MenuItem itemLoadRule = new MenuItem("导入规则");
 		MenuItem itemWriteRule = new MenuItem("导出规则");
 		MenuItem itemLoadCode = new MenuItem("导入代码");
-		MenuItem itemRule = new MenuItem("词法规则");
+		MenuItem itemLexRule = new MenuItem("词法规则");
 		MenuItem itemRun = new MenuItem("运行");
-		Menu menuLex = new Menu("词法分析", null, itemLoadRule, itemWriteRule, itemLoadCode, itemRule, itemRun);
-		MenuBar menubar = new MenuBar(menuLex);
+		Menu menuLex = new Menu("词法分析", null, itemLoadRule, itemWriteRule, itemLoadCode, itemLexRule, itemRun);
+		MenuItem itemAnalysisTable = new MenuItem("分析表");
+		Menu menuGrammar = new Menu("语法分析", null, itemAnalysisTable);
+		MenuBar menubar = new MenuBar(menuLex, menuGrammar);
 		
 		CodeArea codeArea = new CodeArea();
 		codeArea.setStyle("-fx-font-family:consolas;" +
@@ -153,7 +155,7 @@ public class GUI extends Application{
 		});
 		
 		//按下词法规则按钮
-		itemRule.setOnAction(event->{
+		itemLexRule.setOnAction(event->{
 			Stage s = LexRule();
 			s.initOwner(primaryStage);
 			s.initModality(Modality.WINDOW_MODAL);
@@ -166,6 +168,11 @@ public class GUI extends Application{
 			s.initOwner(primaryStage);
 			s.initModality(Modality.WINDOW_MODAL);
 			s.show();
+		});
+		
+		//按下分析表按钮
+		itemAnalysisTable.setOnAction(event->{
+			
 		});
 	}
 	
@@ -285,6 +292,22 @@ public class GUI extends Application{
 		mainPane.setCenter(tableView);
 		
 		stage.setScene(new Scene(mainPane));
+		
+		return stage;
+	}
+	
+	public Stage analysisTable() {
+		Stage stage = new Stage();
+		if(dfa == null) { //还未导入词法规则文件
+			DialogPane warning = new DialogPane();
+			warning.setContentText("未导入FA转换表文件...");
+			warning.setStyle("-fx-font-size:18;"
+						   + "-fx-font-weight:bold;");
+			Scene scene = new Scene(warning);
+			stage.setScene(scene);
+			stage.setResizable(false);
+			return stage;
+		}
 		
 		return stage;
 	}

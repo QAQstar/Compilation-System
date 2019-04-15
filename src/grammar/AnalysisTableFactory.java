@@ -232,8 +232,8 @@ public class AnalysisTableFactory {
 		}
 		
 		//打印FIRST集
-//		for(Symbol s : firstMap.keySet())
-//			System.out.println("FIRST("+s+") = "+firstMap.get(s));
+		for(Symbol s : firstMap.keySet())
+			System.out.println("FIRST("+s+") = "+firstMap.get(s));
 		
 		return firstMap;
 	}
@@ -335,6 +335,6 @@ public class AnalysisTableFactory {
 	}
 	
 	public static void main(String[] args) {
-		creator("test.txt", "NFA.nfa");
+		creator("testGrammar2.txt", "NFA.nfa");
 	}
 }
