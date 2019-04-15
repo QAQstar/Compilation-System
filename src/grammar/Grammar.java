@@ -450,7 +450,7 @@ class Project {
 	 * @return ·的下一个符号之后的符号序列，如A->B·CD，将会返回D；若该项目是规约项目，则返回null
 	 */
 	public List<Symbol> getBehindPosSymbols() {
-		if(isReduce) return null;
+		if(isReduce || pos+1 == production.size()) return null;
 		return production.subList(pos+1, production.size());
 	}
 	

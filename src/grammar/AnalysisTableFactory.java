@@ -105,6 +105,7 @@ public class AnalysisTableFactory {
 		Queue<ProjectSet> queue = new LinkedList<>();
 		projectSetStr2Index.put(startProjectSet.toString(), 0);
 		queue.offer(startProjectSet);
+		table.add(new HashMap<>());
 		
 		while(!queue.isEmpty()) {
 			ProjectSet I = queue.poll(); //C中的每个项集I
@@ -123,7 +124,7 @@ public class AnalysisTableFactory {
 					GOTOtable.get(projectSetStr2Index.get(I.toString())).put(X, projectSetStr2Index.get(nextProjectSet.toString()));
 				} else { //跳转表中还没I
 					Map<Symbol, Integer> mapTemp = new HashMap<>();
-					mapTemp.put(X, projectSetList.size()-1);
+					mapTemp.put(X, projectSetStr2Index.get(nextProjectSet.toString()));
 					GOTOtable.put(projectSetStr2Index.get(I.toString()), mapTemp);
 				}
 			}
@@ -137,7 +138,17 @@ public class AnalysisTableFactory {
 					isFindFinalStatus = true;
 					Item item = new Item(null, -1);
 					table.get(i).put(new Symbol("$", true), item);
+				} else {
+					for(Project p : projectSetList.projectSets.get(i).projects) { //看看项目集中有没有可归约的项目集
+						if(p.isReduce) { //可归约的项目
+							for(Symbol outlook : p.outlook) { //把每一个展望符加入到表中
+								Item item = new Item(ItemType.REDUCE, p.productionIndex);
+								table.get(i).put(outlook, item);
+							}
+						}
+					}
 				}
+				
 				continue;
 			}
 			Set<Symbol> canGo = GOTOtable.get(i).keySet(); //从这个状态集能够接受啥样的符号
@@ -268,19 +279,23 @@ public class AnalysisTableFactory {
 		while(!queue.isEmpty()) {
 			Project A = queue.poll();
 			if(A.isReduce) continue; //规约项目不会有
+			//I中的每个项[A->α·Bβ, a]
+			List<Symbol> ABehindPosSymbols = A.getBehindPosSymbols();
+			List<Symbol> list = new ArrayList<>(); //βa
+			Set<Symbol> FIRST;//FIRST(βa)
+			if(ABehindPosSymbols != null) {
+				list.addAll(ABehindPosSymbols);
+				FIRST = First(firstSet, list);
+			} else {
+				FIRST = new HashSet<>();
+			}
+			if(FIRST.size() == 0 || FIRST.contains(nilSymbol)) {
+				FIRST.remove(nilSymbol);
+				FIRST.addAll(A.outlook);
+			}
 			Symbol B = A.getPosSymbol();
 			if(!B.isFinal()) { //非终结符
 				for(Production Bproduction : productions.symbol2Production(B)) { //G'的每个产生式B->γ
-					List<Symbol> list = new ArrayList<>();
-					Set<Symbol> FIRST = new HashSet<>(); //FIRST(βa)
-					if(A.getBehindPosSymbols() != null) {
-						list.addAll(A.getBehindPosSymbols());
-						FIRST = First(firstSet, list);
-					}
-					if(FIRST.size() == 0 || FIRST.contains(nilSymbol)) {
-						FIRST.remove(nilSymbol);
-						FIRST.addAll(A.outlook);
-					}
 					for(Symbol b : FIRST) { //FIRST(βa)中的每个符号b
 						Set<Symbol> outlook = new HashSet<>();
 						outlook.add(b);
@@ -314,7 +329,7 @@ public class AnalysisTableFactory {
 		}
 		
 		result = CLOSURE(firstSet, productions, result, index);
-		result.merge();
+//		result.merge();
 		
 		return result;
 	}

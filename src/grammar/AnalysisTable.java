@@ -1,6 +1,7 @@
 package grammar;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -47,31 +48,31 @@ public class AnalysisTable {
 	 * @param code 需要分析的代码
 	 * @return 符号树
 	 */
-	@SuppressWarnings("unused")
 	public SymbolTree analysis(String code) {
 		dfa.init(code);
 		
 		LRStack stack = new LRStack(productions);
-		stack.init();
 		
 		Token token = dfa.getNext();
 		while(true) {
-			if(token.getType().equals("COMMENT") || token.getType().equals("ERROR")) { //注释和错误Token不进行读取
-				continue;
-			}
-			
-			int topStatus = stack.peekStatus(); //栈顶状态
 			Symbol curSymbol = null;
-			
 			if(token == null) { //得到了所有的token
 				curSymbol = new Symbol("$", true); //那么最后一个符号为$
 			} else {
+				if(token.getType().equals("COMMENT") || token.getType().equals("ERROR")) { //注释和错误Token不进行读取
+					continue;
+				}
 				curSymbol = token2Symbol.get(token); //当前符号
 			}
+			
+			int topStatus = stack.peekStatus(); //栈顶状态
+			
 			Item item = table.get(topStatus).get(curSymbol);
 			if(item.statusIndex == -1) { //代表可以接收了，语法分析完成
 				SymbolTree start = new SymbolTree(productions.productions.get(0).leftSymbol, null);
-				start.addChild(stack.peekSymbolTree());
+				while(stack.size() > 1) {
+					start.addChild(stack.popSymbolTree());
+				}
 				return start;
 			} else if(item.type == ItemType.SHIFT) { //移入
 				stack.shift(item.statusIndex, curSymbol, token);
@@ -103,8 +104,9 @@ public class AnalysisTable {
 	}
 	
 	public static void main(String[] args) {
-		AnalysisTable test = AnalysisTableFactory.creator("testGrammar.txt", "testNFA.nfa");
-		System.out.println(test.analysis("bab"));
+		AnalysisTable test = AnalysisTableFactory.creator("grammar.txt", "NFA.nfa");
+		SymbolTree root = test.analysis("int a = 10");
+		System.out.println(root);
 	}
 }
 
@@ -164,12 +166,6 @@ class LRStack {
 	
 	public LRStack(ProductionList productions) {
 		this.productions = productions.productions;
-	}
-	
-	/**
-	 * 初始化栈
-	 */
-	public void init() {
 		symbolStack.push(new SymbolTree(new Symbol("$", true), null));
 		statusStack.push(0);
 	}
@@ -197,7 +193,7 @@ class LRStack {
 		Production p = productions.get(productionIndex);
 		SymbolTree leftSymbol = new SymbolTree(p.leftSymbol, null);
 
-		for(int i=productions.size()-1; i>=0; i--) {
+		for(int i=p.rightSymbols.size()-1; i>=0; i--) {
 			statusStack.pop();
 			SymbolTree st = symbolStack.pop();
 			test.push(st);
@@ -214,8 +210,16 @@ class LRStack {
 		return true;
 	}
 	
+	public int size() {
+		return symbolStack.size();
+	}
+	
 	public SymbolTree peekSymbolTree() {
 		return symbolStack.peek();
+	}
+	
+	public SymbolTree popSymbolTree() {
+		return symbolStack.pop();
 	}
 	
 	public Symbol popSymbol() {
@@ -242,15 +246,14 @@ class SymbolTree {
 	 * symbol 它对应的符号
 	 * token 它对应的token，若是非终结符则为null
 	 * lineNumber 对应的行号
-	 * index 用来表示唯一的一个符号
 	 * child 它的孩子符号
 	 * isVisited 用来递归遍历的时候作为是否访问过的标记
 	 */
 	
 	private Symbol symbol;
 	private Token token;
-	private int lineNumber, index;
-	private List<SymbolTree> children;
+	private int lineNumber;
+	private LinkedList<SymbolTree> children;
 	private boolean isVisited = false;
 	
 	public SymbolTree(Symbol symbol, Token token) {
@@ -269,16 +272,15 @@ class SymbolTree {
 		return lineNumber;
 	}
 	
-	public boolean addChild(SymbolTree child) {
+	public void addChild(SymbolTree child) {
 		if(children == null) {
-			children = new ArrayList<>();
+			children = new LinkedList<>();
 			this.lineNumber = child.lineNumber; //父节点符号的行号为第一个子节点的行号
 		}
-		return children.add(child);
+		children.addFirst(child);
 	}
 	
-	@Override
-	public String toString() {
+	public String getResultString() {
 		StringBuffer sb = new StringBuffer();
 		Stack<SymbolTree> stack = new Stack<>();
 		stack.push(this);
@@ -304,5 +306,10 @@ class SymbolTree {
 			}
 		}
 		return sb.toString();
+	}
+	
+	@Override
+	public String toString() {
+		return symbol.toString();
 	}
 }
