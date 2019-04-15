@@ -133,8 +133,7 @@ public class AnalysisTableFactory {
 		for(int i=0; i<table.size(); i++) {
 			if(GOTOtable.get(i) == null) { //没有后继状态
 				if(!isFindFinalStatus &&
-				   projectSetList.projectSets.get(i).projects.size() == 1 &&
-				   projectSetList.projectSets.get(i).projects.iterator().next().isNextProject(startProject)) { //为接收时赋值
+				   projectSetList.projectSets.get(i).isAcc(startProject)) { //为接收时赋值
 					isFindFinalStatus = true;
 					Item item = new Item(null, -1);
 					table.get(i).put(new Symbol("$", true), item);

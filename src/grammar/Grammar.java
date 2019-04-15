@@ -465,21 +465,21 @@ class Project {
 	}
 	
 	/**
-	 * 判断该状态是否是另一个状态的前一个状态
+	 * 判断该状态是否是另一个状态的前置状态
 	 * @param p 
 	 * @return 若该状态是状态p的前置状态则返回true；否则返回false
 	 */
 	public boolean isFrontProject(Project p) {
-		return productionIndex == p.productionIndex && pos == p.pos-1;
+		return productionIndex == p.productionIndex && pos < p.pos;
 	}
 	
 	/**
-	 * 判断该状态是否是另一个状态的下一个状态
+	 * 判断该状态是否是另一个状态的后续状态
 	 * @param p 
 	 * @return 若该状态是状态p的后续状态则返回true；否则返回false
 	 */
 	public boolean isNextProject(Project p) {
-		return productionIndex == p.productionIndex && pos == p.pos+1;
+		return productionIndex == p.productionIndex && pos > p.pos;
 	}
 	
 	@Override
@@ -537,6 +537,17 @@ class ProjectSet {
 	public ProjectSet(int index) {
 		this.projects = new HashSet<>();
 		this.index = index;
+	}
+	
+	/**
+	 * 判断该项目集是否是可被接收(acc)的项目集(在遇到$后)
+	 * @param startProject 初始项目
+	 * @return 若该项目集是可被接收的项目集则返回true；否则返回false
+	 */
+	public boolean isAcc(Project startProject) {
+		return projects.size() == 1 &&
+			   projects.iterator().next().isReduce &&
+			   projects.iterator().next().isNextProject(startProject);
 	}
 	
 	/**
