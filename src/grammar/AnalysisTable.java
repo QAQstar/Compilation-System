@@ -1,6 +1,7 @@
 package grammar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class AnalysisTable {
 	private List<Map<Symbol, Item>> table;
 	private ProductionList productions;
 	private ProjectSetList projectSets;
+	private Map<String, Token> tokenType2Symbol;
 	private Map<Token, Symbol> token2Symbol;
 	private DFA dfa;
 	
@@ -39,6 +41,9 @@ public class AnalysisTable {
 		this.table = table;
 		this.productions = productions;
 		this.projectSets = projectSets;
+		this.tokenType2Symbol = new HashMap<>();
+		for(Token t : token2Symbol.keySet())
+			tokenType2Symbol.put(t.getType(), t);
 		this.token2Symbol = token2Symbol;
 		this.dfa = dfa;
 	}
@@ -62,7 +67,7 @@ public class AnalysisTable {
 				if(token.getType().equals("COMMENT") || token.getType().equals("ERROR")) { //注释和错误Token不进行读取
 					continue;
 				}
-				curSymbol = token2Symbol.get(token); //当前符号
+				curSymbol = getSymbolFromToken(token); //当前符号
 			}
 			
 			int topStatus = stack.peekStatus(); //栈顶状态
@@ -85,6 +90,19 @@ public class AnalysisTable {
 		}
 	}
 	
+	/**
+	 * 查找词法分析中得到的Token所对应的语法分析的终结符
+	 * @param token 词法分析得到的Token
+	 * @return 语法分析中与该Token对应的终结符
+	 */
+	private Symbol getSymbolFromToken(Token token) {
+		Token matchToken = tokenType2Symbol.get(token.getType());
+		if(matchToken == null) return null;
+		if(matchToken.getValue() == null) return token2Symbol.get(matchToken);
+		if(matchToken.getValue().equals(token.getValue())) return token2Symbol.get(matchToken);
+		return null;
+	}
+
 	/**
 	 * 得到分析表中的某一项
 	 * @param statusIndex 分析表的状态序号
@@ -192,19 +210,21 @@ class LRStack {
 		Stack<SymbolTree> test = new Stack<>();
 		Production p = productions.get(productionIndex);
 		SymbolTree leftSymbol = new SymbolTree(p.leftSymbol, null);
-
-		for(int i=p.rightSymbols.size()-1; i>=0; i--) {
-			statusStack.pop();
-			SymbolTree st = symbolStack.pop();
-			test.push(st);
-			if(!st.getSymbol().equals(p.rightSymbols.get(i))) {
-				while(!test.isEmpty()) { //进行恢复
-					symbolStack.push(test.pop());
+		if(!p.isNil) { //p是非空产生式时才需要弹栈
+			for(int i=p.rightSymbols.size()-1; i>=0; i--) {
+				statusStack.pop();
+				SymbolTree st = symbolStack.pop();
+				test.push(st);
+				if(!st.getSymbol().equals(p.rightSymbols.get(i))) {
+					while(!test.isEmpty()) { //进行恢复
+						symbolStack.push(test.pop());
+					}
+					return false;
 				}
-				return false;
+				leftSymbol.addChild(st);
 			}
-			leftSymbol.addChild(st);
 		}
+		
 		symbolStack.push(leftSymbol);
 		statusStack.push(table.get(statusStack.peek()).get(leftSymbol.getSymbol()).statusIndex);
 		return true;
