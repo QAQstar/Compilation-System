@@ -126,9 +126,10 @@ public class AnalysisTable {
 	
 	public static void main(String[] args) {
 		AnalysisTable test = AnalysisTableFactory.creator("grammar.txt", "NFA.nfa");
-		SymbolTree root = test.analysis("int a;\n"
-				+ "a = 5;"
-				+ "while(a<=10) do a=10;");
+//		SymbolTree root = test.analysis("int a;\n"
+//				+ "a = 5;"
+//				+ "while(a<=10) do a=10;");
+		SymbolTree root = test.analysis("proc inc;\nint i;\ni=i+1;");
 //		AnalysisTable test = AnalysisTableFactory.creator("testGrammar.txt", "testNFA.nfa");
 //		SymbolTree root = test.analysis("b\na\nb");
 		System.out.println(root.getResultString());
