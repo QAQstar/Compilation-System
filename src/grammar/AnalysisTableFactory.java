@@ -39,6 +39,7 @@ public class AnalysisTableFactory {
 		Map<Symbol, Set<Symbol>> firstSet = null; //记录每个非终结符对应的FIRST集
 		
 		Map<Token, Symbol> token2Symbol = new HashMap<>(); //记录Token和终结符的关系
+		Set<Symbol> wrongHandling = new HashSet<>(); //恐慌模式恢复时选择的非终结符
 		
 		//文件的格式为:A->B c D
 		File file = new File(grammarPath);
@@ -47,13 +48,13 @@ public class AnalysisTableFactory {
 			String line = null;
 			while((line=br.readLine()) != null) {
 				if(line.length() == 0 || line.charAt(0) == '#') continue;	//文本中的注释和空行不读取
+				int index = 0;
 				if(line.charAt(line.length()-1) == '>') { //终结符对应Token序列
-					int index = line.indexOf(':');
+					index = line.indexOf(':');
 					String symbolStr = line.substring(0, index);
 					Token token = new Token(line.substring(index+1));
 					token2Symbol.put(token, str2Symbol.get(symbolStr));
-				} else {
-					int index = line.indexOf("->");
+				} else if((index=line.indexOf("->")) != -1){
 					String left = line.substring(0, index);
 					Symbol leftSymbol = str2Symbol.get(left);
 					if(leftSymbol == null) { //第一次读到该非终结符的产生式
@@ -79,6 +80,8 @@ public class AnalysisTableFactory {
 						rightSymbols = null;
 					Production newProduction = new Production(leftSymbol, rightSymbols);
 					productions.add(newProduction);
+				} else { //错误处理
+					wrongHandling.add(str2Symbol.get(line.substring(line.indexOf(' '))));
 				}
 			}
 		} catch(IOException e) {
@@ -184,7 +187,7 @@ public class AnalysisTableFactory {
 //			System.out.println();
 //		}
 		
-		return new AnalysisTable(table, productions, projectSetList, token2Symbol, dfa);
+		return new AnalysisTable(table, productions, projectSetList, token2Symbol, wrongHandling, dfa);
 	}
 	
 	/**

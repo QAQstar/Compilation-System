@@ -26,6 +26,7 @@ public class AnalysisTable {
 	private ProjectSetList projectSets;
 	private Map<String, Token> tokenType2Symbol;
 	private Map<Token, Symbol> token2Symbol;
+	private Set<Symbol> errorHandling;
 	private DFA dfa;
 	
 	/**
@@ -36,7 +37,7 @@ public class AnalysisTable {
 	 * @param symbol2Token 终结符对应Token的映射
 	 * @param dfa DFA实例
 	 */
-	public AnalysisTable(List<Map<Symbol, Item>> table, ProductionList productions, ProjectSetList projectSets, Map<Token, Symbol> token2Symbol, DFA dfa) {
+	public AnalysisTable(List<Map<Symbol, Item>> table, ProductionList productions, ProjectSetList projectSets, Map<Token, Symbol> token2Symbol, Set<Symbol> errorHandling, DFA dfa) {
 		this.table = table;
 		this.productions = productions;
 		this.projectSets = projectSets;
@@ -44,6 +45,7 @@ public class AnalysisTable {
 		for(Token t : token2Symbol.keySet())
 			tokenType2Symbol.put(t.getType(), t);
 		this.token2Symbol = token2Symbol;
+		this.errorHandling = errorHandling;
 		this.dfa = dfa;
 	}
 	
@@ -76,7 +78,7 @@ public class AnalysisTable {
 			
 			Item item = table.get(topStatus).get(curSymbol);
 			if(item == null) { //出现语法错误
-				
+				return stack.error(table, errorHandling);
 			} else if(item.statusIndex == -1) { //代表可以接收了，语法分析完成
 				GrammarTree start = new GrammarTree(productions.productions.get(0).leftSymbol, null);
 				while(stack.size() > 1) {
@@ -254,6 +256,20 @@ class LRStack {
 		statusStack.push(0);
 	}
 	
+	public GrammarTree error(final List<Map<Symbol, Item>> table, Set<Symbol> errorHandling) {
+		StringBuffer sb = new StringBuffer();
+		while(!statusStack.isEmpty()) {
+			GrammarTree gt = symbolStack.pop();
+			int statusIndex = statusStack.pop();
+			for(Symbol s : errorHandling) {
+				if(table.get(statusIndex).containsKey(s)) { //如果包含跳到A的跳转，那么就认为是A的式子出错
+					//TODO
+				}
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * 对栈进行移入操作
 	 * @param status 移入的状态码

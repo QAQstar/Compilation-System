@@ -81,3 +81,7 @@ call:<CALL,->
 or:<OR,->
 and:<AND,->
 not:<NOT,->
+
+# 恐慌模式的错误恢复
+ERROR D
+ERROR S
