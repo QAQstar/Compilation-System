@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
@@ -16,6 +17,7 @@ import org.fxmisc.richtext.LineNumberFactory;
 
 import grammar.AnalysisTable;
 import grammar.AnalysisTableFactory;
+import grammar.GrammarTree;
 import grammar.Symbol;
 import javafx.application.Application;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -30,6 +32,8 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
@@ -41,9 +45,9 @@ import lexical.DFAFactory;
 import lexical.Token;
 
 public class GUI extends Application{
-	private DFA dfa = null;
-//	private DFA dfa = DFAFactory.creatorUseNFA("NFA.nfa");
-	private AnalysisTable at = null;
+//	private DFA dfa = null;
+	private DFA dfa = DFAFactory.creatorUseNFA("NFA.nfa");
+	private AnalysisTable at = AnalysisTableFactory.creator("grammar.txt", dfa);
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -52,12 +56,13 @@ public class GUI extends Application{
 		MenuItem itemLoadRule = new MenuItem("导入规则");
 		MenuItem itemWriteRule = new MenuItem("导出规则");
 		MenuItem itemLoadCode = new MenuItem("导入代码");
-		MenuItem itemLexRule = new MenuItem("词法规则");
-		MenuItem itemRun = new MenuItem("运行");
-		Menu menuLex = new Menu("词法分析", null, itemLoadRule, itemWriteRule, itemLoadCode, itemLexRule, itemRun);
+		MenuItem itemlexRule = new MenuItem("词法规则");
+		MenuItem itemLexRun = new MenuItem("运行");
+		Menu menuLex = new Menu("词法分析", null, itemLoadRule, itemWriteRule, itemLoadCode, itemlexRule, itemLexRun);
 		MenuItem itemLoadGrammar = new MenuItem("导入文法");
 		MenuItem itemAnalysisTable = new MenuItem("分析表");
-		Menu menuGrammar = new Menu("语法分析", null, itemLoadGrammar, itemAnalysisTable);
+		MenuItem itemGrammarRun = new MenuItem("运行");
+		Menu menuGrammar = new Menu("语法分析", null, itemLoadGrammar, itemAnalysisTable, itemGrammarRun);
 		MenuBar menubar = new MenuBar(menuLex, menuGrammar);
 		
 		CodeArea codeArea = new CodeArea();
@@ -167,16 +172,16 @@ public class GUI extends Application{
 		});
 		
 		//按下词法规则按钮
-		itemLexRule.setOnAction(event->{
-			Stage s = LexRule();
+		itemlexRule.setOnAction(event->{
+			Stage s = lexRule();
 			s.initOwner(primaryStage);
 			s.initModality(Modality.WINDOW_MODAL);
 			s.show();
 		});
 		
 		//按下运行按钮
-		itemRun.setOnAction(event->{
-			Stage s = LexAnalysis(codeArea.getText());
+		itemLexRun.setOnAction(event->{
+			Stage s = lexAnalysis(codeArea.getText());
 			s.initOwner(primaryStage);
 			s.initModality(Modality.WINDOW_MODAL);
 			s.show();
@@ -222,7 +227,15 @@ public class GUI extends Application{
 		
 		//按下分析表按钮
 		itemAnalysisTable.setOnAction(event->{
-			Stage s = analysisTable(at);
+			Stage s = analysisTable();
+			s.initOwner(primaryStage);
+			s.initModality(Modality.WINDOW_MODAL);
+			s.show();
+		});
+		
+		//按下运行按钮
+		itemGrammarRun.setOnAction(event->{
+			Stage s = grammarAnalysis(codeArea.getText());
 			s.initOwner(primaryStage);
 			s.initModality(Modality.WINDOW_MODAL);
 			s.show();
@@ -234,7 +247,7 @@ public class GUI extends Application{
 	 * 将之前输入的转移表显示出来
 	 * @return
 	 */
-	private Stage LexRule() {
+	private Stage lexRule() {
 		Stage stage = new Stage();
 		
 		if(dfa == null) { //还未导入词法规则文件
@@ -293,7 +306,7 @@ public class GUI extends Application{
 	 * @param code 要进行词法分析的代码
 	 * @return Stage的界面，展示出分析结果
 	 */
-	private Stage LexAnalysis(String code) {
+	private Stage lexAnalysis(String code) {
 		Stage stage = new Stage();
 		
 		if(dfa == null) { //还未导入词法规则文件
@@ -354,7 +367,7 @@ public class GUI extends Application{
 	 * @param grammar 文法文件路径
 	 * @return
 	 */
-	public Stage analysisTable(AnalysisTable at) {
+	public Stage analysisTable() {
 		Stage stage = new Stage();
 		if(dfa == null || at == null) { //还未导入词法规则文件或文法文件
 			DialogPane warning = new DialogPane();
@@ -439,6 +452,78 @@ public class GUI extends Application{
 		mainPane.setCenter(tableView);
 		
 		stage.setScene(new Scene(mainPane));
+		
+		return stage;
+	}
+	
+	public Stage grammarAnalysis(String code) {
+		Stage stage = new Stage();
+		if(dfa == null || at == null) { //还未导入词法规则文件或文法文件
+			DialogPane warning = new DialogPane();
+			warning.setContentText("未导入FA转换表或文法...");
+			warning.setStyle("-fx-font-size:18;"
+						   + "-fx-font-weight:bold;");
+			Scene scene = new Scene(warning);
+			stage.setScene(scene);
+			stage.setResizable(false);
+			return stage;
+		}
+		
+		GrammarTree gt = at.analysis(code);
+		TreeView<String> treeView = new TreeView<>();
+		TreeItem<String> root = new TreeItem<>();
+		treeView.setRoot(root);
+		
+		class TreeItemAndGrammar {
+			TreeItem<String> root;
+			GrammarTree gt;
+			
+			public TreeItemAndGrammar(TreeItem<String> root, GrammarTree gt) {
+				this.root = root;
+				this.gt = gt;
+			}
+		}
+		
+		Stack<TreeItemAndGrammar> stack = new Stack<>();
+		stack.push(new TreeItemAndGrammar(root, gt));
+		
+		while(!stack.isEmpty()) {
+			GrammarTree top = stack.peek().gt;
+			TreeItem<String> ti = stack.peek().root;
+			if(top.isVisited) { //子树已经压入栈中
+				stack.pop();
+				top.isVisited = false; //重置
+			} else { //子树还没压入栈
+				if(top.children == null) { //终结符或者是空产生式
+					if(top.symbol.isFinal()) { //终结符
+						ti.setValue(top.symbol.getName()+"("+top.lineNumber+"):"+top.token.forGrammar());
+						top.isVisited = false;
+					} else { //空产生式
+						TreeItem<String> child = new TreeItem<>("nil");
+						ti.getChildren().add(child);
+						ti.setValue(top.symbol.getName()+"("+top.lineNumber+")");
+						top.isVisited = false;
+					}
+					stack.pop();
+				} else { //非空产生式
+					ti.setValue(top.symbol.getName()+"("+top.lineNumber+")");
+					top.isVisited = true;
+					for(int i=top.children.size()-1; i>=0; i--) { //展开子树
+						GrammarTree st = top.children.get(i);
+						TreeItem<String> tiTemp = new TreeItem<String>();
+						TreeItemAndGrammar temp = new TreeItemAndGrammar(tiTemp, st);
+						ti.getChildren().add(tiTemp);
+						stack.push(temp);
+					}
+				}
+			}
+		}
+		
+		BorderPane mainPane = new BorderPane();
+		mainPane.setCenter(treeView);
+		
+		stage.setScene(new Scene(mainPane));
+		stage.setTitle("语法树");
 		
 		return stage;
 	}

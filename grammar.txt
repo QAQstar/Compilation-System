@@ -5,7 +5,7 @@ P->S
 P->D
 S->S S
 D->T id ; D
-D->proc id { S } D
+D->proc id ; D
 D->S
 D->nil
 T->X C

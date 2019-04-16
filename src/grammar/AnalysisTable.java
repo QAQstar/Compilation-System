@@ -52,7 +52,7 @@ public class AnalysisTable {
 	 * @param code 需要分析的代码
 	 * @return 符号树
 	 */
-	public SymbolTree analysis(String code) {
+	public GrammarTree analysis(String code) {
 		dfa.init(code);
 		
 		LRStack stack = new LRStack(productions);
@@ -76,9 +76,9 @@ public class AnalysisTable {
 			
 			Item item = table.get(topStatus).get(curSymbol);
 			if(item.statusIndex == -1) { //代表可以接收了，语法分析完成
-				SymbolTree start = new SymbolTree(productions.productions.get(0).leftSymbol, null);
+				GrammarTree start = new GrammarTree(productions.productions.get(0).leftSymbol, null);
 				while(stack.size() > 1) {
-					start.addChild(stack.popSymbolTree());
+					start.addChild(stack.popGrammarTree());
 				}
 				return start;
 			} else if(item.type == ItemType.SHIFT) { //移入
@@ -182,10 +182,10 @@ public class AnalysisTable {
 	
 	public static void main(String[] args) {
 //		AnalysisTable test = AnalysisTableFactory.creator("grammar.txt", "NFA.nfa");
-//		SymbolTree root = test.analysis("i = 1 * 2 + 3;");
-//		SymbolTree root = test.analysis("proc inc;\nint i;\ni=i+1;");
+//		GrammarTree root = test.analysis("i = 1 * 2 + 3;");
+//		GrammarTree root = test.analysis("proc inc;\nint i;\ni=i+1;");
 		AnalysisTable test = AnalysisTableFactory.creator("testGrammar2.txt", "testNFA.nfa");
-//		SymbolTree root = test.analysis("b\na\nb");
+//		GrammarTree root = test.analysis("b\na\nb");
 //		System.out.println(root.getResultString());
 	}
 }
@@ -241,12 +241,12 @@ class LRStack {
 	 */
 
 	private List<Production> productions;
-	private Stack<SymbolTree> symbolStack = new Stack<>(); //符号栈
+	private Stack<GrammarTree> symbolStack = new Stack<>(); //符号栈
 	private Stack<Integer> statusStack = new Stack<>(); //状态栈
 	
 	public LRStack(ProductionList productions) {
 		this.productions = productions.productions;
-		symbolStack.push(new SymbolTree(new Symbol("$", true), null));
+		symbolStack.push(new GrammarTree(new Symbol("$", true), null));
 		statusStack.push(0);
 	}
 	
@@ -258,7 +258,7 @@ class LRStack {
 	 */
 	public void shift(int status, Symbol symbol, Token token) {
 		statusStack.push(status);
-		SymbolTree st = new SymbolTree(symbol, token);
+		GrammarTree st = new GrammarTree(symbol, token);
 		symbolStack.push(st);
 	}
 	
@@ -269,13 +269,13 @@ class LRStack {
 	 * @return 若成功规约则返回true；若栈顶的符号不满足产生式则返回false
 	 */
 	public boolean reduce(final List<Map<Symbol, Item>> table, int productionIndex) {
-		Stack<SymbolTree> test = new Stack<>();
+		Stack<GrammarTree> test = new Stack<>();
 		Production p = productions.get(productionIndex);
-		SymbolTree leftSymbol = new SymbolTree(p.leftSymbol, null);
+		GrammarTree leftSymbol = new GrammarTree(p.leftSymbol, null);
 		if(!p.isNil) { //p是非空产生式时才需要弹栈
 			for(int i=p.rightSymbols.size()-1; i>=0; i--) {
 				statusStack.pop();
-				SymbolTree st = symbolStack.pop();
+				GrammarTree st = symbolStack.pop();
 				test.push(st);
 				if(!st.getSymbol().equals(p.rightSymbols.get(i))) {
 					while(!test.isEmpty()) { //进行恢复
@@ -296,11 +296,11 @@ class LRStack {
 		return symbolStack.size();
 	}
 	
-	public SymbolTree peekSymbolTree() {
+	public GrammarTree peekGrammarTree() {
 		return symbolStack.peek();
 	}
 	
-	public SymbolTree popSymbolTree() {
+	public GrammarTree popGrammarTree() {
 		return symbolStack.pop();
 	}
 	
@@ -318,91 +318,5 @@ class LRStack {
 	
 	public int peekStatus() {
 		return statusStack.peek();
-	}
-}
-
-class SymbolTree {
-	/**
-	 * 作为符号栈中的符号
-	 * 每个符号有以下属性
-	 * symbol 它对应的符号
-	 * token 它对应的token，若是非终结符则为null
-	 * lineNumber 对应的行号
-	 * child 它的孩子符号
-	 * isVisited 用来递归遍历的时候作为是否访问过的标记
-	 */
-	
-	private Symbol symbol;
-	private Token token;
-	private int lineNumber;
-	private List<SymbolTree> children;
-	private boolean isVisited = false;
-	
-	public SymbolTree(Symbol symbol, Token token) {
-		this.symbol = symbol;
-		this.token = token;
-		if(token == null) lineNumber = -1;
-		else this.lineNumber = token.getLineNumber();
-		this.children = null;
-	}
-	
-	public Symbol getSymbol() {
-		return symbol;
-	}
-	
-	public int lineNumber() {
-		return lineNumber;
-	}
-	
-	public void addChild(SymbolTree child) {
-		if(children == null) {
-			children = new ArrayList<>();
-		}
-		if(child.lineNumber != -1) { //父节点符号的行号为第一个非空产生式的子节点的行号
-			this.lineNumber = child.lineNumber;
-		}
-		children.add(child);
-	}
-	
-	public String getResultString() {
-		StringBuffer sb = new StringBuffer();
-		Stack<SymbolTree> stack = new Stack<>();
-		stack.push(this);
-		StringBuffer tab = new StringBuffer();
-		
-		while(!stack.isEmpty()) {
-			SymbolTree top = stack.peek();
-			if(top.isVisited) { //子树已经压入栈中
-				stack.pop();
-				top.isVisited = false; //重置
-				tab.delete(tab.length()-2, tab.length());
-			} else { //子树还没压入栈
-				if(top.children == null) { //终结符或者是空产生式
-					if(top.symbol.isFinal()) { //终结符
-						sb.append(tab.toString()+top.symbol.getName()+"("+top.lineNumber+"):"+top.token.forGrammar()+"\n");
-						top.isVisited = false;
-					} else { //空产生式
-						sb.append(tab.toString()+top.symbol.getName()+"("+top.lineNumber+")\n");
-						sb.append(tab.toString()+"  nil\n");
-						top.isVisited = false;
-					}
-					stack.pop();
-				} else { //非空产生式
-					sb.append(tab.toString()+top.symbol.getName()+"("+top.lineNumber+")\n");
-					tab.append("  ");
-					top.isVisited = true;
-					for(SymbolTree st : top.children) { //展开子树
-						stack.push(st);
-					}
-				}
-			}
-		}
-		sb.delete(sb.length()-1, sb.length());//去掉最后的换行
-		return sb.toString();
-	}
-	
-	@Override
-	public String toString() {
-		return symbol.toString();
 	}
 }
