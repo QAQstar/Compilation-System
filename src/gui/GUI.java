@@ -18,6 +18,7 @@ import grammar.AnalysisTable;
 import grammar.AnalysisTableFactory;
 import grammar.Symbol;
 import javafx.application.Application;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,8 +41,9 @@ import lexical.DFAFactory;
 import lexical.Token;
 
 public class GUI extends Application{
-//	private DFA dfa = null;
-	private DFA dfa = DFAFactory.creatorUseNFA("NFA.nfa");
+	private DFA dfa = null;
+//	private DFA dfa = DFAFactory.creatorUseNFA("NFA.nfa");
+	private AnalysisTable at = null;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -53,8 +55,9 @@ public class GUI extends Application{
 		MenuItem itemLexRule = new MenuItem("词法规则");
 		MenuItem itemRun = new MenuItem("运行");
 		Menu menuLex = new Menu("词法分析", null, itemLoadRule, itemWriteRule, itemLoadCode, itemLexRule, itemRun);
+		MenuItem itemLoadGrammar = new MenuItem("导入文法");
 		MenuItem itemAnalysisTable = new MenuItem("分析表");
-		Menu menuGrammar = new Menu("语法分析", null, itemAnalysisTable);
+		Menu menuGrammar = new Menu("语法分析", null, itemLoadGrammar, itemAnalysisTable);
 		MenuBar menubar = new MenuBar(menuLex, menuGrammar);
 		
 		CodeArea codeArea = new CodeArea();
@@ -179,9 +182,47 @@ public class GUI extends Application{
 			s.show();
 		});
 		
+		//按下导入文法按钮
+		itemLoadGrammar.setOnAction(event->{
+			if(dfa == null) { //还未导入词法规则文件
+				DialogPane warning = new DialogPane();
+				warning.setContentText("未导入FA转换表文件...");
+				warning.setStyle("-fx-font-size:18;"
+							   + "-fx-font-weight:bold;");
+				Stage tipStage = new Stage();
+				tipStage.setScene(new Scene(warning));
+				tipStage.setResizable(false);
+				tipStage.initOwner(primaryStage);
+				tipStage.initModality(Modality.WINDOW_MODAL);
+				tipStage.show();
+				return;
+			}
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("请选择文法文件");
+
+			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("文法文件", "*.txt"));
+			File file = fileChooser.showOpenDialog(primaryStage);
+			if (file != null) {
+				at = AnalysisTableFactory.creator(file.getPath(), dfa);
+				//以下弹出提示，提示用户成功构建有穷自动机
+				DialogPane tip = new DialogPane();
+				Label tipLabel = new Label("成功解析文法！");
+				tipLabel.setStyle("-fx-font-size:18;"
+								+ "-fx-font-weight:bold;"
+								+ "-fx-text-fill:#1E90FF;");
+				tip.setContent(tipLabel);
+				Stage tipStage = new Stage();
+				tipStage.setScene(new Scene(tip));
+				tipStage.initOwner(primaryStage);
+				tipStage.initModality(Modality.WINDOW_MODAL);
+				tipStage.setResizable(false);
+				tipStage.show();
+			}
+		});
+		
 		//按下分析表按钮
 		itemAnalysisTable.setOnAction(event->{
-			Stage s = analysisTable("testGrammar.txt");
+			Stage s = analysisTable(at);
 			s.initOwner(primaryStage);
 			s.initModality(Modality.WINDOW_MODAL);
 			s.show();
@@ -313,11 +354,11 @@ public class GUI extends Application{
 	 * @param grammar 文法文件路径
 	 * @return
 	 */
-	public Stage analysisTable(String grammar) {
+	public Stage analysisTable(AnalysisTable at) {
 		Stage stage = new Stage();
-		if(dfa == null) { //还未导入词法规则文件
+		if(dfa == null || at == null) { //还未导入词法规则文件或文法文件
 			DialogPane warning = new DialogPane();
-			warning.setContentText("未导入FA转换表文件...");
+			warning.setContentText("未导入FA转换表或文法...");
 			warning.setStyle("-fx-font-size:18;"
 						   + "-fx-font-weight:bold;");
 			Scene scene = new Scene(warning);
@@ -325,8 +366,6 @@ public class GUI extends Application{
 			stage.setResizable(false);
 			return stage;
 		}
-		
-		AnalysisTable at = AnalysisTableFactory.creator(grammar, dfa);
 		
 //		List<Symbol> symbols = new ArrayList<>();
 //		symbols.addAll(at.getAllSymbols());
@@ -344,9 +383,11 @@ public class GUI extends Application{
 			
 			Map<Symbol, String> ACTION;
 			Map<Symbol, String> GOTO;
-			public TableRow(Map<Symbol, String> ACTION, Map<Symbol, String> GOTO) {
+			SimpleIntegerProperty order;
+			public TableRow(Map<Symbol, String> ACTION, Map<Symbol, String> GOTO, int order) {
 				this.ACTION = ACTION;
 				this.GOTO = GOTO;
+				this.order = new SimpleIntegerProperty(order);
 			}
 			
 			/**
@@ -355,25 +396,30 @@ public class GUI extends Application{
 			public String getItem(Symbol s) {
 				return s.isFinal() ? ACTION.get(s) : GOTO.get(s);
 			}
+			
+			public SimpleIntegerProperty getOrder() {
+				return this.order;
+			}
 		}
 		
 		ObservableList<TableRow> list = FXCollections.observableArrayList();
 		for(int i=0; i<ACTION.size(); i++) {
-			System.out.println("???");
-			list.add(new TableRow(ACTION.get(i), GOTO.get(i)));
+			list.add(new TableRow(ACTION.get(i), GOTO.get(i), i+1));
 		}
 		
 		TableView<TableRow> tableView = new TableView<>(list);
-		List<Integer> lineNumber = new ArrayList<>();
-		for(int i=0; i<ACTION.size(); i++) {
-			lineNumber.add(i+1);
-		}
+		TableColumn<TableRow, Number> tc_order = new TableColumn<>();
 		TableColumn<TableRow, Object> tc_ACTION = new TableColumn<>("ACTION表");
 		TableColumn<TableRow, Object> tc_GOTO = new TableColumn<>("GOTO表");
 		tc_ACTION.setStyle("-fx-alignment:center;");
 		tc_GOTO.setStyle("-fx-alignment:center;");
+		tableView.getColumns().add(tc_order);
 		tableView.getColumns().add(tc_ACTION);
 		tableView.getColumns().add(tc_GOTO);
+
+		tc_order.setCellValueFactory(param->{
+			return param.getValue().getOrder();
+		}); //利用反射机制
 		
 		for(Symbol s : symbols) {
 			TableColumn<TableRow, String> tc_symbol = new TableColumn<>(s.getName());
