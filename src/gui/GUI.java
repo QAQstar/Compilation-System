@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,8 @@ import lexical.DFAFactory;
 import lexical.Token;
 
 public class GUI extends Application{
-	private DFA dfa = null;
+//	private DFA dfa = null;
+	private DFA dfa = DFAFactory.creatorUseNFA("NFA.nfa");
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -179,7 +181,10 @@ public class GUI extends Application{
 		
 		//按下分析表按钮
 		itemAnalysisTable.setOnAction(event->{
-			
+			Stage s = analysisTable("testGrammar.txt");
+			s.initOwner(primaryStage);
+			s.initModality(Modality.WINDOW_MODAL);
+			s.show();
 		});
 	}
 	
@@ -323,23 +328,61 @@ public class GUI extends Application{
 		
 		AnalysisTable at = new AnalysisTableFactory().creator(grammar, dfa);
 		
-		Set<Symbol> symbols = new HashSet<>();
+//		List<Symbol> symbols = new ArrayList<>();
+//		symbols.addAll(at.getAllSymbols());
+//		symbols.sort((s1, s2)->s1.getName().compareTo(s2.getName())); //稍微进行一下排序
+		Set<Symbol> symbols = at.getAllSymbols();
 		Map<String, List<Map<Symbol, String>>> table = at.getAnalysisTable();
 		List<Map<Symbol, String>> ACTION = table.get("ACTION");
 		List<Map<Symbol, String>> GOTO = table.get("GOTO");
 		
-		class tableRow { //代表分析表中的一行
-			List<Map<Symbol, String>> ACTION;
-			List<Map<Symbol, String>> GOTO;
-			public tableRow(List<Map<Symbol, String>> ACTION, List<Map<Symbol, String>> GOTO) {
+		class TableRow { //代表分析表中的一行
+			Map<Symbol, String> ACTION;
+			Map<Symbol, String> GOTO;
+			public TableRow(Map<Symbol, String> ACTION, Map<Symbol, String> GOTO) {
 				this.ACTION = ACTION;
 				this.GOTO = GOTO;
 			}
+			
+			/**
+			 * @return 找到该行对应于符号s的项
+			 */
+			public String getItem(Symbol s) {
+				return s.isFinal() ? ACTION.get(s) : GOTO.get(s);
+			}
 		}
 		
-		ObservableList<tableRow> list = FXCollections.observableArrayList();
+		ObservableList<TableRow> list = FXCollections.observableArrayList();
+		for(int i=0; i<ACTION.size(); i++) {
+			list.add(new TableRow(ACTION.get(i), GOTO.get(i)));
+		}
 		
+		TableView<TableRow> tableView = new TableView<>();
+		TableColumn<TableRow, Object> tc_ACTION = new TableColumn<>("ACTION表");
+		TableColumn<TableRow, Object> tc_GOTO = new TableColumn<>("GOTO表");
+		tc_ACTION.setStyle("-fx-alignment:center;");
+		tc_GOTO.setStyle("-fx-alignment:center;");
+		tableView.getColumns().add(tc_ACTION);
+		tableView.getColumns().add(tc_GOTO);
 		
+		for(Symbol s : symbols) {
+			TableColumn<TableRow, String> tc_symbol = new TableColumn<>(s.getName());
+			tc_symbol.setCellValueFactory(param->{
+				SimpleStringProperty item = new SimpleStringProperty(param.getValue().getItem(s));
+				return item;
+			});
+			tc_symbol.setStyle("-fx-alignment:center;");
+			if(s.isFinal()) { //终结符
+				tc_ACTION.getColumns().add(tc_symbol);
+			} else { //非终结符
+				tc_GOTO.getColumns().add(tc_symbol);
+			}
+		}
+		
+		BorderPane mainPane = new BorderPane();
+		mainPane.setCenter(tableView);
+		
+		stage.setScene(new Scene(mainPane));
 		
 		return stage;
 	}
