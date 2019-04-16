@@ -171,12 +171,12 @@ public class AnalysisTable {
 	}
 	
 	public static void main(String[] args) {
-		AnalysisTable test = AnalysisTableFactory.creator("grammar.txt", "NFA.nfa");
-		SymbolTree root = test.analysis("i = 1 * 2 + 3;");
+//		AnalysisTable test = AnalysisTableFactory.creator("grammar.txt", "NFA.nfa");
+//		SymbolTree root = test.analysis("i = 1 * 2 + 3;");
 //		SymbolTree root = test.analysis("proc inc;\nint i;\ni=i+1;");
-//		AnalysisTable test = AnalysisTableFactory.creator("testGrammar2.txt", "testNFA.nfa");
+		AnalysisTable test = AnalysisTableFactory.creator("testGrammar2.txt", "testNFA.nfa");
 //		SymbolTree root = test.analysis("b\na\nb");
-		System.out.println(root.getResultString());
+//		System.out.println(root.getResultString());
 	}
 }
 

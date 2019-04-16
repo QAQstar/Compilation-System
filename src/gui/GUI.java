@@ -337,6 +337,8 @@ public class GUI extends Application{
 			}
 		}
 		
+		ObservableList<tableRow> list = FXCollections.observableArrayList();
+		
 		
 		
 		return stage;

@@ -1,7 +1,10 @@
-A->B C
-B->C
-C->A
+A->A A B C D E
+A->nil
+A->a
 B->nil
 B->b
-A->a
+C->nil
 C->c
+D->nil
+D->d
+E->e

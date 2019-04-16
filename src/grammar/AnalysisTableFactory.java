@@ -360,7 +360,7 @@ public class AnalysisTableFactory {
 				firstMap.get(p.leftSymbol).add(nilSymbol);
 			} else if(p.rightSymbols.get(0).isFinal()) { //右部以终结符打头
 				firstMap.get(p.leftSymbol).add(p.rightSymbols.get(0));
-			} else if(!p.leftSymbol.equals(p.rightSymbols.get(0))) { //非左递归
+			} else {
 				set.add(p);
 			}
 		}
@@ -370,24 +370,24 @@ public class AnalysisTableFactory {
 			flag = false;
 			for(Production p : set) {
 				for(int i=0; i<p.rightSymbols.size(); i++) {
+					Set<Symbol> leftSymbolFirst = firstMap.get(p.leftSymbol);
 					Symbol s = p.rightSymbols.get(i);
-					if(firstMap.get(s).size() > 0) {
-//						Set<Symbol> sFirst = firstMap.get(s);
-//						if(i == p.rightSymbols.size()-1) { //当前符号是最后一个符号
-//							flag = firstMap.get(p.leftSymbol).addAll(firstMap.get(s)); //直到FIRST集不再发生变化
-//							break;
-//						}
-//						if(!sFirst.contains(nilSymbol)) { //当前符号没有空的FIRST集且不是最后一个符号
-//							flag = firstMap.get(p.leftSymbol).addAll(firstMap.get(s)); //直到FIRST集不再发生变化
-//						} else { //当前符号有空的FIRST集且不是最后一个符号
-//							sFirst.remove(nilSymbol);
-//							flag = firstMap.get(p.leftSymbol).addAll(sFirst);
-//							sFirst.add(nilSymbol);
-//						}
-						flag = firstMap.get(p.leftSymbol).addAll(firstMap.get(s)); //直到FIRST集不再发生变化
-						if(!firstMap.get(s).contains(nilSymbol))
+					if(s.isFinal()) { //有终结符
+						flag = firstMap.get(p.leftSymbol).add(s);
+					} else if(firstMap.get(s).size() > 0) {
+						Set<Symbol> sFirst = firstMap.get(s);
+						if(i == p.rightSymbols.size()-1) { //当前符号是最后一个符号
+							flag = leftSymbolFirst.addAll(firstMap.get(s)); //直到FIRST集不再发生变化
 							break;
-					} else {
+						}
+						if(!sFirst.contains(nilSymbol)) { //当前符号没有空的FIRST集且不是最后一个符号
+							flag = leftSymbolFirst.addAll(firstMap.get(s)); //直到FIRST集不再发生变化
+						} else { //当前符号有空的FIRST集且不是最后一个符号
+							sFirst.remove(nilSymbol);
+							flag = leftSymbolFirst.addAll(sFirst);
+							sFirst.add(nilSymbol);
+						}
+					} else { //空产生式已经处理过了
 						break;
 					}
 				}
@@ -395,8 +395,8 @@ public class AnalysisTableFactory {
 		}
 		
 		//打印FIRST集
-		for(Symbol s : firstMap.keySet())
-			System.out.println("FIRST("+s+") = "+firstMap.get(s));
+//		for(Symbol s : firstMap.keySet())
+//			System.out.println("FIRST("+s+") = "+firstMap.get(s));
 		
 		return firstMap;
 	}
