@@ -75,7 +75,9 @@ public class AnalysisTable {
 			int topStatus = stack.peekStatus(); //栈顶状态
 			
 			Item item = table.get(topStatus).get(curSymbol);
-			if(item.statusIndex == -1) { //代表可以接收了，语法分析完成
+			if(item == null) { //出现语法错误
+				
+			} else if(item.statusIndex == -1) { //代表可以接收了，语法分析完成
 				GrammarTree start = new GrammarTree(productions.productions.get(0).leftSymbol, null);
 				while(stack.size() > 1) {
 					start.addChild(stack.popGrammarTree());
@@ -88,8 +90,6 @@ public class AnalysisTable {
 			} else if(item.type == ItemType.REDUCE) { //规约
 				stack.reduce(table, item.statusIndex);
 				isReduce = true;
-			} else { //错误
-				
 			}
 		}
 	}
@@ -131,6 +131,10 @@ public class AnalysisTable {
 		}
 		
 		return result;
+	}
+	
+	public String getProductions() {
+		return this.productions.toString();
 	}
 	
 	/**

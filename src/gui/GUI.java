@@ -32,6 +32,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -369,6 +370,7 @@ public class GUI extends Application{
 	 */
 	public Stage analysisTable() {
 		Stage stage = new Stage();
+		
 		if(dfa == null || at == null) { //还未导入词法规则文件或文法文件
 			DialogPane warning = new DialogPane();
 			warning.setContentText("未导入FA转换表或文法...");
@@ -429,6 +431,7 @@ public class GUI extends Application{
 		tableView.getColumns().add(tc_order);
 		tableView.getColumns().add(tc_ACTION);
 		tableView.getColumns().add(tc_GOTO);
+		tableView.getColumns().add(new TableColumn<>());
 
 		tc_order.setCellValueFactory(param->{
 			return param.getValue().getOrder();
@@ -448,8 +451,13 @@ public class GUI extends Application{
 			}
 		}
 		
+		TextArea ta = new TextArea(at.getProductions());
+		ta.setEditable(false);
+		ta.setPrefWidth(200);
+		
 		BorderPane mainPane = new BorderPane();
 		mainPane.setCenter(tableView);
+		mainPane.setLeft(ta);
 		
 		stage.setScene(new Scene(mainPane));
 		
