@@ -108,9 +108,13 @@ public class AnalysisTable {
 		for(int i=0; i<table.size(); i++) {
 			ACTION.add(new HashMap<>());
 			GOTO.add(new HashMap<>());
-			for(Symbol s : productions.getNoFinalSymbol()) {
+			for(Symbol s : productions.getAllSymbol()) {
 				Item item = table.get(i).get(s);
 				if(item != null) { //有动作
+					if(item.type == null) { //接收了
+						ACTION.get(i).put(s, item.toString());
+						continue;
+					}
 					switch(item.type) {
 					case SHIFT:
 						ACTION.get(i).put(s, item.toString());
