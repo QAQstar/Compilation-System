@@ -326,7 +326,7 @@ public class GUI extends Application{
 			return stage;
 		}
 		
-		AnalysisTable at = new AnalysisTableFactory().creator(grammar, dfa);
+		AnalysisTable at = AnalysisTableFactory.creator(grammar, dfa);
 		
 //		List<Symbol> symbols = new ArrayList<>();
 //		symbols.addAll(at.getAllSymbols());
@@ -336,7 +336,11 @@ public class GUI extends Application{
 		List<Map<Symbol, String>> ACTION = table.get("ACTION");
 		List<Map<Symbol, String>> GOTO = table.get("GOTO");
 		
-		class TableRow { //代表分析表中的一行
+		class TableRow {
+			/**
+			 * 代表了分析表中的一行
+			 */
+			
 			Map<Symbol, String> ACTION;
 			Map<Symbol, String> GOTO;
 			public TableRow(Map<Symbol, String> ACTION, Map<Symbol, String> GOTO) {

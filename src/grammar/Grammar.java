@@ -325,6 +325,7 @@ class ProductionList {
 	List<Production> productions;
 	private Set<Production> noRepeat; //用于去重的
 	private Map<Symbol, Set<Integer>> symbol2ProductionIndex; //用于查找某个符号对应的产生式编号集合
+	private Set<Symbol> symbols; //所有符号，包括终结符
 
 //	/**
 //	 * @param productionSet 产生式的集合，每个产生式的编号必须与其在List里的下标一致，并且产生式中不允许有重复
@@ -338,6 +339,11 @@ class ProductionList {
 		this.productions = new ArrayList<>();
 		this.noRepeat = new HashSet<>();
 		symbol2ProductionIndex = new HashMap<>();
+		this.symbols = new HashSet<>();
+	}
+	
+	public void addAllSymbols(Collection<Symbol> allSymbols) {
+		this.symbols.addAll(allSymbols);
 	}
 	
 	/**
@@ -366,8 +372,20 @@ class ProductionList {
 		return result;
 	}
 	
-	public Set<Symbol> getAllSymbol() {
+	/**
+	 * 得到所有非终结符
+	 * @return 所有非终结符集合
+	 */
+	public Set<Symbol> getNoFinalSymbol() {
 		return symbol2ProductionIndex.keySet();
+	}
+	
+	/**
+	 * 得到所有文法符号，包括终结符
+	 * @return 所有文法符号的集合
+	 */
+	public Set<Symbol> getAllSymbol() {
+		return symbols;
 	}
 	
 	@Override
@@ -391,6 +409,10 @@ class ProductionList {
 	@Override
 	public int hashCode() {
 		return toString().hashCode();
+	}
+
+	public void addSymbols(Symbol symbol) {
+		symbols.add(symbol);
 	}
 }
 

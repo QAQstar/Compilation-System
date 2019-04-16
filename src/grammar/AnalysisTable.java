@@ -26,7 +26,6 @@ public class AnalysisTable {
 	private ProjectSetList projectSets;
 	private Map<String, Token> tokenType2Symbol;
 	private Map<Token, Symbol> token2Symbol;
-	private Set<Symbol> symbols;
 	private DFA dfa;
 	
 	/**
@@ -45,7 +44,6 @@ public class AnalysisTable {
 		for(Token t : token2Symbol.keySet())
 			tokenType2Symbol.put(t.getType(), t);
 		this.token2Symbol = token2Symbol;
-		this.symbols = productions.getAllSymbol();
 		this.dfa = dfa;
 	}
 	
@@ -110,7 +108,7 @@ public class AnalysisTable {
 		for(int i=0; i<table.size(); i++) {
 			ACTION.add(new HashMap<>());
 			GOTO.add(new HashMap<>());
-			for(Symbol s : symbols) {
+			for(Symbol s : productions.getNoFinalSymbol()) {
 				Item item = table.get(i).get(s);
 				if(item != null) { //有动作
 					switch(item.type) {
@@ -132,11 +130,19 @@ public class AnalysisTable {
 	}
 	
 	/**
-	 * 得到所有的文法符号
+	 * 得到所有的非终结符
+	 * @return 所有非终结符集合
+	 */
+	public Set<Symbol> getNoFinalSymbols() {
+		return productions.getNoFinalSymbol();
+	}
+	
+	/**
+	 * 得到所有的文法符号，包括终结符
 	 * @return 文法符号集合
 	 */
 	public Set<Symbol> getAllSymbols() {
-		return this.symbols;
+		return productions.getAllSymbol();
 	}
 	
 	/**
