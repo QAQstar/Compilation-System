@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import lexical.DFA;
@@ -25,6 +26,7 @@ public class AnalysisTable {
 	private ProjectSetList projectSets;
 	private Map<String, Token> tokenType2Symbol;
 	private Map<Token, Symbol> token2Symbol;
+	private Set<Symbol> symbols;
 	private DFA dfa;
 	
 	/**
@@ -43,6 +45,7 @@ public class AnalysisTable {
 		for(Token t : token2Symbol.keySet())
 			tokenType2Symbol.put(t.getType(), t);
 		this.token2Symbol = token2Symbol;
+		this.symbols = productions.getAllSymbol();
 		this.dfa = dfa;
 	}
 	
@@ -94,6 +97,49 @@ public class AnalysisTable {
 	}
 	
 	/**
+	 * 得到LR分析表中
+	 * @return LR分析表, map.get("ACTION")是ACTION表, map.get("GOTO")是GOTO表; 
+	 * 表的结构是List<Map<Symbol, String>>
+	 */
+	public Map<String, List<Map<Symbol, String>>> getAnalysisTable() {
+		Map<String, List<Map<Symbol, String>>> result = new HashMap<>();
+		List<Map<Symbol, String>> ACTION = new ArrayList<>();
+		List<Map<Symbol, String>> GOTO = new ArrayList<>();
+		result.put("ACTION", ACTION);
+		result.put("GOTO", GOTO);
+		for(int i=0; i<table.size(); i++) {
+			ACTION.add(new HashMap<>());
+			GOTO.add(new HashMap<>());
+			for(Symbol s : symbols) {
+				Item item = table.get(i).get(s);
+				if(item != null) { //有动作
+					switch(item.type) {
+					case SHIFT:
+						ACTION.get(i).put(s, item.toString());
+						break;
+					case REDUCE:
+						ACTION.get(i).put(s, item.toString());
+						break;
+					case GOTO:
+						GOTO.get(i).put(s, item.toString());
+						break;
+					}
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * 得到所有的文法符号
+	 * @return 文法符号集合
+	 */
+	public Set<Symbol> getAllSymbols() {
+		return this.symbols;
+	}
+	
+	/**
 	 * 查找词法分析中得到的Token所对应的语法分析的终结符
 	 * @param token 词法分析得到的Token
 	 * @return 语法分析中与该Token对应的终结符
@@ -126,11 +172,9 @@ public class AnalysisTable {
 	
 	public static void main(String[] args) {
 		AnalysisTable test = AnalysisTableFactory.creator("grammar.txt", "NFA.nfa");
-//		SymbolTree root = test.analysis("int a;\n"
-//				+ "a = 5;"
-//				+ "while(a<=10) do a=10;");
-		SymbolTree root = test.analysis("proc inc;\nint i;\ni=i+1;");
-//		AnalysisTable test = AnalysisTableFactory.creator("testGrammar.txt", "testNFA.nfa");
+		SymbolTree root = test.analysis("i = 1 * 2 + 3;");
+//		SymbolTree root = test.analysis("proc inc;\nint i;\ni=i+1;");
+//		AnalysisTable test = AnalysisTableFactory.creator("testGrammar2.txt", "testNFA.nfa");
 //		SymbolTree root = test.analysis("b\na\nb");
 		System.out.println(root.getResultString());
 	}
@@ -163,13 +207,13 @@ class Item {
 		String str = null;
 		switch(type) {
 		case SHIFT:
-			str = "ACTION(s"+statusIndex+")";
+			str = "s"+statusIndex;
 			break;
 		case REDUCE:
-			str = "ACTION(r"+statusIndex+")";
+			str = "r"+statusIndex;
 			break;
 		case GOTO:
-			str = "GOTO("+statusIndex+")";
+			str = String.valueOf(statusIndex);
 		}
 		
 		return str;

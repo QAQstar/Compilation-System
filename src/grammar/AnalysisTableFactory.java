@@ -194,6 +194,156 @@ public class AnalysisTableFactory {
 	}
 	
 	/**
+	 * 根据文法和DFA构造LR分析表
+	 * @param grammarPath 文法文件路径
+	 * @param dfa DFA实例
+	 * @return LR分析表
+	 */
+	public AnalysisTable creator(String grammarPath, DFA dfa) {
+		List<Map<Symbol, Item>> table = new ArrayList<>(); //记录分析表，格式详情见AnalysisTable类
+		ProductionList productions = new ProductionList(); //所有的产生式集
+		ProjectSetList projectSetList = new ProjectSetList(); //所有的项目集(项目集列表)
+		
+		Map<String, Symbol> str2Symbol = new HashMap<>(); //记录String和Symbol的关系
+		Map<Symbol, Set<Symbol>> firstSet = null; //记录每个非终结符对应的FIRST集
+		
+		Map<Token, Symbol> token2Symbol = new HashMap<>(); //记录Token和终结符的关系
+		
+		//文件的格式为:A->B c D
+		File file = new File(grammarPath);
+		try(FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr)) {
+			String line = null;
+			while((line=br.readLine()) != null) {
+				if(line.length() == 0 || line.charAt(0) == '#') continue;	//文本中的注释和空行不读取
+				if(line.charAt(line.length()-1) == '>') { //终结符对应Token序列
+					int index = line.indexOf(':');
+					String symbolStr = line.substring(0, index);
+					Token token = new Token(line.substring(index+1));
+					token2Symbol.put(token, str2Symbol.get(symbolStr));
+				} else {
+					int index = line.indexOf("->");
+					String left = line.substring(0, index);
+					Symbol leftSymbol = str2Symbol.get(left);
+					if(leftSymbol == null) { //第一次读到该非终结符的产生式
+						leftSymbol = new Symbol(left, false);
+						str2Symbol.put(left, leftSymbol);
+					} else if(leftSymbol.isFinal() == true) { //被错误地设置成了终结符
+						leftSymbol.setIsFinal(false);
+					}
+					
+					String rightStr = line.substring(index+2).trim();
+					List<Symbol> rightSymbols = new ArrayList<>();
+					String right[] = rightStr.split(" ");
+						
+					for(String s : right) {
+						Symbol rightSymbol = str2Symbol.get(s);
+						if(rightSymbol == null) {
+							rightSymbol = new Symbol(s, true);
+							str2Symbol.put(s, rightSymbol);
+						}
+						rightSymbols.add(rightSymbol);
+					}
+					if(rightSymbols.get(0).getName().equals("nil")) //空产生式
+						rightSymbols = null;
+					Production newProduction = new Production(leftSymbol, rightSymbols);
+					productions.add(newProduction);
+				}
+				
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		firstSet = FirstSet(productions);
+		
+		Set<Symbol> startLookOut = new HashSet<>();
+		startLookOut.add(new Symbol("$", true));
+		Project startProject = new Project(productions.productions.get(0).leftSymbol, productions.productions.get(0).rightSymbols, startLookOut, 0, 0);
+		ProjectSet startProjectSet = new ProjectSet(0);
+		startProjectSet.add(startProject);
+		startProjectSet = CLOSURE(firstSet, productions, startProjectSet, 0);
+		projectSetList.add(startProjectSet);
+		int projectSetIndex = 1;
+		
+		Map<Integer, Map<Symbol, Integer>> GOTOtable = new HashMap<>(); //存储每个项目集之间的跳转
+		Map<String, Integer> projectSetStr2Index = new HashMap<>(); //记录每个项目集在projectSetList中的编号
+		Set<String> projectStr = new HashSet<>(); //用来去重的项目集，与projectSetList等价
+		projectStr.add(startProjectSet.toString());
+		
+		Queue<ProjectSet> queue = new LinkedList<>();
+		projectSetStr2Index.put(startProjectSet.toString(), 0);
+		queue.offer(startProjectSet);
+		table.add(new HashMap<>());
+		
+		while(!queue.isEmpty()) {
+			ProjectSet I = queue.poll(); //C中的每个项集I
+			for(Symbol X : I.canGoSymbols()) { //每个文法符号X
+				ProjectSet nextProjectSet = GOTO(firstSet, productions, I, X, projectSetIndex); //形成一个新的后继项目集
+				
+				if(!projectStr.contains(nextProjectSet.toString())) { //GOTO(I, X)非空且不在C中
+					projectSetList.add(nextProjectSet);
+					projectStr.add(nextProjectSet.toString());
+					queue.offer(nextProjectSet);
+					projectSetStr2Index.put(nextProjectSet.toString(), projectSetIndex);
+					projectSetIndex++; //项目集编号自增
+					table.add(new HashMap<>());
+				}
+				if(GOTOtable.containsKey(projectSetStr2Index.get(I.toString()))) { //跳转表中有I了
+					GOTOtable.get(projectSetStr2Index.get(I.toString())).put(X, projectSetStr2Index.get(nextProjectSet.toString()));
+				} else { //跳转表中还没I
+					Map<Symbol, Integer> mapTemp = new HashMap<>();
+					mapTemp.put(X, projectSetStr2Index.get(nextProjectSet.toString()));
+					GOTOtable.put(projectSetStr2Index.get(I.toString()), mapTemp);
+				}
+			}
+		}
+		
+		boolean isFindFinalStatus = false; //是否找到了移入$能够接收
+		for(int i=0; i<table.size(); i++) {
+			if(GOTOtable.get(i) == null) { //没有后继状态
+				if(!isFindFinalStatus &&
+				   projectSetList.projectSets.get(i).isAcc(startProject)) { //为接收时赋值
+					isFindFinalStatus = true;
+					Item item = new Item(null, -1);
+					table.get(i).put(new Symbol("$", true), item);
+				} else {
+					for(Project p : projectSetList.projectSets.get(i).projects) { //看看项目集中有没有可归约的项目集
+						if(p.isReduce) { //可归约的项目
+							for(Symbol outlook : p.outlook) { //把每一个展望符加入到表中
+								Item item = new Item(ItemType.REDUCE, p.productionIndex);
+								table.get(i).put(outlook, item);
+							}
+						}
+					}
+				}
+				
+				continue;
+			}
+			Set<Symbol> canGo = GOTOtable.get(i).keySet(); //从这个状态集能够接受啥样的符号
+			for(Project p : projectSetList.projectSets.get(i).projects) { //看看项目集中有没有可归约的项目集
+				if(p.isReduce) { //可归约的项目
+					for(Symbol outlook : p.outlook) { //把每一个展望符加入到表中
+						Item item = new Item(ItemType.REDUCE, p.productionIndex);
+						table.get(i).put(outlook, item);
+					}
+				}
+			}
+			for(Symbol s : canGo) {
+				Item item = null;
+				if(s.isFinal()) { //该符号是终结符
+					item = new Item(ItemType.SHIFT, GOTOtable.get(i).get(s));
+				} else { //该符号是非终结符
+					item = new Item(ItemType.GOTO, GOTOtable.get(i).get(s));
+				}
+				table.get(i).put(s, item);
+			}
+		}
+	
+		return new AnalysisTable(table, productions, projectSetList, token2Symbol, dfa);
+	}
+	
+	/**
 	 * 计算所有符号的FIRST集
 	 * @param productions 所有的产生式集合
 	 * @return 所有符号的FIRST集
@@ -219,8 +369,21 @@ public class AnalysisTableFactory {
 		while(flag) {
 			flag = false;
 			for(Production p : set) {
-				for(Symbol s : p.rightSymbols) {
+				for(int i=0; i<p.rightSymbols.size(); i++) {
+					Symbol s = p.rightSymbols.get(i);
 					if(firstMap.get(s).size() > 0) {
+//						Set<Symbol> sFirst = firstMap.get(s);
+//						if(i == p.rightSymbols.size()-1) { //当前符号是最后一个符号
+//							flag = firstMap.get(p.leftSymbol).addAll(firstMap.get(s)); //直到FIRST集不再发生变化
+//							break;
+//						}
+//						if(!sFirst.contains(nilSymbol)) { //当前符号没有空的FIRST集且不是最后一个符号
+//							flag = firstMap.get(p.leftSymbol).addAll(firstMap.get(s)); //直到FIRST集不再发生变化
+//						} else { //当前符号有空的FIRST集且不是最后一个符号
+//							sFirst.remove(nilSymbol);
+//							flag = firstMap.get(p.leftSymbol).addAll(sFirst);
+//							sFirst.add(nilSymbol);
+//						}
 						flag = firstMap.get(p.leftSymbol).addAll(firstMap.get(s)); //直到FIRST集不再发生变化
 						if(!firstMap.get(s).contains(nilSymbol))
 							break;

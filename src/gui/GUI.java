@@ -4,11 +4,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 
+import grammar.AnalysisTable;
+import grammar.AnalysisTableFactory;
+import grammar.Symbol;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -296,7 +303,12 @@ public class GUI extends Application{
 		return stage;
 	}
 	
-	public Stage analysisTable() {
+	/**
+	 * 用来展示分析表的界面
+	 * @param grammar 文法文件路径
+	 * @return
+	 */
+	public Stage analysisTable(String grammar) {
 		Stage stage = new Stage();
 		if(dfa == null) { //还未导入词法规则文件
 			DialogPane warning = new DialogPane();
@@ -308,6 +320,24 @@ public class GUI extends Application{
 			stage.setResizable(false);
 			return stage;
 		}
+		
+		AnalysisTable at = new AnalysisTableFactory().creator(grammar, dfa);
+		
+		Set<Symbol> symbols = new HashSet<>();
+		Map<String, List<Map<Symbol, String>>> table = at.getAnalysisTable();
+		List<Map<Symbol, String>> ACTION = table.get("ACTION");
+		List<Map<Symbol, String>> GOTO = table.get("GOTO");
+		
+		class tableRow { //代表分析表中的一行
+			List<Map<Symbol, String>> ACTION;
+			List<Map<Symbol, String>> GOTO;
+			public tableRow(List<Map<Symbol, String>> ACTION, List<Map<Symbol, String>> GOTO) {
+				this.ACTION = ACTION;
+				this.GOTO = GOTO;
+			}
+		}
+		
+		
 		
 		return stage;
 	}

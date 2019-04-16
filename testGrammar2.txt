@@ -1,4 +1,7 @@
-C->B C D
+A->B C
+B->C
+C->A
+B->nil
 B->b
-D->e
-C->a
+A->a
+C->c
