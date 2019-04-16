@@ -1,7 +1,9 @@
 package grammar;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Stack;
 
 import lexical.Token;
@@ -83,6 +85,43 @@ public class GrammarTree {
 			}
 		}
 		sb.delete(sb.length()-1, sb.length());//去掉最后的换行
+		return sb.toString();
+	}
+	
+	public String getGraphvizCode() {
+		StringBuffer sb = new StringBuffer();
+		class GrammarTreeAndIndex {
+			GrammarTree gt;
+			int index;
+			public GrammarTreeAndIndex(GrammarTree gt, int index) {
+				this.gt = gt;
+				this.index = index;
+			}
+		}
+		
+		Queue<GrammarTreeAndIndex> queue = new LinkedList<>();
+		queue.offer(new GrammarTreeAndIndex(this, 0));
+		int index = 1;
+		sb.append("0 [shape=circle,label=\" "+this.symbol.getName()+"("+this.lineNumber+")\"]\n");
+		
+		while(!queue.isEmpty()) {
+			GrammarTreeAndIndex top = queue.poll();
+			if(top.gt.children == null) { //空产生式或
+				if(top.gt.symbol.isFinal()) { //终结符
+					
+				} else { //空产生式
+					
+				}
+			}
+			for(GrammarTree child : top.gt.children) {
+				GrammarTreeAndIndex childTemp = new GrammarTreeAndIndex(child, index);
+				queue.offer(childTemp);
+				sb.append(index+" [shape=circle,label=\" "+child.symbol.getName()+"("+child.lineNumber+")\"]\n");
+				sb.append(top.index+"->"+index+"\n");
+				index++;
+			}
+		}
+		
 		return sb.toString();
 	}
 	

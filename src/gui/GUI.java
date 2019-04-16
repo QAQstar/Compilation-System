@@ -494,6 +494,7 @@ public class GUI extends Application{
 		
 		Stack<TreeItemAndGrammar> stack = new Stack<>();
 		stack.push(new TreeItemAndGrammar(root, gt));
+		StringBuffer sb = new StringBuffer();
 		
 		while(!stack.isEmpty()) {
 			GrammarTree top = stack.peek().gt;

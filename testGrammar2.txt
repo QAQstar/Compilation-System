@@ -1,10 +1,15 @@
-A->A A B C D E
-A->nil
-A->a
-B->nil
-B->b
-C->nil
-C->c
-D->nil
-D->d
-E->e
+P'->P
+P->D
+D->T id ; D
+T->X C
+X->int
+X->real
+
+#E->E + E
+#E->E * E
+E->( E )
+E->id
+E->number
+E->L
+L->id [ E ]
+L->L [ E ]

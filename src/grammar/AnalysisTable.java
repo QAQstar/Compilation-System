@@ -190,7 +190,9 @@ public class AnalysisTable {
 //		AnalysisTable test = AnalysisTableFactory.creator("grammar.txt", "NFA.nfa");
 //		GrammarTree root = test.analysis("i = 1 * 2 + 3;");
 //		GrammarTree root = test.analysis("proc inc;\nint i;\ni=i+1;");
-		AnalysisTable test = AnalysisTableFactory.creator("testGrammar2.txt", "testNFA.nfa");
+		AnalysisTable test = AnalysisTableFactory.creator("testGrammar.txt", "testNFA.nfa");
+		GrammarTree root = test.analysis("bab");
+		System.out.println(root.getGraphvizCode());
 //		GrammarTree root = test.analysis("b\na\nb");
 //		System.out.println(root.getResultString());
 	}
