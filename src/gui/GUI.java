@@ -331,6 +331,7 @@ public class GUI extends Application{
 //		List<Symbol> symbols = new ArrayList<>();
 //		symbols.addAll(at.getAllSymbols());
 //		symbols.sort((s1, s2)->s1.getName().compareTo(s2.getName())); //稍微进行一下排序
+		
 		Set<Symbol> symbols = at.getAllSymbols();
 		Map<String, List<Map<Symbol, String>>> table = at.getAnalysisTable();
 		List<Map<Symbol, String>> ACTION = table.get("ACTION");
@@ -358,10 +359,15 @@ public class GUI extends Application{
 		
 		ObservableList<TableRow> list = FXCollections.observableArrayList();
 		for(int i=0; i<ACTION.size(); i++) {
+			System.out.println("???");
 			list.add(new TableRow(ACTION.get(i), GOTO.get(i)));
 		}
 		
-		TableView<TableRow> tableView = new TableView<>();
+		TableView<TableRow> tableView = new TableView<>(list);
+		List<Integer> lineNumber = new ArrayList<>();
+		for(int i=0; i<ACTION.size(); i++) {
+			lineNumber.add(i+1);
+		}
 		TableColumn<TableRow, Object> tc_ACTION = new TableColumn<>("ACTION表");
 		TableColumn<TableRow, Object> tc_GOTO = new TableColumn<>("GOTO表");
 		tc_ACTION.setStyle("-fx-alignment:center;");
