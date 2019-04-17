@@ -247,7 +247,7 @@ public class AnalysisTableFactory {
 						Set<Symbol> sFirst = firstMap.get(s);
 						if(i == p.rightSymbols.size()-1) { //当前符号是最后一个符号
 							if(!flag) {
-								flag = firstMap.get(p.leftSymbol).add(s);
+								flag = firstMap.get(p.leftSymbol).addAll(firstMap.get(s));
 							} else {
 								leftSymbolFirst.addAll(firstMap.get(s)); //直到FIRST集不再发生变化
 							}
@@ -255,23 +255,23 @@ public class AnalysisTableFactory {
 						}
 						if(!sFirst.contains(nilSymbol)) { //当前符号没有空的FIRST集且不是最后一个符号
 							if(!flag) {
-								flag = firstMap.get(p.leftSymbol).add(s);
+								flag = firstMap.get(p.leftSymbol).addAll(firstMap.get(s));
 							} else {
 								leftSymbolFirst.addAll(firstMap.get(s)); //直到FIRST集不再发生变化
 							}
 							break;
 						} else { //当前符号有空的FIRST集且不是最后一个符号
-							if(s.getName().equals(p.leftSymbol))
+							if(s.getName().equals(p.leftSymbol.getName()))
 								continue;
 							sFirst.remove(nilSymbol);
 							if(!flag) {
-								flag = firstMap.get(p.leftSymbol).add(s);
+								flag = firstMap.get(p.leftSymbol).addAll(firstMap.get(s));
 							} else {
 								leftSymbolFirst.addAll(firstMap.get(s)); //直到FIRST集不再发生变化
 							}
 							sFirst.add(nilSymbol);
 						}
-					} else { //这个产生式已经无法求出新的first集元素了，等到下一次循环再看
+					} else { //这个产生式的第i位的FIRST集还没求出来，所以就跳过这个产生式先
 						break;
 					}
 				}
@@ -279,8 +279,8 @@ public class AnalysisTableFactory {
 		}
 		
 		//打印FIRST集
-		for(Symbol s : firstMap.keySet())
-			System.out.println("FIRST("+s+") = "+firstMap.get(s));
+//		for(Symbol s : firstMap.keySet())
+//			System.out.println("FIRST("+s+") = "+firstMap.get(s));
 		
 		return firstMap;
 	}
@@ -382,6 +382,6 @@ public class AnalysisTableFactory {
 	}
 	
 	public static void main(String[] args) {
-		creator("testGrammar2.txt", "testNFA.nfa");
+		creator("grammar.txt", "testNFA.nfa");
 	}
 }
