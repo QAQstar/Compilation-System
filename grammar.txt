@@ -7,11 +7,11 @@ S->S S
 D->T id ; D
 D->proc id ; D
 D->S
-#D->nil
+D->nil
 T->X C
 X->int
 X->real
-#C->nil
+C->nil
 C->[ number ] C
 
 E->E + E

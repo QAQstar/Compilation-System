@@ -89,7 +89,7 @@ public class GrammarTree {
 	}
 	
 	public String getGraphvizCode() {
-		StringBuffer sb = new StringBuffer();
+		StringBuffer sb = new StringBuffer("digraph GrammarTree {\n    node [shape=circle]\n");
 		class GrammarTreeAndIndex {
 			GrammarTree gt;
 			int index;
@@ -102,25 +102,36 @@ public class GrammarTree {
 		Queue<GrammarTreeAndIndex> queue = new LinkedList<>();
 		queue.offer(new GrammarTreeAndIndex(this, 0));
 		int index = 1;
-		sb.append("0 [shape=circle,label=\" "+this.symbol.getName()+"("+this.lineNumber+")\"]\n");
+		String tab = "    ";
+		sb.append(tab+"0 [label=\" "+this.symbol.getName()+"("+this.lineNumber+")\"]\n");
 		
 		while(!queue.isEmpty()) {
 			GrammarTreeAndIndex top = queue.poll();
-			if(top.gt.children == null) { //空产生式或
-				if(top.gt.symbol.isFinal()) { //终结符
-					
-				} else { //空产生式
-					
+			if(top.gt.children != null) { //非空产生式
+				for(int i=top.gt.children.size()-1; i>=0; i--) {
+					GrammarTree child = top.gt.children.get(i);
+					if(child.children == null) { //空产生式或终结符
+						if(child.symbol.isFinal()) { //终结符
+							sb.append(tab+index+" [fontcolor=blue,shape=none,label=\" "+child.symbol.getName()+"("+child.lineNumber+"):"+child.token.forGrammar()+"\"]\n");
+							sb.append(tab+top.index+"->"+index+"\n");
+						} else { //空产生式
+							sb.append(tab+index+" [label=\" "+child.symbol.getName()+"("+child.lineNumber+")\"]\n");
+							sb.append(tab+top.index+"->"+index+"\n");
+							sb.append(tab+(index+1)+" [fontcolor=blue,shape=none,label=\" nil\"]\n");
+							sb.append(tab+index+"->"+(index+1));
+							index++;
+						}
+					} else { //非空产生式
+						GrammarTreeAndIndex childTemp = new GrammarTreeAndIndex(child, index);
+						queue.offer(childTemp);
+						sb.append(tab+index+" [label=\" "+child.symbol.getName()+"("+child.lineNumber+")\"]\n");
+						sb.append(tab+top.index+"->"+index+"\n");
+					}
+					index++;
 				}
 			}
-			for(GrammarTree child : top.gt.children) {
-				GrammarTreeAndIndex childTemp = new GrammarTreeAndIndex(child, index);
-				queue.offer(childTemp);
-				sb.append(index+" [shape=circle,label=\" "+child.symbol.getName()+"("+child.lineNumber+")\"]\n");
-				sb.append(top.index+"->"+index+"\n");
-				index++;
-			}
 		}
+		sb.append("}");
 		
 		return sb.toString();
 	}
