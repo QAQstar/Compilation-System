@@ -15,13 +15,14 @@ public class GrammarTree {
 	 * symbol 它对应的符号
 	 * token 它对应的token，若是非终结符则为null
 	 * lineNumber 对应的行号
+	 * productionIndex 该符号所对应的产生式编号，若该符号是终结符，则
 	 * child 它的孩子符号
 	 * isVisited 用来递归遍历的时候作为是否访问过的标记
 	 */
 	
 	public Symbol symbol;
 	public Token token;
-	public int lineNumber;
+	public int lineNumber, productionIndex;
 	public List<GrammarTree> children;
 	public boolean isVisited = false;
 	
@@ -30,6 +31,7 @@ public class GrammarTree {
 		this.token = token;
 		if(token == null) lineNumber = -1;
 		else this.lineNumber = token.getLineNumber();
+		this.productionIndex = -1;
 		this.children = null;
 	}
 	
@@ -49,6 +51,10 @@ public class GrammarTree {
 			this.lineNumber = child.lineNumber;
 		}
 		children.add(child);
+	}
+	
+	public void setProductionIndex(int productionIndex) {
+		this.productionIndex = productionIndex;
 	}
 	
 	public String getResultString() {

@@ -14,7 +14,9 @@ X->real
 C->nil
 C->[ number ] C
 
-E->E + E
+# /[*]代表该产生式的项目的展望符不能有*
+
+E->E + E /[*]
 E->E * E
 E->- E
 E->( E )
@@ -26,7 +28,7 @@ L->L [ E ]
 
 S->id = E ;
 S->L = E ;
-S->if B then S
+S->if B then S /[else]
 S->if B then S else S
 S->while B do S
 B->B or B

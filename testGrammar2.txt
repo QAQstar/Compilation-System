@@ -1,15 +1,25 @@
 P'->P
 P->D
-D->T id ; D
+P->S
+S->S S
+
+D->D D
+D->T id ;
 T->X C
+T->record D
 X->int
 X->real
+C->nil
+C->[ num ] C
 
-#E->E + E
-#E->E * E
+S->id = E ;
+S->L = E ;
+E->E + E /[*]
+E->E * E
+E->E
 E->( E )
 E->id
-E->number
+E->digit
 E->L
 L->id [ E ]
 L->L [ E ]

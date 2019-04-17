@@ -25,6 +25,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -48,7 +49,7 @@ import lexical.Token;
 public class GUI extends Application{
 //	private DFA dfa = null;
 	private DFA dfa = DFAFactory.creatorUseNFA("NFA.nfa");
-	private AnalysisTable at = AnalysisTableFactory.creator("grammar.txt", dfa);
+	private AnalysisTable at = null;//AnalysisTableFactory.creator("grammar.txt", dfa);
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -324,16 +325,17 @@ public class GUI extends Application{
 		dfa.init(code);
 		
 		Token token = null;
-		ObservableList<Token> list = FXCollections.observableArrayList();
+		ObservableList<Token> list = FXCollections.observableArrayList(); //一行的数据类型
 		while((token=dfa.getNext()) != null) {
 			list.add(token);
 		}
 		
 		TableView<Token> tableView = new TableView<>(list);
 		
-		TableColumn<Token, String> tc_morpheme = new TableColumn<>("单词");
+		TableColumn<Token, String> tc_morpheme = new TableColumn<>("单词"); //从Token里提取出String
 		tc_morpheme.setStyle("-fx-alignment:center;");
 		tc_morpheme.setCellValueFactory(new PropertyValueFactory<>("morpheme")); //利用反射机制
+
 		
 		TableColumn<Token, String> tc_type = new TableColumn<>("种别码");
 		tc_type.setStyle("-fx-alignment:center;");
@@ -528,8 +530,11 @@ public class GUI extends Application{
 			}
 		}
 		
+		Button bTree = new Button("生成语法分析树");
+		
 		BorderPane mainPane = new BorderPane();
 		mainPane.setCenter(treeView);
+		mainPane.setBottom(bTree);
 		
 		stage.setScene(new Scene(mainPane));
 		stage.setTitle("语法树");

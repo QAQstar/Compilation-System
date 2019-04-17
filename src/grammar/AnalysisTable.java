@@ -85,14 +85,14 @@ public class AnalysisTable {
 					start.addChild(stack.popGrammarTree());
 				}
 				return start;
+			} else if(item.type == ItemType.REDUCE) { //规约
+				stack.reduce(table, item.statusIndex);
+				isReduce = true;
 			} else if(item.type == ItemType.SHIFT) { //移入
 				stack.shift(item.statusIndex, curSymbol, token);
 				token = dfa.getNext();
 				isReduce = false;
-			} else if(item.type == ItemType.REDUCE) { //规约
-				stack.reduce(table, item.statusIndex);
-				isReduce = true;
-			}
+			} 
 		}
 	}
 	
@@ -188,8 +188,8 @@ public class AnalysisTable {
 	
 	public static void main(String[] args) {
 		AnalysisTable test = AnalysisTableFactory.creator("grammar.txt", "NFA.nfa");
-//		GrammarTree root = test.analysis("i = 1 * 2 + 3;");
-		GrammarTree root = test.analysis("proc inc;\nint i;\ni=i+1;");
+		GrammarTree root = test.analysis("i = 1 + 2 * 3;");
+//		GrammarTree root = test.analysis("proc inc;\nint i;\ni=i+1;");
 //		AnalysisTable test = AnalysisTableFactory.creator("testGrammar.txt", "testNFA.nfa");
 //		GrammarTree root = test.analysis("bab");
 		System.out.println(root.getGraphvizCode());
@@ -310,6 +310,7 @@ class LRStack {
 		}
 		
 		symbolStack.push(leftSymbol);
+		leftSymbol.setProductionIndex(productionIndex);
 		statusStack.push(table.get(statusStack.peek()).get(leftSymbol.getSymbol()).statusIndex);
 		return true;
 	}
