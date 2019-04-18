@@ -1,9 +1,12 @@
 package gui;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +34,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -38,7 +42,9 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -49,7 +55,7 @@ import lexical.Token;
 public class GUI extends Application{
 //	private DFA dfa = null;
 	private DFA dfa = DFAFactory.creatorUseNFA("NFA.nfa");
-	private AnalysisTable at = null;//AnalysisTableFactory.creator("grammar.txt", dfa);
+	private AnalysisTable at = AnalysisTableFactory.creator("grammar2.txt", dfa);
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -496,7 +502,6 @@ public class GUI extends Application{
 		
 		Stack<TreeItemAndGrammar> stack = new Stack<>();
 		stack.push(new TreeItemAndGrammar(root, gt));
-		StringBuffer sb = new StringBuffer();
 		
 		while(!stack.isEmpty()) {
 			GrammarTree top = stack.peek().gt;
@@ -531,10 +536,49 @@ public class GUI extends Application{
 		}
 		
 		Button bTree = new Button("生成语法分析树");
+		HBox box = new HBox();
+		box.getChildren().add(bTree);
+		box.setStyle("-fx-alignment:center");
 		
 		BorderPane mainPane = new BorderPane();
 		mainPane.setCenter(treeView);
-		mainPane.setBottom(bTree);
+		mainPane.setBottom(box);
+		
+		bTree.setOnAction(event->{
+			String graphvizCode = gt.getGraphvizCode();
+			File dot = new File("src/GrammarTree.dot");
+			File graph = new File("src/GrammarTree.png");
+			Image image = null;
+			try(FileWriter fw = new FileWriter(dot);
+				BufferedWriter bw = new BufferedWriter(fw)) {
+				bw.write(graphvizCode);
+				bw.flush();
+				
+				String cmd = "cmd /c dot \""+dot.getAbsolutePath()+"\" -T png -o \""+graph.getAbsolutePath()+"\"";
+				Runtime.getRuntime().exec(cmd, null, dot.getParentFile().getAbsoluteFile());
+				
+				if(!graph.exists()) {
+					Thread.sleep(500);
+				}
+				image = new Image(graph.toURI().toURL().toExternalForm());
+			} catch(IOException e1) {
+				e1.printStackTrace();
+			} catch(InterruptedException e2) {
+				e2.printStackTrace();
+			}
+			
+			Stage s = new Stage();
+			ScrollPane sp = new ScrollPane();
+			s.initModality(Modality.WINDOW_MODAL);
+			s.initOwner(stage);
+			s.setScene(new Scene(sp));
+			sp.setContent(new ImageView(image));
+			s.show();
+			s.setOnCloseRequest(event2->{
+				dot.delete();
+				graph.delete();
+			});
+		});
 		
 		stage.setScene(new Scene(mainPane));
 		stage.setTitle("语法树");

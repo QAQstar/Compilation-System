@@ -85,14 +85,15 @@ public class AnalysisTable {
 					start.addChild(stack.popGrammarTree());
 				}
 				return start;
-			} else if(item.type == ItemType.REDUCE) { //规约
-				stack.reduce(table, item.statusIndex);
-				isReduce = true;
 			} else if(item.type == ItemType.SHIFT) { //移入
 				stack.shift(item.statusIndex, curSymbol, token);
 				token = dfa.getNext();
 				isReduce = false;
-			} 
+			} else if(item.type == ItemType.REDUCE) { //规约
+				stack.reduce(table, item.statusIndex);
+				isReduce = true;
+				System.out.println(productions.productions.get(item.statusIndex));
+			}
 		}
 	}
 	
@@ -187,14 +188,14 @@ public class AnalysisTable {
 	}
 	
 	public static void main(String[] args) {
-		AnalysisTable test = AnalysisTableFactory.creator("grammar.txt", "NFA.nfa");
-		GrammarTree root = test.analysis("i = 1 + 2 * 3;");
+		AnalysisTable test = AnalysisTableFactory.creator("grammar2.txt", "NFA.nfa");
+		GrammarTree root = test.analysis("i = 2;\ni = 4;");
 //		GrammarTree root = test.analysis("proc inc;\nint i;\ni=i+1;");
 //		AnalysisTable test = AnalysisTableFactory.creator("testGrammar.txt", "testNFA.nfa");
 //		GrammarTree root = test.analysis("bab");
-		System.out.println(root.getGraphvizCode());
+//		System.out.println(root.getGraphvizCode());
 //		GrammarTree root = test.analysis("b\na\nb");
-//		System.out.println(root.getResultString());
+		System.out.println(root.getResultString());
 	}
 }
 

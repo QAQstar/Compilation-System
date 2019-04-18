@@ -122,6 +122,12 @@ whi l whil
 whil e WHILE
 WHILE;<WHILE,->
 
+# 关键字end
+start e e
+e n en
+en d ED
+ED;<ED,->
+
 # 关键字proc(过程声明)
 start p p
 p r pr
