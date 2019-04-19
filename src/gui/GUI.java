@@ -558,7 +558,7 @@ public class GUI extends Application{
 				Runtime.getRuntime().exec(cmd, null, dot.getParentFile().getAbsoluteFile());
 				
 				if(!graph.exists()) {
-					Thread.sleep(500);
+					Thread.sleep(2500);
 				}
 				image = new Image(graph.toURI().toURL().toExternalForm());
 			} catch(IOException e1) {
