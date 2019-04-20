@@ -51,9 +51,11 @@ S->L = E ;
 # 设and的优先级高于or
 # B表示布尔表达式
 
-S->if B then { P }
-S->if B then { P } else { P }
-S->while B do { P }
+S'->S S'
+S'->nil /[if while id call]
+S->if B then { S' }
+S->if B then { S' } else { S' }
+S->while B do { S' }
 B->B or B /[not and]
 B->B and B /[not]
 B->not B

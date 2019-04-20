@@ -1,15 +1,18 @@
-record test_Record{
-	int a = 0;
-	int b = 044; /* OCT */
-	int c = 0x8F; /* HEX */
-	int wro@ng; /* test wrong input */
-	char d = 't';
-	string s = "String";
-	int array[10];
-	float e = 3.1415926;
-	float f = 3e8;
-	bool flag = true;
+int [10] list;
+proc bubbleSort(int [10] list;) {
+    int i;
+    int j;
+    i = 0;
+    int temp;
+    while (i < 10) do {
+        j = 8;
+        while (j >= i) do {
+            if (list[j+1] > list[j]) then {
+                temp = list[j+1];
+                list[j+1] = list[j];
+                list[j] = temp;
+            }
+        }
+    }
 }
-while(a <= 10) {
-    a++;
-}
+call bubbleSort(list,);

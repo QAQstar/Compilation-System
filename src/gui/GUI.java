@@ -567,12 +567,14 @@ public class GUI extends Application{
 				bw.write(graphvizCode);
 				bw.flush();
 				
+				Process p = null;
 				String cmd = "cmd /c dot \""+dot.getAbsolutePath()+"\" -T png -o \""+graph.getAbsolutePath()+"\"";
-				Runtime.getRuntime().exec(cmd, null, dot.getParentFile().getAbsoluteFile());
+				p = Runtime.getRuntime().exec(cmd, null, dot.getParentFile().getAbsoluteFile());
+				p.waitFor();
 				
-				do {
+				while(!graph.exists()) {
 					Thread.sleep(1000);
-				} while(!graph.exists());
+				}
 				image = new Image(graph.toURI().toURL().toExternalForm());
 			} catch(IOException e1) {
 				e1.printStackTrace();
