@@ -284,6 +284,7 @@ class Project {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		if(isReduce) sb.append(" ");
 		sb.append(leftSymbol.toString()+"->");
 		if(production == null) { //空产生式
 			sb.append("·");

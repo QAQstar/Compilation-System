@@ -43,6 +43,7 @@ import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
@@ -55,7 +56,7 @@ import lexical.Token;
 public class GUI extends Application{
 //	private DFA dfa = null;
 	private DFA dfa = DFAFactory.creatorUseNFA("NFA.nfa");
-	private AnalysisTable at = AnalysisTableFactory.creator("grammar2.txt", dfa);
+	private AnalysisTable at = AnalysisTableFactory.creator("grammar.txt", dfa);
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -486,6 +487,18 @@ public class GUI extends Application{
 		}
 		
 		GrammarTree gt = at.analysis(code);
+		if(gt == null) {
+			String errorInfo = at.getErrorInfo();
+			TextArea ta_error = new TextArea(errorInfo);
+			ta_error.setEditable(false);
+			ta_error.setWrapText(true);
+			ta_error.setStyle("-fx-font-size:14;"
+							+ "-fx-text-fill:#ff0000;");
+			stage.setScene(new Scene(ta_error, 300, 100));
+			stage.setTitle("语法错误");
+			return stage;
+		}
+		
 		TreeView<String> treeView = new TreeView<>();
 		TreeItem<String> root = new TreeItem<>();
 		treeView.setRoot(root);
@@ -557,9 +570,9 @@ public class GUI extends Application{
 				String cmd = "cmd /c dot \""+dot.getAbsolutePath()+"\" -T png -o \""+graph.getAbsolutePath()+"\"";
 				Runtime.getRuntime().exec(cmd, null, dot.getParentFile().getAbsoluteFile());
 				
-				if(!graph.exists()) {
-					Thread.sleep(2500);
-				}
+				do {
+					Thread.sleep(1000);
+				} while(!graph.exists());
 				image = new Image(graph.toURI().toURL().toExternalForm());
 			} catch(IOException e1) {
 				e1.printStackTrace();
@@ -572,7 +585,13 @@ public class GUI extends Application{
 			s.initModality(Modality.WINDOW_MODAL);
 			s.initOwner(stage);
 			s.setScene(new Scene(sp));
-			sp.setContent(new ImageView(image));
+			ImageView imageView = new ImageView(image);
+			imageView.setPreserveRatio(true);
+			if(image.getHeight() > 1080) {
+//				imageView.setFitHeight(1080);
+				s.setMaximized(true);
+			}
+			sp.setContent(imageView);
 			s.show();
 			s.setOnCloseRequest(event2->{
 				dot.delete();

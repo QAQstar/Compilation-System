@@ -28,6 +28,7 @@ public class AnalysisTable {
 	private Map<Token, Symbol> token2Symbol;
 	private Set<Symbol> errorHandling;
 	private DFA dfa;
+	private StringBuilder errorInfo = new StringBuilder();
 	
 	/**
 	 * 构造一个新的LR分析表
@@ -55,6 +56,7 @@ public class AnalysisTable {
 	 * @return 符号树
 	 */
 	public GrammarTree analysis(String code) {
+		errorInfo.delete(0, errorInfo.length());
 		dfa.init(code);
 		
 		LRStack stack = new LRStack(productions);
@@ -78,7 +80,8 @@ public class AnalysisTable {
 			
 			Item item = table.get(topStatus).get(curSymbol);
 			if(item == null) { //出现语法错误
-				return stack.error(table, errorHandling);
+				errorInfo.append(stack.error(table, errorHandling)+"\n");
+				return null;
 			} else if(item.statusIndex == -1) { //代表可以接收了，语法分析完成
 				GrammarTree start = new GrammarTree(productions.productions.get(0).leftSymbol, null);
 				while(stack.size() > 1) {
@@ -92,7 +95,7 @@ public class AnalysisTable {
 			} else if(item.type == ItemType.REDUCE) { //规约
 				stack.reduce(table, item.statusIndex);
 				isReduce = true;
-				System.out.println(productions.productions.get(item.statusIndex));
+//				System.out.println(productions.productions.get(item.statusIndex));
 			}
 		}
 	}
@@ -138,6 +141,10 @@ public class AnalysisTable {
 	
 	public String getProductions() {
 		return this.productions.toString();
+	}
+	
+	public String getErrorInfo() {
+		return this.errorInfo.toString();
 	}
 	
 	/**
@@ -188,8 +195,8 @@ public class AnalysisTable {
 	}
 	
 	public static void main(String[] args) {
-		AnalysisTable test = AnalysisTableFactory.creator("grammar2.txt", "NFA.nfa");
-		GrammarTree root = test.analysis("i = 2;\ni = 4;");
+		AnalysisTable test = AnalysisTableFactory.creator("grammar.txt", "NFA.nfa");
+		GrammarTree root = test.analysis("int [1][2] a;\na = 3;");
 //		GrammarTree root = test.analysis("proc inc;\nint i;\ni=i+1;");
 //		AnalysisTable test = AnalysisTableFactory.creator("testGrammar.txt", "testNFA.nfa");
 //		GrammarTree root = test.analysis("bab");
@@ -259,18 +266,33 @@ class LRStack {
 		statusStack.push(0);
 	}
 	
-	public GrammarTree error(final List<Map<Symbol, Item>> table, Set<Symbol> errorHandling) {
+	public String error(final List<Map<Symbol, Item>> table, Set<Symbol> errorHandling) {
 		StringBuffer sb = new StringBuffer();
+		int lineNumber = -1;
 		while(!statusStack.isEmpty()) {
 			GrammarTree gt = symbolStack.pop();
 			int statusIndex = statusStack.pop();
+			if(lineNumber == -1 && gt.token != null) {
+				lineNumber = gt.token.getLineNumber();
+			}
 			for(Symbol s : errorHandling) {
 				if(table.get(statusIndex).containsKey(s)) { //如果包含跳到A的跳转，那么就认为是A的式子出错
-					//TODO
+					if(s.getName().equals("D")) {
+						sb.append("Error at Line ["+(lineNumber==-1?1:lineNumber)+"]: 声明语句出错！");
+						statusStack.push(table.get(statusIndex).get(s).statusIndex);
+						symbolStack.push(new GrammarTree(s, null));
+						return sb.toString();
+					} else if (s.getName().equals("S")) {
+						sb.append("Error at Line ["+(lineNumber==-1?1:lineNumber)+"]: 可执行语句出错！");
+						statusStack.push(table.get(statusIndex).get(s).statusIndex);
+						symbolStack.push(new GrammarTree(s, null));
+						return sb.toString();
+					} 
+					
 				}
 			}
 		}
-		return null;
+		return sb.toString();
 	}
 
 	/**

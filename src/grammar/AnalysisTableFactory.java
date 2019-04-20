@@ -101,7 +101,7 @@ public class AnalysisTableFactory {
 					}
 					productions.add(newProduction);
 				} else { //错误处理
-					wrongHandling.add(str2Symbol.get(line.substring(line.indexOf(' '))));
+					wrongHandling.add(str2Symbol.get(line.substring(line.indexOf(' ')+1)));
 				}
 			}
 		} catch(IOException e) {
@@ -109,6 +109,7 @@ public class AnalysisTableFactory {
 		}
 		productions.addAllSymbols(str2Symbol.values());
 		productions.addSymbols(new Symbol("$", true));
+		
 //		System.out.println(str2Symbol);
 		firstSet = FirstSet(productions);
 		
@@ -117,7 +118,7 @@ public class AnalysisTableFactory {
 		Project startProject = new Project(productions.productions.get(0).leftSymbol, productions.productions.get(0).rightSymbols, startLookOut, 0, 0);
 		ProjectSet startProjectSet = new ProjectSet(0);
 		startProjectSet.add(startProject);
-		startProjectSet = CLOSURE(firstSet, productions, startProjectSet, exceptOutlook, 0);
+		startProjectSet = CLOSURE(firstSet, productions, startProjectSet, 0);
 		projectSetList.add(startProjectSet);
 		int projectSetIndex = 1;
 		
@@ -154,6 +155,8 @@ public class AnalysisTableFactory {
 			}
 		}
 		
+		StringBuilder conflict = new StringBuilder();
+		
 		boolean isFindFinalStatus = false; //是否找到了移入$能够接收
 		for(int i=0; i<table.size(); i++) {
 			if(GOTOtable.get(i) == null) { //没有后继状态
@@ -166,27 +169,30 @@ public class AnalysisTableFactory {
 					for(Project p : projectSetList.projectSets.get(i).projects) { //看看项目集中有没有可归约的项目集
 						if(p.isReduce) { //可归约的项目
 							for(Symbol outlook : p.outlook) { //把每一个展望符加入到表中
+								if(table.get(i).get(outlook) != null) conflict.append("I"+i+"  ");
 								Item item = new Item(ItemType.REDUCE, p.productionIndex);
 								table.get(i).put(outlook, item);
 							}
 						}
 					}
 				}
-				
 				continue;
 			}
 			Set<Symbol> canGo = GOTOtable.get(i).keySet(); //从这个状态集能够接受啥样的符号
 			for(Project p : projectSetList.projectSets.get(i).projects) { //看看项目集中有没有可归约的项目集
 				if(p.isReduce) { //可归约的项目
 					for(Symbol outlook : p.outlook) { //把每一个展望符加入到表中
+						if(table.get(i).get(outlook) != null) conflict.append("I"+i+"  ");
 						Item item = new Item(ItemType.REDUCE, p.productionIndex);
 						table.get(i).put(outlook, item);
 					}
 				}
 			}
 			for(Symbol s : canGo) {
-				if(table.get(i).get(s) != null) //已经有规约动作了，规约的优先级比移入高
+				if(table.get(i).get(s) != null) { //已经有规约动作了，规约的优先级比移入高
+					conflict.append("I"+i+":  ");
 					continue;
+				}
 				Item item = null;
 				if(s.isFinal()) { //该符号是终结符
 					item = new Item(ItemType.SHIFT, GOTOtable.get(i).get(s));
@@ -197,10 +203,12 @@ public class AnalysisTableFactory {
 			}
 		}
 		
+//		System.out.println("冲突："+conflict);
+		
 //		System.out.println("\n产生式：\n" + productions);
 //		
 //		System.out.println("\n项目集\n"+projectSetList);
-//		
+		
 //		System.out.println("\n跳转表：");
 //		for(int i=0; i<table.size(); i++) {
 //			System.out.println("  I"+i+":");
@@ -336,11 +344,10 @@ public class AnalysisTableFactory {
 	 * @param firstSet 所有非终结符的FIRST集
 	 * @param productions 产生式集合
 	 * @param I 需要求闭包的项目集
-	 * @param exceptOutlook 不被允许的展望符与产生式编号
 	 * @param index 该项目集的编号
 	 * @return 经过合并后的项目集I的闭包
 	 */
-	private static ProjectSet CLOSURE(Map<Symbol, Set<Symbol>> firstSet, ProductionList productions, ProjectSet I, Map<Integer, Set<Symbol>> exceptOutlook, int index) {
+	private static ProjectSet CLOSURE(Map<Symbol, Set<Symbol>> firstSet, ProductionList productions, ProjectSet I, int index) {
 		ProjectSet result = new ProjectSet(index);
 		Queue<Project> queue = new LinkedList<>();
 		
@@ -367,9 +374,7 @@ public class AnalysisTableFactory {
 			Symbol B = A.getPosSymbol();
 			if(!B.isFinal()) { //非终结符
 				for(Production Bproduction : productions.symbol2Production(B)) { //G'的每个产生式B->γ
-					Set<Symbol> exceptOutlookSet = exceptOutlook.get(Bproduction.index);
 					for(Symbol b : FIRST) { //FIRST(βa)中的每个符号b
-						if(exceptOutlookSet != null && exceptOutlookSet.contains(b)) continue; //不被允许的展望符
 						Set<Symbol> outlook = new HashSet<>();
 						outlook.add(b);
 						Project newProject = new Project(B, Bproduction.rightSymbols, outlook, 0, Bproduction.index);
@@ -398,17 +403,25 @@ public class AnalysisTableFactory {
 	public static ProjectSet GOTO(Map<Symbol, Set<Symbol>> firstSet, ProductionList productions, ProjectSet I, Symbol X, Map<Integer, Set<Symbol>> exceptOutlook, int index) {
 		ProjectSet result = new ProjectSet(index);
 		for(Project p : I.projects) {
-			if(p.isReduce || !p.getPosSymbol().equals(X)) continue; //规约项目没有后继项目集或·后的符号不是X
+			if(p.isReduce) { //规约项目，没有后续项目集，且去除不允许的展望符
+				if(exceptOutlook.get(p.productionIndex) != null) {
+					p.outlook.removeAll(exceptOutlook.get(p.productionIndex));
+				}
+				continue;
+			} 
+			if(!p.getPosSymbol().equals(X)) { //·后的符号不是X
+				continue;
+			}
 			result.add(new Project(p.leftSymbol, p.production, p.outlook, p.pos+1, p.productionIndex));
 		}
 		
-		result = CLOSURE(firstSet, productions, result, exceptOutlook, index);
+		result = CLOSURE(firstSet, productions, result, index);
 //		result.merge();
 		
 		return result;
 	}
 	
 	public static void main(String[] args) {
-		creator("testGrammar2.txt", "testNFA.nfa");
+		creator("grammar.txt", "NFA.nfa");
 	}
 }

@@ -7,24 +7,27 @@
 
 P'->P
 P->D P
-P->P S
-S->S S
-D->D D
+P->S P
+P->nil
 
 #####################
 
 # 声明语句
 
 D->Dv
-D->proc id { D S }
-Dv->Dv Dv
+Dv'->Dv Dv'
+Dv'->nil /[int real]
+D->proc id ( Dv' ) { P }
+D->proc id ( ) { P }
+D->record id { Dv' }
 Dv->T id ;
-D->record id Dv end
-T->X C
+
+T->X [ number ] C
+T->X /[[]
 X->int
 X->real
-C->nil
 C->[ number ] C
+C->nil /[[]
 
 #####################
 
@@ -48,10 +51,10 @@ S->L = E ;
 # 设and的优先级高于or
 # B表示布尔表达式
 
-S->if B then S end
-S->if B then S else S end
-S->while B do S end
-B->B or B /[not]
+S->if B then { P }
+S->if B then { P } else { P }
+S->while B do { P }
+B->B or B /[not and]
 B->B and B /[not]
 B->not B
 B->( B )
@@ -68,8 +71,9 @@ B->false
 
 # 函数调用语句
 S->call id ( Elist ) ;
-Elist->Elist , E
-Elist->E
+Elist->E , Elist
+Elist->E /[,]
+Elist->nil
 
 #####################
 
