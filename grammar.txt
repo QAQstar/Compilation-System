@@ -22,12 +22,13 @@ D->proc id ( ) { P }
 D->record id { Dv' }
 Dv->T id ;
 
-T->X [ number ] C
+T->X C'
 T->X /[[]
 X->int
 X->real
-C->[ number ] C
-C->nil /[[]
+C'->C C'
+C'->nil /[[]
+C->[ number ]
 
 #####################
 

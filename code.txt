@@ -1,3 +1,11 @@
+/* Test record */
+record testRecord {
+    int a;
+    real b;
+    int [7][1][8] c;
+}
+
+/* Bubble Sort */
 int [10] list;
 proc bubbleSort(int [10] list;) {
     int i;
