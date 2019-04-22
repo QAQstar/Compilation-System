@@ -3,8 +3,8 @@ package grammar;
 public class Symbol {
 	/**
 	 * 文法符号类
-	 * isFinal指示了该状态是否是终结符
 	 * name指示了该状态的名字
+	 * isFinal指示了该符号是否是终结符
 	 */
 	
 	private boolean isFinal;

@@ -1,7 +1,14 @@
-# 格式为A->B C D
-# D是声明语句
+# 格式为A->B C D /[...](可选)
+# 产生式后的/[a b]代表该产生式的规约项目展望符不能有a和b(a和b用空格分开)
+# X:<type,value>表示非终结符X对应的Token
+# WRONG X表示在恐慌模式的错误处理时选取的非终结符
+
+# D是声明语句，Dv是声明语句中的基本类型的声明(包括数组)
+# T是基本类型(包括数组)
+# B是布尔表达式
+# S'是可执行语句序列
 # S是可执行语句
-# /[a]代表该产生式的项目的展望符不能有a
+# Elist是函数调用时的参数
 
 # 初始
 
@@ -49,15 +56,13 @@ S->L = E ;
 #####################
 
 # 控制语句
-# 设and的优先级高于or
-# B表示布尔表达式
 
 S'->S S'
 S'->nil /[if while id call]
 S->if B then { S' }
 S->if B then { S' } else { S' }
 S->while B do { S' }
-B->B or B /[not and]
+B->B or B /[not]
 B->B and B /[not]
 B->not B
 B->( B )
@@ -73,6 +78,7 @@ B->false
 #####################
 
 # 函数调用语句
+
 S->call id ( Elist ) ;
 Elist->E , Elist
 Elist->E /[,]

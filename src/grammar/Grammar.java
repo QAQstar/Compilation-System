@@ -310,6 +310,8 @@ class Project {
 class ProjectSet {
 	/**
 	 * 该类维护项目集
+	 * projects 表示所有项目的集合
+	 * index 表示该项目集的编号
 	 */
 	
 	Set<Project> projects;
