@@ -32,7 +32,7 @@ Dv->T id ;
 T->X C'
 T->X /[[]
 X->int
-X->real
+X->float
 C'->C C'
 C'->nil /[[]
 C->[ number ]
@@ -89,7 +89,7 @@ Elist->nil
 # 终结符对应的Token
 id:<ID,->
 int:<INT,->
-real:<REAL,->
+float:<FLOAT,->
 record:<RECORD,->
 number:<INT_NUMBER,->
 ;:<END,->

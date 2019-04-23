@@ -9,6 +9,7 @@ import java.util.Stack;
 
 import lexical.DFA;
 import lexical.Token;
+import semantic.Semantic;
 
 
 public class AnalysisTable {
@@ -58,6 +59,7 @@ public class AnalysisTable {
 	public GrammarTree analysis(String code) {
 		errorInfo.delete(0, errorInfo.length());
 		dfa.init(code);
+		Semantic.init();
 		
 		LRStack stack = new LRStack(productions);
 		
@@ -95,7 +97,8 @@ public class AnalysisTable {
 			} else if(item.type == ItemType.REDUCE) { //规约
 				stack.reduce(table, item.statusIndex);
 				isReduce = true;
-//				System.out.println(productions.productions.get(item.statusIndex));
+				System.out.println(productions.productions.get(item.statusIndex));
+				Semantic.setProperty(stack.peekGrammarTree());
 			}
 		}
 	}
@@ -196,7 +199,7 @@ public class AnalysisTable {
 	
 	public static void main(String[] args) {
 		AnalysisTable test = AnalysisTableFactory.creator("grammar.txt", "NFA.nfa");
-		GrammarTree root = test.analysis("int [1][2] a;\na = 3;");
+		GrammarTree root = test.analysis("int [1][2] a;");
 //		GrammarTree root = test.analysis("proc inc;\nint i;\ni=i+1;");
 //		AnalysisTable test = AnalysisTableFactory.creator("testGrammar.txt", "testNFA.nfa");
 //		GrammarTree root = test.analysis("bab");

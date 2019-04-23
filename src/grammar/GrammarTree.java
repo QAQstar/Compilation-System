@@ -1,8 +1,10 @@
 package grammar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -16,7 +18,8 @@ public class GrammarTree {
 	 * token 它对应的token，若是非终结符则为null
 	 * lineNumber 对应的行号
 	 * productionIndex 该符号所对应的产生式编号，若该符号是终结符，则为-1
-	 * child 它的孩子节点
+	 * children 它的孩子节点
+	 * property 它的属性，包括继承属性和综合属性
 	 * isVisited 用来递归遍历的时候作为是否访问过的标记
 	 */
 	
@@ -24,13 +27,18 @@ public class GrammarTree {
 	public Token token;
 	public int lineNumber, productionIndex;
 	public List<GrammarTree> children;
+	public Map<String, Object> property;
 	public boolean isVisited = false;
 	
 	public GrammarTree(Symbol symbol, Token token) {
 		this.symbol = symbol;
 		this.token = token;
-		if(token == null) lineNumber = -1;
-		else this.lineNumber = token.getLineNumber();
+		if(token == null) {
+			lineNumber = -1;
+			this.property = new HashMap<>();
+		} else {
+			this.lineNumber = token.getLineNumber();
+		}
 		this.productionIndex = -1;
 		this.children = null;
 	}
