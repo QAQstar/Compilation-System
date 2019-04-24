@@ -23,7 +23,7 @@ P->nil
 
 D->Dv
 Dv'->Dv Dv'
-Dv'->nil /[int real]
+Dv'->nil /[int float]
 D->proc id ( Dv' ) { P }
 D->proc id ( ) { P }
 D->record id { Dv' }
@@ -35,7 +35,7 @@ X->int
 X->float
 C'->C C'
 C'->nil /[[]
-C->[ number ]
+C->[ int_num ]
 
 #####################
 
@@ -47,7 +47,8 @@ E->E * E
 E->- E
 E->( E )
 E->id
-E->number
+E->int_num
+E->float_num
 E->L
 L->id [ E ]
 L->L [ E ]
@@ -91,7 +92,8 @@ id:<ID,->
 int:<INT,->
 float:<FLOAT,->
 record:<RECORD,->
-number:<INT_NUMBER,->
+int_num:<INT_NUMBER,->
+float_num:<FLOAT_NUMBER,->
 ;:<END,->
 end:<ED,->
 ,:<COMMA,->
