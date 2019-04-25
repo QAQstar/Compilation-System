@@ -1,0 +1,7507 @@
+冲突：I13  I41:  I69:  I69:  I95:  I95:  I115:  I115:  I122:  I122:  I126:  I126:  I160:  I160:  I166:  I166:  I186:  I186:  I198:  I198:  I206:  I206:  I209:  I209:  I237:  I237:  I241:  I241:  I242:  I242:  I249:  I249:  I260:  I260:  I289:  I289:  I298:  I298:  I299:  I299:  I306:  I306:  I307:  I307:  I317:  I322:  I322:  I327:  I327:  I328:  I328:  I334:  I334:  I360:  I360:  I377:  I377:  I384:  I450:  I458:  I469:  I497:  
+
+产生式：
+P0: P'->P
+P1: P->DP
+P2: P->SP
+P3: P->nil
+P4: D->Dv
+P5: Dv'->DvDv'
+P6: Dv'->nil
+P7: D->procid(Dv'){P}
+P8: D->procid(){P}
+P9: D->recordid{Dv'}
+P10: Dv->Tid;
+P11: T->XC'
+P12: T->X
+P13: X->int
+P14: X->float
+P15: C'->CC'
+P16: C'->nil
+P17: C->[int_num]
+P18: S->id=E;
+P19: E->E+E
+P20: E->E*E
+P21: E->-E
+P22: E->(E)
+P23: E->id
+P24: E->int_num
+P25: E->float_num
+P26: E->L
+P27: L->id[E]
+P28: L->L[E]
+P29: S->L=E;
+P30: S'->SMS'
+P31: S'->nil
+P32: S->ifBthen{MS'}
+P33: S->ifBthen{MS'N}else{MS'}
+P34: S->whileMBdo{MS'}
+P35: B->BorMB
+P36: B->BandMB
+P37: B->notB
+P38: B->(B)
+P39: B->E<E
+P40: B->E<=E
+P41: B->E>E
+P42: B->E>=E
+P43: B->E==E
+P44: B->E!=E
+P45: B->true
+P46: B->false
+P47: M->nil
+P48: N->nil
+P49: S->callid(Elist);
+P50: Elist->E,Elist
+P51: Elist->E
+P52: Elist->nil
+
+
+项目集
+  I0:
+D->·proc id ( ) { P }   [call proc $ record id float while if int]
+P->·S P   [$]
+S->·L = E ;   [call proc $ record id while float if int]
+S->·if B then { M S' N } else { M S' }   [call proc $ record id while float if int]
+L->·L [ E ]   [[ =]
+Dv->·T id ;   [call proc $ record id while float if int]
+T->·X   [id]
+S->·call id ( Elist ) ;   [call proc $ record id while float if int]
+D->·record id { Dv' }   [call proc $ record id while float if int]
+T->·X C'   [id]
+P->·D P   [$]
+X->·int   [id []
+S->·id = E ;   [call proc $ record id while float if int]
+D->·proc id ( Dv' ) { P }   [call proc $ record id float while if int]
+S->·if B then { M S' }   [call proc $ record id while float if int]
+ P->·   [$]
+S->·while M B do { M S' }   [call proc $ record id while float if int]
+P'->·P   [$]
+X->·float   [id []
+L->·id [ E ]   [[ =]
+D->·Dv   [call proc $ record id while float if int]
+
+  I1:
+D-> proc·id ( ) { P }   [call proc $ record id float while if int]
+D-> proc·id ( Dv' ) { P }   [call proc $ record id float while if int]
+
+  I2:
+D->·proc id ( ) { P }   [call proc $ record id float while if int]
+P->·S P   [$]
+S->·L = E ;   [call proc $ record id while float if int]
+S->·if B then { M S' N } else { M S' }   [call proc $ record id while float if int]
+L->·L [ E ]   [[ =]
+Dv->·T id ;   [call proc $ record id while float if int]
+T->·X   [id]
+S->·call id ( Elist ) ;   [call proc $ record id while float if int]
+D->·record id { Dv' }   [call proc $ record id while float if int]
+T->·X C'   [id]
+P->·D P   [$]
+P-> D·P   [$]
+X->·int   [id []
+S->·id = E ;   [call proc $ record id while float if int]
+D->·proc id ( Dv' ) { P }   [call proc $ record id float while if int]
+S->·if B then { M S' }   [call proc $ record id while float if int]
+ P->·   [$]
+S->·while M B do { M S' }   [call proc $ record id while float if int]
+X->·float   [id []
+L->·id [ E ]   [[ =]
+D->·Dv   [call proc $ record id while float if int]
+
+  I3:
+S-> L·= E ;   [call proc $ record id while float if int]
+L-> L·[ E ]   [[ =]
+
+  I4:
+ M->·   [not int_num true false ( id - float_num]
+S-> while·M B do { M S' }   [call proc $ record id while float if int]
+
+  I5:
+ X-> float·   [id []
+
+  I6:
+ X-> int·   [id []
+
+  I7:
+S-> call·id ( Elist ) ;   [call proc $ record id while float if int]
+
+  I8:
+ P'-> P·   [$]
+
+  I9:
+ D-> Dv·   [call proc $ record id while float if int]
+
+  I10:
+D->·proc id ( ) { P }   [call proc $ record id float while if int]
+P->·S P   [$]
+P-> S·P   [$]
+S->·L = E ;   [call proc $ record id while float if int]
+S->·if B then { M S' N } else { M S' }   [call proc $ record id while float if int]
+L->·L [ E ]   [[ =]
+Dv->·T id ;   [call proc $ record id while float if int]
+T->·X   [id]
+S->·call id ( Elist ) ;   [call proc $ record id while float if int]
+D->·record id { Dv' }   [call proc $ record id while float if int]
+T->·X C'   [id]
+P->·D P   [$]
+X->·int   [id []
+S->·id = E ;   [call proc $ record id while float if int]
+D->·proc id ( Dv' ) { P }   [call proc $ record id float while if int]
+S->·if B then { M S' }   [call proc $ record id while float if int]
+ P->·   [$]
+S->·while M B do { M S' }   [call proc $ record id while float if int]
+X->·float   [id []
+L->·id [ E ]   [[ =]
+D->·Dv   [call proc $ record id while float if int]
+
+  I11:
+Dv-> T·id ;   [call proc $ record id while float if int]
+
+  I12:
+D-> record·id { Dv' }   [call proc $ record id while float if int]
+
+  I13:
+C->·[ int_num ]   [id []
+T-> X·C'   [id]
+C'->·C C'   [id]
+ C'->·   [id]
+ T-> X·   [id]
+
+  I14:
+L-> id·[ E ]   [[ =]
+S-> id·= E ;   [call proc $ record id while float if int]
+
+  I15:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+B->·false   [or and then]
+E->·int_num   [== <= * + < != > >=]
+B->·not B   [or and then]
+B->·E <= E   [or and then]
+B->·( B )   [or and then]
+L->·L [ E ]   [== <= * + [ < != > >=]
+B->·true   [or and then]
+E->·id   [== <= * + < != > >=]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+E->·E * E   [== <= * + != < > >=]
+B->·B and M B   [or and then]
+B->·E == E   [or and then]
+S-> if·B then { M S' N } else { M S' }   [call proc $ record id while float if int]
+B->·B or M B   [or and then]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·E < E   [or and then]
+B->·E > E   [or and then]
+B->·E != E   [or and then]
+B->·E >= E   [or and then]
+S-> if·B then { M S' }   [call proc $ record id while float if int]
+
+  I16:
+D-> proc id·( Dv' ) { P }   [call proc $ record id float while if int]
+D-> proc id·( ) { P }   [call proc $ record id float while if int]
+
+  I17:
+ P-> D P·   [$]
+
+  I18:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+L-> L [·E ]   [[ =]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I19:
+E->·int_num   [* ; +]
+S-> L =·E ;   [call proc $ record id while float if int]
+L->·id [ E ]   [* + ; []
+E->·E + E   [* ; +]
+E->·( E )   [* ; +]
+E->·float_num   [* ; +]
+E->·L   [* + ;]
+E->·E * E   [* ; +]
+E->·id   [* ; +]
+L->·L [ E ]   [* [ + ;]
+E->·- E   [* + ;]
+
+  I20:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+E->·int_num   [== <= * + < != > >=]
+B->·false   [or and do]
+B->·B and M B   [or and do]
+B->·B or M B   [or and do]
+L->·L [ E ]   [== <= * + [ < != > >=]
+E->·id   [== <= * + < != > >=]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+B->·E >= E   [or and do]
+B->·E > E   [or and do]
+B->·E <= E   [or and do]
+B->·not B   [or and do]
+B->·true   [or and do]
+E->·E * E   [== <= * + != < > >=]
+B->·( B )   [or and do]
+B->·E != E   [or and do]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·E < E   [or and do]
+S-> while M·B do { M S' }   [call proc $ record id while float if int]
+B->·E == E   [or and do]
+
+  I21:
+S-> call id·( Elist ) ;   [call proc $ record id while float if int]
+
+  I22:
+ P-> S P·   [$]
+
+  I23:
+Dv-> T id·;   [call proc $ record id while float if int]
+
+  I24:
+D-> record id·{ Dv' }   [call proc $ record id while float if int]
+
+  I25:
+C->·[ int_num ]   [id []
+C'->·C C'   [id]
+C'-> C·C'   [id]
+ C'->·   [id]
+
+  I26:
+ T-> X C'·   [id]
+
+  I27:
+C-> [·int_num ]   [id []
+
+  I28:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+L-> id [·E ]   [[ =]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I29:
+S-> id =·E ;   [call proc $ record id while float if int]
+E->·int_num   [* ; +]
+L->·id [ E ]   [* + ; []
+E->·E + E   [* ; +]
+E->·( E )   [* ; +]
+E->·float_num   [* ; +]
+E->·L   [* + ;]
+E->·E * E   [* ; +]
+E->·id   [* ; +]
+L->·L [ E ]   [* [ + ;]
+E->·- E   [* + ;]
+
+  I30:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+B->·false   [or and then]
+E->·int_num   [== <= * + < != > >=]
+B->·not B   [or and then]
+B->·E <= E   [or and then]
+B->·( B )   [or and then]
+L->·L [ E ]   [== <= * + [ < != > >=]
+B->·true   [or and then]
+E->·id   [== <= * + < != > >=]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+E->·E * E   [== <= * + != < > >=]
+B->·B and M B   [or and then]
+B-> not·B   [or and then]
+B->·E == E   [or and then]
+B->·B or M B   [or and then]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·E < E   [or and then]
+B->·E > E   [or and then]
+B->·E != E   [or and then]
+B->·E >= E   [or and then]
+
+  I31:
+S-> if B·then { M S' }   [call proc $ record id while float if int]
+S-> if B·then { M S' N } else { M S' }   [call proc $ record id while float if int]
+B-> B·or M B   [or and then]
+B-> B·and M B   [or and then]
+
+  I32:
+ E-> int_num·   [== <= * + < != > >=]
+
+  I33:
+B-> E·!= E   [or and then]
+B-> E·== E   [or and then]
+E-> E·+ E   [== <= * + != < > >=]
+E-> E·* E   [== <= * + != < > >=]
+B-> E·>= E   [or and then]
+B-> E·< E   [or and then]
+B-> E·<= E   [or and then]
+B-> E·> E   [or and then]
+
+  I34:
+ B-> false·   [or and then]
+
+  I35:
+L->·L [ E ]   [== <= ) * + [ < != > >=]
+E->·id   [== <= ) * + < != > >=]
+E->·- E   [== <= ) * + < != > >=]
+B->·E <= E   [or and )]
+B->·( B )   [or and )]
+E->·E + E   [== <= ) * + != < > >=]
+E->·float_num   [== <= ) * + < != > >=]
+E->·int_num   [== <= ) * + < != > >=]
+E->·L   [== <= ) * + < != > >=]
+E-> (·E )   [== <= * + != < > >=]
+B->·E > E   [or and )]
+B->·not B   [or and )]
+B->·B and M B   [or and )]
+B->·true   [or and )]
+E->·( E )   [== <= ) * + != < > >=]
+B->·E < E   [or and )]
+B->·E >= E   [or and )]
+B->·E != E   [or and )]
+E->·E * E   [== <= ) * + != < > >=]
+B->·false   [or and )]
+B->·E == E   [or and )]
+B->·B or M B   [or and )]
+B-> (·B )   [or and then]
+L->·id [ E ]   [== <= ) * + [ < != > >=]
+
+  I36:
+ B-> true·   [or and then]
+
+  I37:
+ E-> id·   [== <= * + < != > >=]
+L-> id·[ E ]   [== <= * + [ < != > >=]
+
+  I38:
+L-> L·[ E ]   [== <= * + [ < != > >=]
+ E-> L·   [== <= * + < != > >=]
+
+  I39:
+E->·E * E   [== <= * + != < > >=]
+E->·E + E   [== <= * + != < > >=]
+E->·float_num   [== <= * + < != > >=]
+E->·int_num   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * [ + != < > >=]
+E->·id   [== <= * + != < > >=]
+E->·L   [== <= * + != < > >=]
+L->·L [ E ]   [== <= * + [ < != > >=]
+E->·( E )   [== <= * + != < > >=]
+E->·- E   [== <= * + < != > >=]
+E-> -·E   [== <= * + < != > >=]
+
+  I40:
+ E-> float_num·   [== <= * + < != > >=]
+
+  I41:
+X->·int   [id []
+Dv->·T id ;   [) float int]
+D-> proc id (·Dv' ) { P }   [call proc $ record id float while if int]
+D-> proc id (·) { P }   [call proc $ record id float while if int]
+T->·X   [id]
+X->·float   [id []
+ Dv'->·   [)]
+T->·X C'   [id]
+Dv'->·Dv Dv'   [)]
+
+  I42:
+ E-> int_num·   [* + ]]
+
+  I43:
+E-> E·* E   [* + ]]
+L-> L [ E·]   [[ =]
+E-> E·+ E   [* + ]]
+
+  I44:
+E->·int_num   [) * +]
+L->·L [ E ]   [) * [ +]
+E->·L   [) * +]
+E->·E + E   [) * +]
+E->·( E )   [) * +]
+E->·E * E   [) * +]
+E->·- E   [) * +]
+E->·id   [) * +]
+L->·id [ E ]   [) * + []
+E-> (·E )   [* + ]]
+E->·float_num   [) * +]
+
+  I45:
+L-> id·[ E ]   [* + [ ]]
+ E-> id·   [* + ]]
+
+  I46:
+ E-> L·   [* + ]]
+L-> L·[ E ]   [* [ + ]]
+
+  I47:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+E-> -·E   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I48:
+ E-> float_num·   [* + ]]
+
+  I49:
+ E-> int_num·   [* ; +]
+
+  I50:
+E-> E·+ E   [* ; +]
+E-> E·* E   [* ; +]
+S-> L = E·;   [call proc $ record id while float if int]
+
+  I51:
+E->·int_num   [) * +]
+E-> (·E )   [* ; +]
+L->·L [ E ]   [) * [ +]
+E->·L   [) * +]
+E->·E + E   [) * +]
+E->·( E )   [) * +]
+E->·E * E   [) * +]
+E->·- E   [) * +]
+E->·id   [) * +]
+L->·id [ E ]   [) * + []
+E->·float_num   [) * +]
+
+  I52:
+ E-> id·   [* ; +]
+L-> id·[ E ]   [* + ; []
+
+  I53:
+ E-> L·   [* + ;]
+L-> L·[ E ]   [* [ + ;]
+
+  I54:
+E->·int_num   [* ; +]
+L->·id [ E ]   [* + ; []
+E-> -·E   [* + ;]
+E->·E + E   [* ; +]
+E->·( E )   [* ; +]
+E->·float_num   [* ; +]
+E->·L   [* + ;]
+E->·E * E   [* ; +]
+E->·id   [* ; +]
+L->·L [ E ]   [* [ + ;]
+E->·- E   [* + ;]
+
+  I55:
+ E-> float_num·   [* ; +]
+
+  I56:
+B-> B·or M B   [or and do]
+S-> while M B·do { M S' }   [call proc $ record id while float if int]
+B-> B·and M B   [or and do]
+
+  I57:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+E->·int_num   [== <= * + < != > >=]
+B->·false   [or and do]
+B->·B and M B   [or and do]
+B->·B or M B   [or and do]
+L->·L [ E ]   [== <= * + [ < != > >=]
+E->·id   [== <= * + < != > >=]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+B->·E >= E   [or and do]
+B->·E > E   [or and do]
+B->·E <= E   [or and do]
+B->·not B   [or and do]
+B->·true   [or and do]
+E->·E * E   [== <= * + != < > >=]
+B-> not·B   [or and do]
+B->·( B )   [or and do]
+B->·E != E   [or and do]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·E < E   [or and do]
+B->·E == E   [or and do]
+
+  I58:
+B-> E·== E   [or and do]
+B-> E·!= E   [or and do]
+E-> E·+ E   [== <= * + != < > >=]
+E-> E·* E   [== <= * + != < > >=]
+B-> E·< E   [or and do]
+B-> E·<= E   [or and do]
+B-> E·> E   [or and do]
+B-> E·>= E   [or and do]
+
+  I59:
+ B-> false·   [or and do]
+
+  I60:
+ B-> true·   [or and do]
+
+  I61:
+L->·L [ E ]   [== <= ) * + [ < != > >=]
+E->·id   [== <= ) * + < != > >=]
+E->·- E   [== <= ) * + < != > >=]
+B->·E <= E   [or and )]
+B->·( B )   [or and )]
+E->·E + E   [== <= ) * + != < > >=]
+E->·float_num   [== <= ) * + < != > >=]
+E->·int_num   [== <= ) * + < != > >=]
+E->·L   [== <= ) * + < != > >=]
+E-> (·E )   [== <= * + != < > >=]
+B->·E > E   [or and )]
+B->·not B   [or and )]
+B->·B and M B   [or and )]
+B->·true   [or and )]
+E->·( E )   [== <= ) * + != < > >=]
+B->·E < E   [or and )]
+B-> (·B )   [or and do]
+B->·E >= E   [or and )]
+B->·E != E   [or and )]
+E->·E * E   [== <= ) * + != < > >=]
+B->·false   [or and )]
+B->·E == E   [or and )]
+B->·B or M B   [or and )]
+L->·id [ E ]   [== <= ) * + [ < != > >=]
+
+  I62:
+E->·- E   [) * + ,]
+E->·float_num   [) * + ,]
+L->·L [ E ]   [) * [ + ,]
+L->·id [ E ]   [) * + [ ,]
+E->·E + E   [) * + ,]
+Elist->·E , Elist   [)]
+E->·E * E   [) * + ,]
+E->·id   [) * + ,]
+E->·L   [) * + ,]
+S-> call id (·Elist ) ;   [call proc $ record id while float if int]
+E->·( E )   [) * + ,]
+ Elist->·   [)]
+Elist->·E   [)]
+E->·int_num   [) * + ,]
+
+  I63:
+ Dv-> T id ;·   [call proc $ record id while float if int]
+
+  I64:
+ Dv'->·   [}]
+X->·int   [id []
+D-> record id {·Dv' }   [call proc $ record id while float if int]
+X->·float   [[ id]
+Dv'->·Dv Dv'   [}]
+T->·X   [id]
+Dv->·T id ;   [float } int]
+T->·X C'   [id]
+
+  I65:
+ C'-> C C'·   [id]
+
+  I66:
+C-> [ int_num·]   [id []
+
+  I67:
+L-> id [ E·]   [[ =]
+E-> E·* E   [* + ]]
+E-> E·+ E   [* + ]]
+
+  I68:
+E-> E·+ E   [* ; +]
+S-> id = E·;   [call proc $ record id while float if int]
+E-> E·* E   [* ; +]
+
+  I69:
+ B-> not B·   [or and then]
+B-> B·or M B   [or and then]
+B-> B·and M B   [or and then]
+
+  I70:
+B-> B or·M B   [or and then]
+ M->·   [not int_num true false ( id - float_num]
+
+  I71:
+ M->·   [not int_num true false ( id - float_num]
+B-> B and·M B   [or and then]
+
+  I72:
+S-> if B then·{ M S' }   [call proc $ record id while float if int]
+S-> if B then·{ M S' N } else { M S' }   [call proc $ record id while float if int]
+
+  I73:
+E->·- E   [or and * then +]
+L->·id [ E ]   [or and * then [ +]
+E->·E + E   [or and * then +]
+E->·E * E   [or and * + then]
+B-> E ==·E   [or and then]
+E->·float_num   [or and * + then]
+E->·int_num   [or and * then +]
+E->·( E )   [or and * then +]
+E->·id   [or and * + then]
+L->·L [ E ]   [or and * + [ then]
+E->·L   [or and * + then]
+
+  I74:
+E->·- E   [or and * then +]
+L->·id [ E ]   [or and * then [ +]
+E->·E + E   [or and * then +]
+B-> E <=·E   [or and then]
+E->·E * E   [or and * + then]
+E->·float_num   [or and * + then]
+E->·int_num   [or and * then +]
+E->·( E )   [or and * then +]
+E->·id   [or and * + then]
+L->·L [ E ]   [or and * + [ then]
+E->·L   [or and * + then]
+
+  I75:
+E->·E * E   [== <= * + != < > >=]
+E->·E + E   [== <= * + != < > >=]
+E->·float_num   [== <= * + < != > >=]
+E->·int_num   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * [ + != < > >=]
+E->·id   [== <= * + != < > >=]
+E->·L   [== <= * + != < > >=]
+L->·L [ E ]   [== <= * + [ < != > >=]
+E->·( E )   [== <= * + != < > >=]
+E->·- E   [== <= * + < != > >=]
+E-> E *·E   [== <= * + != < > >=]
+
+  I76:
+E->·E * E   [== <= * + != < > >=]
+E->·E + E   [== <= * + != < > >=]
+E->·float_num   [== <= * + < != > >=]
+E->·int_num   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * [ + != < > >=]
+E->·id   [== <= * + != < > >=]
+E->·L   [== <= * + != < > >=]
+L->·L [ E ]   [== <= * + [ < != > >=]
+E-> E +·E   [== <= * + != < > >=]
+E->·( E )   [== <= * + != < > >=]
+E->·- E   [== <= * + < != > >=]
+
+  I77:
+E->·- E   [or and * then +]
+L->·id [ E ]   [or and * then [ +]
+E->·E + E   [or and * then +]
+E->·E * E   [or and * + then]
+E->·float_num   [or and * + then]
+E->·int_num   [or and * then +]
+E->·( E )   [or and * then +]
+E->·id   [or and * + then]
+L->·L [ E ]   [or and * + [ then]
+B-> E !=·E   [or and then]
+E->·L   [or and * + then]
+
+  I78:
+E->·- E   [or and * then +]
+L->·id [ E ]   [or and * then [ +]
+E->·E + E   [or and * then +]
+E->·E * E   [or and * + then]
+E->·float_num   [or and * + then]
+E->·int_num   [or and * then +]
+E->·( E )   [or and * then +]
+E->·id   [or and * + then]
+L->·L [ E ]   [or and * + [ then]
+E->·L   [or and * + then]
+B-> E <·E   [or and then]
+
+  I79:
+E->·- E   [or and * then +]
+B-> E >·E   [or and then]
+L->·id [ E ]   [or and * then [ +]
+E->·E + E   [or and * then +]
+E->·E * E   [or and * + then]
+E->·float_num   [or and * + then]
+E->·int_num   [or and * then +]
+E->·( E )   [or and * then +]
+E->·id   [or and * + then]
+L->·L [ E ]   [or and * + [ then]
+E->·L   [or and * + then]
+
+  I80:
+E->·- E   [or and * then +]
+B-> E >=·E   [or and then]
+L->·id [ E ]   [or and * then [ +]
+E->·E + E   [or and * then +]
+E->·E * E   [or and * + then]
+E->·float_num   [or and * + then]
+E->·int_num   [or and * then +]
+E->·( E )   [or and * then +]
+E->·id   [or and * + then]
+L->·L [ E ]   [or and * + [ then]
+E->·L   [or and * + then]
+
+  I81:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+B->·E <= E   [or and )]
+B->·( B )   [or and )]
+E->·int_num   [== <= * + < != > >=]
+L->·L [ E ]   [== <= * + [ < != > >=]
+B->·E > E   [or and )]
+B->·not B   [or and )]
+E->·id   [== <= * + < != > >=]
+B->·B and M B   [or and )]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+B->·true   [or and )]
+B->·E < E   [or and )]
+B->·E >= E   [or and )]
+E->·E * E   [== <= * + != < > >=]
+B->·E != E   [or and )]
+B->·false   [or and )]
+B->·E == E   [or and )]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·B or M B   [or and )]
+B-> not·B   [or and )]
+
+  I82:
+B-> B·and M B   [or and )]
+B-> ( B·)   [or and then]
+B-> B·or M B   [or and )]
+
+  I83:
+ E-> int_num·   [== <= ) * + < != > >=]
+
+  I84:
+B-> E·== E   [or and )]
+E-> ( E·)   [== <= * + != < > >=]
+B-> E·<= E   [or and )]
+E-> E·* E   [== <= ) * + != < > >=]
+B-> E·!= E   [or and )]
+B-> E·> E   [or and )]
+E-> E·+ E   [== <= ) * + != < > >=]
+B-> E·< E   [or and )]
+B-> E·>= E   [or and )]
+
+  I85:
+L->·L [ E ]   [== <= ) * + [ < != > >=]
+E->·id   [== <= ) * + < != > >=]
+E->·- E   [== <= ) * + < != > >=]
+B->·E <= E   [or and )]
+B->·( B )   [or and )]
+E->·E + E   [== <= ) * + != < > >=]
+E->·float_num   [== <= ) * + < != > >=]
+E->·int_num   [== <= ) * + < != > >=]
+E->·L   [== <= ) * + < != > >=]
+B->·E > E   [or and )]
+E-> (·E )   [== <= ) * + != < > >=]
+B->·not B   [or and )]
+B->·B and M B   [or and )]
+B->·true   [or and )]
+E->·( E )   [== <= ) * + != < > >=]
+B->·E < E   [or and )]
+B->·E >= E   [or and )]
+B->·E != E   [or and )]
+E->·E * E   [== <= ) * + != < > >=]
+B-> (·B )   [or and )]
+B->·false   [or and )]
+B->·E == E   [or and )]
+B->·B or M B   [or and )]
+L->·id [ E ]   [== <= ) * + [ < != > >=]
+
+  I86:
+ B-> true·   [or and )]
+
+  I87:
+ B-> false·   [or and )]
+
+  I88:
+ E-> id·   [== <= ) * + < != > >=]
+L-> id·[ E ]   [== <= ) * + [ < != > >=]
+
+  I89:
+L-> L·[ E ]   [== <= ) * + [ < != > >=]
+ E-> L·   [== <= ) * + < != > >=]
+
+  I90:
+L->·L [ E ]   [== <= ) * + [ < != > >=]
+E->·- E   [== <= ) * + < != > >=]
+E->·E + E   [== <= ) * + != < > >=]
+E->·float_num   [== <= ) * + < != > >=]
+E->·E * E   [== <= ) * + != < > >=]
+E-> -·E   [== <= ) * + < != > >=]
+E->·L   [== <= ) * + != < > >=]
+L->·id [ E ]   [== <= ) * [ + != < > >=]
+E->·int_num   [== <= ) * + != < > >=]
+E->·id   [== <= ) * + != < > >=]
+E->·( E )   [== <= ) * + != < > >=]
+
+  I91:
+ E-> float_num·   [== <= ) * + < != > >=]
+
+  I92:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L-> id [·E ]   [== <= * + [ < != > >=]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I93:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+L-> L [·E ]   [== <= * + [ < != > >=]
+E->·int_num   [* + ]]
+
+  I94:
+ E-> int_num·   [== <= * + != < > >=]
+
+  I95:
+E-> E·* E   [== <= * + != < > >=]
+E-> E·+ E   [== <= * + != < > >=]
+ E-> - E·   [== <= * + < != > >=]
+
+  I96:
+E->·int_num   [) * +]
+L->·L [ E ]   [) * [ +]
+E->·L   [) * +]
+E->·E + E   [) * +]
+E->·( E )   [) * +]
+E->·E * E   [) * +]
+E-> (·E )   [== <= * + != < > >=]
+E->·- E   [) * +]
+E->·id   [) * +]
+L->·id [ E ]   [) * + []
+E->·float_num   [) * +]
+
+  I97:
+ E-> id·   [== <= * + != < > >=]
+L-> id·[ E ]   [== <= * [ + != < > >=]
+
+  I98:
+L-> L·[ E ]   [== <= * + [ < != > >=]
+ E-> L·   [== <= * + != < > >=]
+
+  I99:
+X->·int   [id []
+Dv->·T id ;   [) float int]
+Dv'-> Dv·Dv'   [)]
+X->·float   [[ id]
+T->·X   [id]
+ Dv'->·   [)]
+Dv'->·Dv Dv'   [)]
+T->·X C'   [id]
+
+  I100:
+Dv-> T·id ;   [) float int]
+
+  I101:
+D-> proc id ( Dv'·) { P }   [call proc $ record id float while if int]
+
+  I102:
+D-> proc id ( )·{ P }   [call proc $ record id float while if int]
+
+  I103:
+E->·- E   [* + ]]
+E-> E *·E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I104:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E-> E +·E   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I105:
+ L-> L [ E ]·   [[ =]
+
+  I106:
+ E-> int_num·   [) * +]
+
+  I107:
+E-> E·* E   [) * +]
+E-> ( E·)   [* + ]]
+E-> E·+ E   [) * +]
+
+  I108:
+E->·int_num   [) * +]
+L->·L [ E ]   [) * [ +]
+E->·L   [) * +]
+E->·E + E   [) * +]
+E->·( E )   [) * +]
+E->·E * E   [) * +]
+E->·- E   [) * +]
+E->·id   [) * +]
+L->·id [ E ]   [) * + []
+E->·float_num   [) * +]
+E-> (·E )   [) * +]
+
+  I109:
+L-> id·[ E ]   [) * + []
+ E-> id·   [) * +]
+
+  I110:
+L-> L·[ E ]   [) * [ +]
+ E-> L·   [) * +]
+
+  I111:
+E->·int_num   [) * +]
+E-> -·E   [) * +]
+L->·L [ E ]   [) * [ +]
+E->·L   [) * +]
+E->·E + E   [) * +]
+E->·( E )   [) * +]
+E->·E * E   [) * +]
+E->·- E   [) * +]
+E->·id   [) * +]
+L->·id [ E ]   [) * + []
+E->·float_num   [) * +]
+
+  I112:
+ E-> float_num·   [) * +]
+
+  I113:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+L-> id [·E ]   [* + [ ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I114:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+L-> L [·E ]   [* [ + ]]
+
+  I115:
+ E-> - E·   [* + ]]
+E-> E·* E   [* + ]]
+E-> E·+ E   [* + ]]
+
+  I116:
+E->·int_num   [* ; +]
+L->·id [ E ]   [* + ; []
+E->·E + E   [* ; +]
+E->·( E )   [* ; +]
+E->·float_num   [* ; +]
+E->·L   [* + ;]
+E->·E * E   [* ; +]
+E-> E *·E   [* ; +]
+E->·id   [* ; +]
+L->·L [ E ]   [* [ + ;]
+E->·- E   [* + ;]
+
+  I117:
+E->·int_num   [* ; +]
+L->·id [ E ]   [* + ; []
+E->·E + E   [* ; +]
+E->·( E )   [* ; +]
+E->·float_num   [* ; +]
+E->·L   [* + ;]
+E->·E * E   [* ; +]
+E->·id   [* ; +]
+L->·L [ E ]   [* [ + ;]
+E->·- E   [* + ;]
+E-> E +·E   [* ; +]
+
+  I118:
+ S-> L = E ;·   [call proc $ record id while float if int]
+
+  I119:
+E-> E·* E   [) * +]
+E-> ( E·)   [* ; +]
+E-> E·+ E   [) * +]
+
+  I120:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+L-> id [·E ]   [* + ; []
+E->·int_num   [* + ]]
+
+  I121:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L-> L [·E ]   [* [ + ;]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I122:
+E-> E·+ E   [* ; +]
+E-> E·* E   [* ; +]
+ E-> - E·   [* + ;]
+
+  I123:
+B-> B or·M B   [or and do]
+ M->·   [not int_num true false ( id - float_num]
+
+  I124:
+ M->·   [not int_num true false ( id - float_num]
+B-> B and·M B   [or and do]
+
+  I125:
+S-> while M B do·{ M S' }   [call proc $ record id while float if int]
+
+  I126:
+B-> B·or M B   [or and do]
+ B-> not B·   [or and do]
+B-> B·and M B   [or and do]
+
+  I127:
+E->·- E   [or and * do +]
+E->·int_num   [or and * do +]
+E->·( E )   [or and * do +]
+L->·L [ E ]   [or and * + [ do]
+L->·id [ E ]   [or and * do [ +]
+E->·id   [or and * + do]
+E->·L   [or and * + do]
+E->·float_num   [or and * + do]
+B-> E ==·E   [or and do]
+E->·E + E   [or and * do +]
+E->·E * E   [or and * + do]
+
+  I128:
+E->·- E   [or and * do +]
+E->·int_num   [or and * do +]
+E->·( E )   [or and * do +]
+L->·L [ E ]   [or and * + [ do]
+L->·id [ E ]   [or and * do [ +]
+E->·id   [or and * + do]
+E->·L   [or and * + do]
+E->·float_num   [or and * + do]
+E->·E + E   [or and * do +]
+E->·E * E   [or and * + do]
+B-> E <=·E   [or and do]
+
+  I129:
+E->·- E   [or and * do +]
+E->·int_num   [or and * do +]
+E->·( E )   [or and * do +]
+L->·L [ E ]   [or and * + [ do]
+L->·id [ E ]   [or and * do [ +]
+E->·id   [or and * + do]
+E->·L   [or and * + do]
+E->·float_num   [or and * + do]
+B-> E !=·E   [or and do]
+E->·E + E   [or and * do +]
+E->·E * E   [or and * + do]
+
+  I130:
+E->·- E   [or and * do +]
+E->·int_num   [or and * do +]
+E->·( E )   [or and * do +]
+L->·L [ E ]   [or and * + [ do]
+L->·id [ E ]   [or and * do [ +]
+E->·id   [or and * + do]
+E->·L   [or and * + do]
+E->·float_num   [or and * + do]
+E->·E + E   [or and * do +]
+E->·E * E   [or and * + do]
+B-> E <·E   [or and do]
+
+  I131:
+E->·- E   [or and * do +]
+B-> E >·E   [or and do]
+E->·int_num   [or and * do +]
+E->·( E )   [or and * do +]
+L->·L [ E ]   [or and * + [ do]
+L->·id [ E ]   [or and * do [ +]
+E->·id   [or and * + do]
+E->·L   [or and * + do]
+E->·float_num   [or and * + do]
+E->·E + E   [or and * do +]
+E->·E * E   [or and * + do]
+
+  I132:
+E->·- E   [or and * do +]
+E->·int_num   [or and * do +]
+E->·( E )   [or and * do +]
+L->·L [ E ]   [or and * + [ do]
+L->·id [ E ]   [or and * do [ +]
+E->·id   [or and * + do]
+E->·L   [or and * + do]
+E->·float_num   [or and * + do]
+E->·E + E   [or and * do +]
+B-> E >=·E   [or and do]
+E->·E * E   [or and * + do]
+
+  I133:
+B-> ( B·)   [or and do]
+B-> B·and M B   [or and )]
+B-> B·or M B   [or and )]
+
+  I134:
+ E-> int_num·   [) * + ,]
+
+  I135:
+ Elist-> E·   [)]
+Elist-> E·, Elist   [)]
+E-> E·+ E   [) * + ,]
+E-> E·* E   [) * + ,]
+
+  I136:
+E->·int_num   [) * +]
+L->·L [ E ]   [) * [ +]
+E->·L   [) * +]
+E->·E + E   [) * +]
+E->·( E )   [) * +]
+E->·E * E   [) * +]
+E->·- E   [) * +]
+E->·id   [) * +]
+L->·id [ E ]   [) * + []
+E->·float_num   [) * +]
+E-> (·E )   [) * + ,]
+
+  I137:
+ E-> id·   [) * + ,]
+L-> id·[ E ]   [) * + [ ,]
+
+  I138:
+ E-> L·   [) * + ,]
+L-> L·[ E ]   [) * [ + ,]
+
+  I139:
+S-> call id ( Elist·) ;   [call proc $ record id while float if int]
+
+  I140:
+E->·L   [) * + ,]
+E->·- E   [) * + ,]
+E->·float_num   [) * + ,]
+L->·L [ E ]   [) * [ + ,]
+L->·id [ E ]   [) * + [ ,]
+E->·E + E   [) * + ,]
+E-> -·E   [) * + ,]
+E->·( E )   [) * + ,]
+E->·E * E   [) * + ,]
+E->·id   [) * + ,]
+E->·int_num   [) * + ,]
+
+  I141:
+ E-> float_num·   [) * + ,]
+
+  I142:
+ Dv'->·   [}]
+X->·int   [id []
+Dv'-> Dv·Dv'   [}]
+X->·float   [[ id]
+Dv'->·Dv Dv'   [}]
+T->·X   [id]
+Dv->·T id ;   [float } int]
+T->·X C'   [id]
+
+  I143:
+D-> record id { Dv'·}   [call proc $ record id while float if int]
+
+  I144:
+Dv-> T·id ;   [float } int]
+
+  I145:
+ X-> float·   [[ id]
+
+  I146:
+ C-> [ int_num ]·   [id []
+
+  I147:
+ L-> id [ E ]·   [[ =]
+
+  I148:
+ S-> id = E ;·   [call proc $ record id while float if int]
+
+  I149:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+B->·false   [or and then]
+E->·int_num   [== <= * + < != > >=]
+B->·not B   [or and then]
+B-> B or M·B   [or and then]
+B->·E <= E   [or and then]
+B->·( B )   [or and then]
+L->·L [ E ]   [== <= * + [ < != > >=]
+B->·true   [or and then]
+E->·id   [== <= * + < != > >=]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+E->·E * E   [== <= * + != < > >=]
+B->·B and M B   [or and then]
+B->·E == E   [or and then]
+B->·B or M B   [or and then]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·E < E   [or and then]
+B->·E > E   [or and then]
+B->·E != E   [or and then]
+B->·E >= E   [or and then]
+
+  I150:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+B->·false   [or and then]
+E->·int_num   [== <= * + < != > >=]
+B->·not B   [or and then]
+B->·E <= E   [or and then]
+B->·( B )   [or and then]
+L->·L [ E ]   [== <= * + [ < != > >=]
+B->·true   [or and then]
+E->·id   [== <= * + < != > >=]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+E->·E * E   [== <= * + != < > >=]
+B->·B and M B   [or and then]
+B->·E == E   [or and then]
+B->·B or M B   [or and then]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·E < E   [or and then]
+B->·E > E   [or and then]
+B->·E != E   [or and then]
+B->·E >= E   [or and then]
+B-> B and M·B   [or and then]
+
+  I151:
+ M->·   [call proc $ record id while float } if int]
+S-> if B then {·M S' N } else { M S' }   [call proc $ record id while float if int]
+S-> if B then {·M S' }   [call proc $ record id while float if int]
+
+  I152:
+ E-> int_num·   [or and * then +]
+
+  I153:
+E-> E·+ E   [or and * then +]
+E-> E·* E   [or and * + then]
+ B-> E == E·   [or and then]
+
+  I154:
+E->·int_num   [) * +]
+L->·L [ E ]   [) * [ +]
+E->·L   [) * +]
+E->·E + E   [) * +]
+E-> (·E )   [or and * then +]
+E->·( E )   [) * +]
+E->·E * E   [) * +]
+E->·- E   [) * +]
+E->·id   [) * +]
+L->·id [ E ]   [) * + []
+E->·float_num   [) * +]
+
+  I155:
+ E-> id·   [or and * + then]
+L-> id·[ E ]   [or and * then [ +]
+
+  I156:
+ E-> L·   [or and * + then]
+L-> L·[ E ]   [or and * + [ then]
+
+  I157:
+E->·- E   [or and * then +]
+L->·id [ E ]   [or and * then [ +]
+E->·E + E   [or and * then +]
+E->·E * E   [or and * + then]
+E->·float_num   [or and * + then]
+E->·int_num   [or and * then +]
+E-> -·E   [or and * then +]
+E->·( E )   [or and * then +]
+E->·id   [or and * + then]
+L->·L [ E ]   [or and * + [ then]
+E->·L   [or and * + then]
+
+  I158:
+ E-> float_num·   [or and * + then]
+
+  I159:
+E-> E·+ E   [or and * then +]
+ B-> E <= E·   [or and then]
+E-> E·* E   [or and * + then]
+
+  I160:
+E-> E·* E   [== <= * + != < > >=]
+E-> E·+ E   [== <= * + != < > >=]
+ E-> E * E·   [== <= * + != < > >=]
+
+  I161:
+E-> E·* E   [== <= * + != < > >=]
+E-> E·+ E   [== <= * + != < > >=]
+ E-> E + E·   [== <= + != < > >=]
+
+  I162:
+E-> E·+ E   [or and * then +]
+ B-> E != E·   [or and then]
+E-> E·* E   [or and * + then]
+
+  I163:
+E-> E·+ E   [or and * then +]
+E-> E·* E   [or and * + then]
+ B-> E < E·   [or and then]
+
+  I164:
+ B-> E > E·   [or and then]
+E-> E·+ E   [or and * then +]
+E-> E·* E   [or and * + then]
+
+  I165:
+E-> E·+ E   [or and * then +]
+E-> E·* E   [or and * + then]
+ B-> E >= E·   [or and then]
+
+  I166:
+B-> B·and M B   [or and )]
+ B-> not B·   [or and )]
+B-> B·or M B   [or and )]
+
+  I167:
+E-> E·+ E   [== <= * + != < > >=]
+E-> E·* E   [== <= * + != < > >=]
+B-> E·== E   [or and )]
+B-> E·<= E   [or and )]
+B-> E·!= E   [or and )]
+B-> E·> E   [or and )]
+B-> E·< E   [or and )]
+B-> E·>= E   [or and )]
+
+  I168:
+L->·L [ E ]   [== <= ) * + [ < != > >=]
+E->·id   [== <= ) * + < != > >=]
+E->·- E   [== <= ) * + < != > >=]
+B->·E <= E   [or and )]
+B->·( B )   [or and )]
+E->·E + E   [== <= ) * + != < > >=]
+E->·float_num   [== <= ) * + < != > >=]
+E->·int_num   [== <= ) * + < != > >=]
+E->·L   [== <= ) * + < != > >=]
+E-> (·E )   [== <= * + != < > >=]
+B->·E > E   [or and )]
+B->·not B   [or and )]
+B->·B and M B   [or and )]
+B->·true   [or and )]
+E->·( E )   [== <= ) * + != < > >=]
+B->·E < E   [or and )]
+B->·E >= E   [or and )]
+B->·E != E   [or and )]
+E->·E * E   [== <= ) * + != < > >=]
+B-> (·B )   [or and )]
+B->·false   [or and )]
+B->·E == E   [or and )]
+B->·B or M B   [or and )]
+L->·id [ E ]   [== <= ) * + [ < != > >=]
+
+  I169:
+ M->·   [not int_num true false ( id - float_num]
+B-> B or·M B   [or and )]
+
+  I170:
+ M->·   [not int_num true false ( id - float_num]
+B-> B and·M B   [or and )]
+
+  I171:
+ B-> ( B )·   [or and then]
+
+  I172:
+E->·( E )   [or and ) * +]
+E->·L   [or and ) * +]
+B-> E ==·E   [or and )]
+E->·id   [or and ) * +]
+E->·float_num   [or and ) * +]
+E->·E + E   [or and ) * +]
+L->·L [ E ]   [or and ) * + []
+E->·- E   [or and ) * +]
+E->·E * E   [or and ) * +]
+L->·id [ E ]   [or and ) * [ +]
+E->·int_num   [or and ) * +]
+
+  I173:
+E->·( E )   [or and ) * +]
+E->·L   [or and ) * +]
+E->·id   [or and ) * +]
+E->·float_num   [or and ) * +]
+E->·E + E   [or and ) * +]
+B-> E <=·E   [or and )]
+L->·L [ E ]   [or and ) * + []
+E->·- E   [or and ) * +]
+E->·E * E   [or and ) * +]
+L->·id [ E ]   [or and ) * [ +]
+E->·int_num   [or and ) * +]
+
+  I174:
+ E-> ( E )·   [== <= * + != < > >=]
+
+  I175:
+L->·L [ E ]   [== <= ) * + [ < != > >=]
+E->·- E   [== <= ) * + < != > >=]
+E->·E + E   [== <= ) * + != < > >=]
+E->·float_num   [== <= ) * + < != > >=]
+E->·E * E   [== <= ) * + != < > >=]
+E->·L   [== <= ) * + != < > >=]
+L->·id [ E ]   [== <= ) * [ + != < > >=]
+E->·int_num   [== <= ) * + != < > >=]
+E->·id   [== <= ) * + != < > >=]
+E->·( E )   [== <= ) * + != < > >=]
+E-> E *·E   [== <= ) * + != < > >=]
+
+  I176:
+L->·L [ E ]   [== <= ) * + [ < != > >=]
+E->·- E   [== <= ) * + < != > >=]
+E->·E + E   [== <= ) * + != < > >=]
+E->·float_num   [== <= ) * + < != > >=]
+E->·E * E   [== <= ) * + != < > >=]
+E->·L   [== <= ) * + != < > >=]
+L->·id [ E ]   [== <= ) * [ + != < > >=]
+E->·int_num   [== <= ) * + != < > >=]
+E-> E +·E   [== <= ) * + != < > >=]
+E->·id   [== <= ) * + != < > >=]
+E->·( E )   [== <= ) * + != < > >=]
+
+  I177:
+E->·( E )   [or and ) * +]
+E->·L   [or and ) * +]
+E->·id   [or and ) * +]
+E->·float_num   [or and ) * +]
+E->·E + E   [or and ) * +]
+L->·L [ E ]   [or and ) * + []
+E->·- E   [or and ) * +]
+E->·E * E   [or and ) * +]
+B-> E !=·E   [or and )]
+L->·id [ E ]   [or and ) * [ +]
+E->·int_num   [or and ) * +]
+
+  I178:
+E->·( E )   [or and ) * +]
+E->·L   [or and ) * +]
+B-> E <·E   [or and )]
+E->·id   [or and ) * +]
+E->·float_num   [or and ) * +]
+E->·E + E   [or and ) * +]
+L->·L [ E ]   [or and ) * + []
+E->·- E   [or and ) * +]
+E->·E * E   [or and ) * +]
+L->·id [ E ]   [or and ) * [ +]
+E->·int_num   [or and ) * +]
+
+  I179:
+E->·( E )   [or and ) * +]
+E->·L   [or and ) * +]
+E->·id   [or and ) * +]
+E->·float_num   [or and ) * +]
+B-> E >·E   [or and )]
+E->·E + E   [or and ) * +]
+L->·L [ E ]   [or and ) * + []
+E->·- E   [or and ) * +]
+E->·E * E   [or and ) * +]
+L->·id [ E ]   [or and ) * [ +]
+E->·int_num   [or and ) * +]
+
+  I180:
+E->·( E )   [or and ) * +]
+E->·L   [or and ) * +]
+E->·id   [or and ) * +]
+E->·float_num   [or and ) * +]
+E->·E + E   [or and ) * +]
+L->·L [ E ]   [or and ) * + []
+E->·- E   [or and ) * +]
+B-> E >=·E   [or and )]
+E->·E * E   [or and ) * +]
+L->·id [ E ]   [or and ) * [ +]
+E->·int_num   [or and ) * +]
+
+  I181:
+B-> B·and M B   [or and )]
+B-> ( B·)   [or and )]
+B-> B·or M B   [or and )]
+
+  I182:
+B-> E·== E   [or and )]
+B-> E·<= E   [or and )]
+E-> E·* E   [== <= ) * + != < > >=]
+B-> E·!= E   [or and )]
+E-> ( E·)   [== <= ) * + != < > >=]
+B-> E·> E   [or and )]
+E-> E·+ E   [== <= ) * + != < > >=]
+B-> E·< E   [or and )]
+B-> E·>= E   [or and )]
+
+  I183:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L-> id [·E ]   [== <= ) * + [ < != > >=]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I184:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+L-> L [·E ]   [== <= ) * + [ < != > >=]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I185:
+ E-> int_num·   [== <= ) * + != < > >=]
+
+  I186:
+ E-> - E·   [== <= ) * + < != > >=]
+E-> E·* E   [== <= ) * + != < > >=]
+E-> E·+ E   [== <= ) * + != < > >=]
+
+  I187:
+E->·int_num   [) * +]
+L->·L [ E ]   [) * [ +]
+E->·L   [) * +]
+E->·E + E   [) * +]
+E->·( E )   [) * +]
+E->·E * E   [) * +]
+E-> (·E )   [== <= ) * + != < > >=]
+E->·- E   [) * +]
+E->·id   [) * +]
+L->·id [ E ]   [) * + []
+E->·float_num   [) * +]
+
+  I188:
+L-> id·[ E ]   [== <= ) * [ + != < > >=]
+ E-> id·   [== <= ) * + != < > >=]
+
+  I189:
+L-> L·[ E ]   [== <= ) * + [ < != > >=]
+ E-> L·   [== <= ) * + != < > >=]
+
+  I190:
+E-> E·* E   [* + ]]
+L-> id [ E·]   [== <= * + [ < != > >=]
+E-> E·+ E   [* + ]]
+
+  I191:
+E-> E·* E   [* + ]]
+L-> L [ E·]   [== <= * + [ < != > >=]
+E-> E·+ E   [* + ]]
+
+  I192:
+E-> E·* E   [) * +]
+E-> ( E·)   [== <= * + != < > >=]
+E-> E·+ E   [) * +]
+
+  I193:
+E->·- E   [* + ]]
+L-> id [·E ]   [== <= * [ + != < > >=]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I194:
+ Dv'-> Dv Dv'·   [)]
+
+  I195:
+Dv-> T id·;   [) float int]
+
+  I196:
+D-> proc id ( Dv' )·{ P }   [call proc $ record id float while if int]
+
+  I197:
+D->·proc id ( ) { P }   [call proc record id float while if } int]
+D->·Dv   [call proc record id while float if } int]
+D-> proc id ( ) {·P }   [call proc $ record id float while if int]
+S->·if B then { M S' N } else { M S' }   [call proc record id while float } if int]
+L->·L [ E ]   [[ =]
+S->·id = E ;   [call proc record id while float if } int]
+S->·while M B do { M S' }   [call proc record id while float if } int]
+D->·proc id ( Dv' ) { P }   [call proc record id float while } if int]
+T->·X   [id]
+ P->·   [}]
+P->·S P   [}]
+T->·X C'   [id]
+X->·int   [id []
+Dv->·T id ;   [call proc record id while float } if int]
+D->·record id { Dv' }   [call proc record id while float } if int]
+P->·D P   [}]
+X->·float   [id []
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call proc record id while float } if int]
+S->·call id ( Elist ) ;   [call proc record id while float } if int]
+S->·L = E ;   [call proc record id while float } if int]
+
+  I198:
+ E-> E * E·   [* + ]]
+E-> E·* E   [* + ]]
+E-> E·+ E   [* + ]]
+
+  I199:
+E-> E·* E   [* + ]]
+ E-> E + E·   [+ ]]
+E-> E·+ E   [* + ]]
+
+  I200:
+ E-> ( E )·   [* + ]]
+
+  I201:
+E->·int_num   [) * +]
+L->·L [ E ]   [) * [ +]
+E->·L   [) * +]
+E->·E + E   [) * +]
+E->·( E )   [) * +]
+E->·E * E   [) * +]
+E->·- E   [) * +]
+E->·id   [) * +]
+L->·id [ E ]   [) * + []
+E-> E *·E   [) * +]
+E->·float_num   [) * +]
+
+  I202:
+E->·int_num   [) * +]
+L->·L [ E ]   [) * [ +]
+E->·L   [) * +]
+E->·E + E   [) * +]
+E->·( E )   [) * +]
+E->·E * E   [) * +]
+E-> E +·E   [) * +]
+E->·- E   [) * +]
+E->·id   [) * +]
+L->·id [ E ]   [) * + []
+E->·float_num   [) * +]
+
+  I203:
+E-> E·* E   [) * +]
+E-> ( E·)   [) * +]
+E-> E·+ E   [) * +]
+
+  I204:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+L-> id [·E ]   [) * + []
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I205:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+L-> L [·E ]   [) * [ +]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I206:
+E-> E·* E   [) * +]
+ E-> - E·   [) * +]
+E-> E·+ E   [) * +]
+
+  I207:
+E-> E·* E   [* + ]]
+L-> id [ E·]   [* + [ ]]
+E-> E·+ E   [* + ]]
+
+  I208:
+L-> L [ E·]   [* [ + ]]
+E-> E·* E   [* + ]]
+E-> E·+ E   [* + ]]
+
+  I209:
+E-> E·+ E   [* ; +]
+E-> E·* E   [* ; +]
+ E-> E * E·   [* ; +]
+
+  I210:
+E-> E·+ E   [* ; +]
+E-> E·* E   [* ; +]
+ E-> E + E·   [; +]
+
+  I211:
+ E-> ( E )·   [* ; +]
+
+  I212:
+L-> id [ E·]   [* + ; []
+E-> E·* E   [* + ]]
+E-> E·+ E   [* + ]]
+
+  I213:
+L-> L [ E·]   [* [ + ;]
+E-> E·* E   [* + ]]
+E-> E·+ E   [* + ]]
+
+  I214:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+E->·int_num   [== <= * + < != > >=]
+B->·false   [or and do]
+B->·B and M B   [or and do]
+B->·B or M B   [or and do]
+L->·L [ E ]   [== <= * + [ < != > >=]
+E->·id   [== <= * + < != > >=]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+B->·E >= E   [or and do]
+B->·E > E   [or and do]
+B->·E <= E   [or and do]
+B->·not B   [or and do]
+B->·true   [or and do]
+E->·E * E   [== <= * + != < > >=]
+B-> B or M·B   [or and do]
+B->·( B )   [or and do]
+B->·E != E   [or and do]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·E < E   [or and do]
+B->·E == E   [or and do]
+
+  I215:
+E->·float_num   [== <= * + < != > >=]
+B-> B and M·B   [or and do]
+E->·E + E   [== <= * + != < > >=]
+E->·int_num   [== <= * + < != > >=]
+B->·false   [or and do]
+B->·B and M B   [or and do]
+B->·B or M B   [or and do]
+L->·L [ E ]   [== <= * + [ < != > >=]
+E->·id   [== <= * + < != > >=]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+B->·E >= E   [or and do]
+B->·E > E   [or and do]
+B->·E <= E   [or and do]
+B->·not B   [or and do]
+B->·true   [or and do]
+E->·E * E   [== <= * + != < > >=]
+B->·( B )   [or and do]
+B->·E != E   [or and do]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·E < E   [or and do]
+B->·E == E   [or and do]
+
+  I216:
+ M->·   [call proc $ record id while float } if int]
+S-> while M B do {·M S' }   [call proc $ record id while float if int]
+
+  I217:
+ E-> int_num·   [or and * do +]
+
+  I218:
+E-> E·* E   [or and * + do]
+ B-> E == E·   [or and do]
+E-> E·+ E   [or and * do +]
+
+  I219:
+E->·int_num   [) * +]
+E-> (·E )   [or and * do +]
+L->·L [ E ]   [) * [ +]
+E->·L   [) * +]
+E->·E + E   [) * +]
+E->·( E )   [) * +]
+E->·E * E   [) * +]
+E->·- E   [) * +]
+E->·id   [) * +]
+L->·id [ E ]   [) * + []
+E->·float_num   [) * +]
+
+  I220:
+L-> id·[ E ]   [or and * do [ +]
+ E-> id·   [or and * + do]
+
+  I221:
+ E-> L·   [or and * + do]
+L-> L·[ E ]   [or and * + [ do]
+
+  I222:
+E->·- E   [or and * do +]
+E->·int_num   [or and * do +]
+E->·( E )   [or and * do +]
+L->·L [ E ]   [or and * + [ do]
+L->·id [ E ]   [or and * do [ +]
+E->·id   [or and * + do]
+E->·L   [or and * + do]
+E->·float_num   [or and * + do]
+E->·E + E   [or and * do +]
+E-> -·E   [or and * do +]
+E->·E * E   [or and * + do]
+
+  I223:
+ E-> float_num·   [or and * + do]
+
+  I224:
+E-> E·* E   [or and * + do]
+E-> E·+ E   [or and * do +]
+ B-> E <= E·   [or and do]
+
+  I225:
+ B-> E != E·   [or and do]
+E-> E·* E   [or and * + do]
+E-> E·+ E   [or and * do +]
+
+  I226:
+E-> E·* E   [or and * + do]
+ B-> E < E·   [or and do]
+E-> E·+ E   [or and * do +]
+
+  I227:
+ B-> E > E·   [or and do]
+E-> E·* E   [or and * + do]
+E-> E·+ E   [or and * do +]
+
+  I228:
+ B-> E >= E·   [or and do]
+E-> E·* E   [or and * + do]
+E-> E·+ E   [or and * do +]
+
+  I229:
+ B-> ( B )·   [or and do]
+
+  I230:
+E->·L   [) * + ,]
+E-> E *·E   [) * + ,]
+E->·- E   [) * + ,]
+E->·float_num   [) * + ,]
+L->·L [ E ]   [) * [ + ,]
+L->·id [ E ]   [) * + [ ,]
+E->·E + E   [) * + ,]
+E->·( E )   [) * + ,]
+E->·E * E   [) * + ,]
+E->·id   [) * + ,]
+E->·int_num   [) * + ,]
+
+  I231:
+E->·L   [) * + ,]
+E->·- E   [) * + ,]
+E->·float_num   [) * + ,]
+L->·L [ E ]   [) * [ + ,]
+L->·id [ E ]   [) * + [ ,]
+E->·E + E   [) * + ,]
+E->·( E )   [) * + ,]
+E->·E * E   [) * + ,]
+E-> E +·E   [) * + ,]
+E->·id   [) * + ,]
+E->·int_num   [) * + ,]
+
+  I232:
+E->·- E   [) * + ,]
+E->·float_num   [) * + ,]
+L->·L [ E ]   [) * [ + ,]
+L->·id [ E ]   [) * + [ ,]
+Elist-> E ,·Elist   [)]
+E->·E + E   [) * + ,]
+Elist->·E , Elist   [)]
+E->·E * E   [) * + ,]
+E->·id   [) * + ,]
+E->·L   [) * + ,]
+E->·( E )   [) * + ,]
+ Elist->·   [)]
+Elist->·E   [)]
+E->·int_num   [) * + ,]
+
+  I233:
+E-> E·* E   [) * +]
+E-> ( E·)   [) * + ,]
+E-> E·+ E   [) * +]
+
+  I234:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L-> id [·E ]   [) * + [ ,]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I235:
+E->·- E   [* + ]]
+L-> L [·E ]   [) * [ + ,]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I236:
+S-> call id ( Elist )·;   [call proc $ record id while float if int]
+
+  I237:
+E-> E·+ E   [) * + ,]
+ E-> - E·   [) * + ,]
+E-> E·* E   [) * + ,]
+
+  I238:
+ Dv'-> Dv Dv'·   [}]
+
+  I239:
+ D-> record id { Dv' }·   [call proc $ record id while float if int]
+
+  I240:
+Dv-> T id·;   [float } int]
+
+  I241:
+ B-> B or M B·   [or and then]
+B-> B·or M B   [or and then]
+B-> B·and M B   [or and then]
+
+  I242:
+ B-> B and M B·   [or and then]
+B-> B·or M B   [or and then]
+B-> B·and M B   [or and then]
+
+  I243:
+S->·L = E ;   [call proc $ record id while float } if int]
+S->·if B then { M S' N } else { M S' }   [call proc $ record id while float } if int]
+ S'->·   [proc $ record float } int]
+L->·L [ E ]   [[ =]
+S->·id = E ;   [call proc $ record id while float if } int]
+S'->·S M S'   [call proc $ record id float while if } int]
+S->·if B then { M S' }   [call proc $ record id float while } if int]
+L->·id [ E ]   [[ =]
+S-> if B then { M·S' N } else { M S' }   [call proc $ record id while float if int]
+S-> if B then { M·S' }   [call proc $ record id while float if int]
+S->·call id ( Elist ) ;   [call proc $ record id while float } if int]
+S->·while M B do { M S' }   [call proc $ record id while float if } int]
+
+  I244:
+E->·- E   [or and * then +]
+L->·id [ E ]   [or and * then [ +]
+E->·E + E   [or and * then +]
+E-> E *·E   [or and * + then]
+E->·E * E   [or and * + then]
+E->·float_num   [or and * + then]
+E->·int_num   [or and * then +]
+E->·( E )   [or and * then +]
+E->·id   [or and * + then]
+L->·L [ E ]   [or and * + [ then]
+E->·L   [or and * + then]
+
+  I245:
+E->·- E   [or and * then +]
+L->·id [ E ]   [or and * then [ +]
+E->·E + E   [or and * then +]
+E->·E * E   [or and * + then]
+E-> E +·E   [or and * then +]
+E->·float_num   [or and * + then]
+E->·int_num   [or and * then +]
+E->·( E )   [or and * then +]
+E->·id   [or and * + then]
+L->·L [ E ]   [or and * + [ then]
+E->·L   [or and * + then]
+
+  I246:
+E-> E·* E   [) * +]
+E-> ( E·)   [or and * then +]
+E-> E·+ E   [) * +]
+
+  I247:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+L-> id [·E ]   [or and * then [ +]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I248:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+L-> L [·E ]   [or and * + [ then]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I249:
+E-> E·+ E   [or and * then +]
+E-> E·* E   [or and * + then]
+ E-> - E·   [or and * then +]
+
+  I250:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+B->·E <= E   [or and )]
+B->·( B )   [or and )]
+E->·int_num   [== <= * + < != > >=]
+B-> B or M·B   [or and )]
+L->·L [ E ]   [== <= * + [ < != > >=]
+B->·E > E   [or and )]
+B->·not B   [or and )]
+E->·id   [== <= * + < != > >=]
+B->·B and M B   [or and )]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+B->·true   [or and )]
+B->·E < E   [or and )]
+B->·E >= E   [or and )]
+E->·E * E   [== <= * + != < > >=]
+B->·E != E   [or and )]
+B->·false   [or and )]
+B->·E == E   [or and )]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·B or M B   [or and )]
+
+  I251:
+E->·float_num   [== <= * + < != > >=]
+B-> B and M·B   [or and )]
+E->·E + E   [== <= * + != < > >=]
+B->·E <= E   [or and )]
+B->·( B )   [or and )]
+E->·int_num   [== <= * + < != > >=]
+L->·L [ E ]   [== <= * + [ < != > >=]
+B->·E > E   [or and )]
+B->·not B   [or and )]
+E->·id   [== <= * + < != > >=]
+B->·B and M B   [or and )]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+B->·true   [or and )]
+B->·E < E   [or and )]
+B->·E >= E   [or and )]
+E->·E * E   [== <= * + != < > >=]
+B->·E != E   [or and )]
+B->·false   [or and )]
+B->·E == E   [or and )]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·B or M B   [or and )]
+
+  I252:
+ E-> int_num·   [or and ) * +]
+
+  I253:
+E-> E·+ E   [or and ) * +]
+E-> E·* E   [or and ) * +]
+ B-> E == E·   [or and )]
+
+  I254:
+E->·int_num   [) * +]
+L->·L [ E ]   [) * [ +]
+E->·L   [) * +]
+E->·E + E   [) * +]
+E->·( E )   [) * +]
+E->·E * E   [) * +]
+E->·- E   [) * +]
+E-> (·E )   [or and ) * +]
+E->·id   [) * +]
+L->·id [ E ]   [) * + []
+E->·float_num   [) * +]
+
+  I255:
+ E-> id·   [or and ) * +]
+L-> id·[ E ]   [or and ) * [ +]
+
+  I256:
+L-> L·[ E ]   [or and ) * + []
+ E-> L·   [or and ) * +]
+
+  I257:
+E->·( E )   [or and ) * +]
+E->·L   [or and ) * +]
+E-> -·E   [or and ) * +]
+E->·id   [or and ) * +]
+E->·float_num   [or and ) * +]
+E->·E + E   [or and ) * +]
+L->·L [ E ]   [or and ) * + []
+E->·- E   [or and ) * +]
+E->·E * E   [or and ) * +]
+L->·id [ E ]   [or and ) * [ +]
+E->·int_num   [or and ) * +]
+
+  I258:
+ E-> float_num·   [or and ) * +]
+
+  I259:
+E-> E·+ E   [or and ) * +]
+E-> E·* E   [or and ) * +]
+ B-> E <= E·   [or and )]
+
+  I260:
+ E-> E * E·   [== <= ) * + != < > >=]
+E-> E·* E   [== <= ) * + != < > >=]
+E-> E·+ E   [== <= ) * + != < > >=]
+
+  I261:
+ E-> E + E·   [== <= ) + != < > >=]
+E-> E·* E   [== <= ) * + != < > >=]
+E-> E·+ E   [== <= ) * + != < > >=]
+
+  I262:
+E-> E·+ E   [or and ) * +]
+E-> E·* E   [or and ) * +]
+ B-> E != E·   [or and )]
+
+  I263:
+E-> E·+ E   [or and ) * +]
+E-> E·* E   [or and ) * +]
+ B-> E < E·   [or and )]
+
+  I264:
+E-> E·+ E   [or and ) * +]
+E-> E·* E   [or and ) * +]
+ B-> E > E·   [or and )]
+
+  I265:
+E-> E·+ E   [or and ) * +]
+E-> E·* E   [or and ) * +]
+ B-> E >= E·   [or and )]
+
+  I266:
+ B-> ( B )·   [or and )]
+
+  I267:
+ E-> ( E )·   [== <= ) * + != < > >=]
+
+  I268:
+L-> id [ E·]   [== <= ) * + [ < != > >=]
+E-> E·* E   [* + ]]
+E-> E·+ E   [* + ]]
+
+  I269:
+L-> L [ E·]   [== <= ) * + [ < != > >=]
+E-> E·* E   [* + ]]
+E-> E·+ E   [* + ]]
+
+  I270:
+E-> E·* E   [) * +]
+E-> ( E·)   [== <= ) * + != < > >=]
+E-> E·+ E   [) * +]
+
+  I271:
+E->·- E   [* + ]]
+L-> id [·E ]   [== <= ) * [ + != < > >=]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I272:
+ L-> id [ E ]·   [== <= * + [ < != > >=]
+
+  I273:
+ L-> L [ E ]·   [== <= * + [ < != > >=]
+
+  I274:
+L-> id [ E·]   [== <= * [ + != < > >=]
+E-> E·* E   [* + ]]
+E-> E·+ E   [* + ]]
+
+  I275:
+ Dv-> T id ;·   [) float int]
+
+  I276:
+D->·proc id ( ) { P }   [call proc record id float while if } int]
+D->·Dv   [call proc record id while float if } int]
+S->·if B then { M S' N } else { M S' }   [call proc record id while float } if int]
+L->·L [ E ]   [[ =]
+S->·id = E ;   [call proc record id while float if } int]
+S->·while M B do { M S' }   [call proc record id while float if } int]
+D->·proc id ( Dv' ) { P }   [call proc record id float while } if int]
+T->·X   [id]
+ P->·   [}]
+P->·S P   [}]
+D-> proc id ( Dv' ) {·P }   [call proc $ record id float while if int]
+T->·X C'   [id]
+X->·int   [id []
+Dv->·T id ;   [call proc record id while float } if int]
+D->·record id { Dv' }   [call proc record id while float } if int]
+P->·D P   [}]
+X->·float   [id []
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call proc record id while float } if int]
+S->·call id ( Elist ) ;   [call proc record id while float } if int]
+S->·L = E ;   [call proc record id while float } if int]
+
+  I277:
+D-> proc·id ( ) { P }   [call proc record id float while if } int]
+D-> proc·id ( Dv' ) { P }   [call proc record id float while } if int]
+
+  I278:
+D->·proc id ( ) { P }   [call proc record id float while if } int]
+D->·Dv   [call proc record id while float if } int]
+S->·if B then { M S' N } else { M S' }   [call proc record id while float } if int]
+L->·L [ E ]   [[ =]
+S->·id = E ;   [call proc record id while float if } int]
+S->·while M B do { M S' }   [call proc record id while float if } int]
+D->·proc id ( Dv' ) { P }   [call proc record id float while } if int]
+T->·X   [id]
+ P->·   [}]
+P->·S P   [}]
+T->·X C'   [id]
+X->·int   [id []
+Dv->·T id ;   [call proc record id while float } if int]
+D->·record id { Dv' }   [call proc record id while float } if int]
+P->·D P   [}]
+P-> D·P   [}]
+X->·float   [id []
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call proc record id while float } if int]
+S->·call id ( Elist ) ;   [call proc record id while float } if int]
+S->·L = E ;   [call proc record id while float } if int]
+
+  I279:
+L-> L·[ E ]   [[ =]
+S-> L·= E ;   [call proc record id while float } if int]
+
+  I280:
+ M->·   [not int_num true false ( id - float_num]
+S-> while·M B do { M S' }   [call proc record id while float if } int]
+
+  I281:
+D-> proc id ( ) { P·}   [call proc $ record id float while if int]
+
+  I282:
+S-> call·id ( Elist ) ;   [call proc record id while float } if int]
+
+  I283:
+ D-> Dv·   [call proc record id while float if } int]
+
+  I284:
+D->·proc id ( ) { P }   [call proc record id float while if } int]
+D->·Dv   [call proc record id while float if } int]
+S->·if B then { M S' N } else { M S' }   [call proc record id while float } if int]
+L->·L [ E ]   [[ =]
+S->·id = E ;   [call proc record id while float if } int]
+S->·while M B do { M S' }   [call proc record id while float if } int]
+D->·proc id ( Dv' ) { P }   [call proc record id float while } if int]
+T->·X   [id]
+ P->·   [}]
+P->·S P   [}]
+P-> S·P   [}]
+T->·X C'   [id]
+X->·int   [id []
+Dv->·T id ;   [call proc record id while float } if int]
+D->·record id { Dv' }   [call proc record id while float } if int]
+P->·D P   [}]
+X->·float   [id []
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call proc record id while float } if int]
+S->·call id ( Elist ) ;   [call proc record id while float } if int]
+S->·L = E ;   [call proc record id while float } if int]
+
+  I285:
+Dv-> T·id ;   [call proc record id while float } if int]
+
+  I286:
+D-> record·id { Dv' }   [call proc record id while float } if int]
+
+  I287:
+S-> id·= E ;   [call proc record id while float if } int]
+L-> id·[ E ]   [[ =]
+
+  I288:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+B->·false   [or and then]
+E->·int_num   [== <= * + < != > >=]
+B->·not B   [or and then]
+B->·E <= E   [or and then]
+B->·( B )   [or and then]
+L->·L [ E ]   [== <= * + [ < != > >=]
+B->·true   [or and then]
+E->·id   [== <= * + < != > >=]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+S-> if·B then { M S' N } else { M S' }   [call proc record id while float } if int]
+E->·E * E   [== <= * + != < > >=]
+B->·B and M B   [or and then]
+S-> if·B then { M S' }   [call proc record id while float } if int]
+B->·E == E   [or and then]
+B->·B or M B   [or and then]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·E < E   [or and then]
+B->·E > E   [or and then]
+B->·E != E   [or and then]
+B->·E >= E   [or and then]
+
+  I289:
+E-> E·* E   [) * +]
+ E-> E * E·   [) * +]
+E-> E·+ E   [) * +]
+
+  I290:
+E-> E·* E   [) * +]
+ E-> E + E·   [) +]
+E-> E·+ E   [) * +]
+
+  I291:
+ E-> ( E )·   [) * +]
+
+  I292:
+E-> E·* E   [* + ]]
+L-> id [ E·]   [) * + []
+E-> E·+ E   [* + ]]
+
+  I293:
+E-> E·* E   [* + ]]
+L-> L [ E·]   [) * [ +]
+E-> E·+ E   [* + ]]
+
+  I294:
+ L-> id [ E ]·   [* + [ ]]
+
+  I295:
+ L-> L [ E ]·   [* [ + ]]
+
+  I296:
+ L-> id [ E ]·   [* + ; []
+
+  I297:
+ L-> L [ E ]·   [* [ + ;]
+
+  I298:
+B-> B·or M B   [or and do]
+ B-> B or M B·   [or and do]
+B-> B·and M B   [or and do]
+
+  I299:
+B-> B·or M B   [or and do]
+ B-> B and M B·   [or and do]
+B-> B·and M B   [or and do]
+
+  I300:
+ S'->·   [}]
+S->·call id ( Elist ) ;   [call id while } if]
+L->·L [ E ]   [[ =]
+S'->·S M S'   [}]
+S->·if B then { M S' N } else { M S' }   [call id while } if]
+S-> while M B do { M·S' }   [call proc $ record id while float if int]
+S->·L = E ;   [call id while } if]
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call id while } if]
+S->·while M B do { M S' }   [call id while if }]
+S->·id = E ;   [call id while } if]
+
+  I301:
+E->·- E   [or and * do +]
+E->·int_num   [or and * do +]
+E->·( E )   [or and * do +]
+L->·L [ E ]   [or and * + [ do]
+E-> E *·E   [or and * + do]
+L->·id [ E ]   [or and * do [ +]
+E->·id   [or and * + do]
+E->·L   [or and * + do]
+E->·float_num   [or and * + do]
+E->·E + E   [or and * do +]
+E->·E * E   [or and * + do]
+
+  I302:
+E->·- E   [or and * do +]
+E->·int_num   [or and * do +]
+E-> E +·E   [or and * do +]
+E->·( E )   [or and * do +]
+L->·L [ E ]   [or and * + [ do]
+L->·id [ E ]   [or and * do [ +]
+E->·id   [or and * + do]
+E->·L   [or and * + do]
+E->·float_num   [or and * + do]
+E->·E + E   [or and * do +]
+E->·E * E   [or and * + do]
+
+  I303:
+E-> E·* E   [) * +]
+E-> ( E·)   [or and * do +]
+E-> E·+ E   [) * +]
+
+  I304:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+L-> id [·E ]   [or and * do [ +]
+E->·int_num   [* + ]]
+
+  I305:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+L-> L [·E ]   [or and * + [ do]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I306:
+E-> E·* E   [or and * + do]
+E-> E·+ E   [or and * do +]
+ E-> - E·   [or and * do +]
+
+  I307:
+E-> E·+ E   [) * + ,]
+E-> E·* E   [) * + ,]
+ E-> E * E·   [) * + ,]
+
+  I308:
+E-> E·+ E   [) * + ,]
+ E-> E + E·   [) + ,]
+E-> E·* E   [) * + ,]
+
+  I309:
+ Elist-> E , Elist·   [)]
+
+  I310:
+ E-> ( E )·   [) * + ,]
+
+  I311:
+E-> E·* E   [* + ]]
+L-> id [ E·]   [) * + [ ,]
+E-> E·+ E   [* + ]]
+
+  I312:
+L-> L [ E·]   [) * [ + ,]
+E-> E·* E   [* + ]]
+E-> E·+ E   [* + ]]
+
+  I313:
+ S-> call id ( Elist ) ;·   [call proc $ record id while float if int]
+
+  I314:
+ Dv-> T id ;·   [float } int]
+
+  I315:
+S-> call·id ( Elist ) ;   [call proc $ record id while float } if int]
+
+  I316:
+ M->·   [call proc $ record id while float } if int]
+S'-> S·M S'   [call proc $ record id float while if } int]
+
+  I317:
+S-> if B then { M S'·N } else { M S' }   [call proc $ record id while float if int]
+S-> if B then { M S'·}   [call proc $ record id while float if int]
+ N->·   [}]
+
+  I318:
+S-> id·= E ;   [call proc $ record id while float if } int]
+L-> id·[ E ]   [[ =]
+
+  I319:
+S-> L·= E ;   [call proc $ record id while float } if int]
+L-> L·[ E ]   [[ =]
+
+  I320:
+ M->·   [not int_num true false ( id - float_num]
+S-> while·M B do { M S' }   [call proc $ record id while float if } int]
+
+  I321:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+B->·false   [or and then]
+E->·int_num   [== <= * + < != > >=]
+B->·not B   [or and then]
+B->·E <= E   [or and then]
+B->·( B )   [or and then]
+L->·L [ E ]   [== <= * + [ < != > >=]
+B->·true   [or and then]
+E->·id   [== <= * + < != > >=]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+E->·E * E   [== <= * + != < > >=]
+B->·B and M B   [or and then]
+B->·E == E   [or and then]
+S-> if·B then { M S' }   [call proc $ record id float while } if int]
+B->·B or M B   [or and then]
+S-> if·B then { M S' N } else { M S' }   [call proc $ record id while float } if int]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·E < E   [or and then]
+B->·E > E   [or and then]
+B->·E != E   [or and then]
+B->·E >= E   [or and then]
+
+  I322:
+E-> E·+ E   [or and * then +]
+ E-> E * E·   [or and * + then]
+E-> E·* E   [or and * + then]
+
+  I323:
+E-> E·+ E   [or and * then +]
+ E-> E + E·   [or and then +]
+E-> E·* E   [or and * + then]
+
+  I324:
+ E-> ( E )·   [or and * then +]
+
+  I325:
+L-> id [ E·]   [or and * then [ +]
+E-> E·* E   [* + ]]
+E-> E·+ E   [* + ]]
+
+  I326:
+E-> E·* E   [* + ]]
+L-> L [ E·]   [or and * + [ then]
+E-> E·+ E   [* + ]]
+
+  I327:
+B-> B·and M B   [or and )]
+ B-> B or M B·   [or and )]
+B-> B·or M B   [or and )]
+
+  I328:
+B-> B·and M B   [or and )]
+ B-> B and M B·   [or and )]
+B-> B·or M B   [or and )]
+
+  I329:
+E->·( E )   [or and ) * +]
+E->·L   [or and ) * +]
+E->·id   [or and ) * +]
+E->·float_num   [or and ) * +]
+E->·E + E   [or and ) * +]
+L->·L [ E ]   [or and ) * + []
+E->·- E   [or and ) * +]
+E->·E * E   [or and ) * +]
+L->·id [ E ]   [or and ) * [ +]
+E-> E *·E   [or and ) * +]
+E->·int_num   [or and ) * +]
+
+  I330:
+E->·( E )   [or and ) * +]
+E->·L   [or and ) * +]
+E->·id   [or and ) * +]
+E->·float_num   [or and ) * +]
+E->·E + E   [or and ) * +]
+L->·L [ E ]   [or and ) * + []
+E->·- E   [or and ) * +]
+E-> E +·E   [or and ) * +]
+E->·E * E   [or and ) * +]
+L->·id [ E ]   [or and ) * [ +]
+E->·int_num   [or and ) * +]
+
+  I331:
+E-> E·* E   [) * +]
+E-> ( E·)   [or and ) * +]
+E-> E·+ E   [) * +]
+
+  I332:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+L-> id [·E ]   [or and ) * [ +]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I333:
+E->·- E   [* + ]]
+E->·float_num   [* + ]]
+E->·id   [* + ]]
+E->·E * E   [* + ]]
+E->·( E )   [* + ]]
+E->·E + E   [* + ]]
+L->·id [ E ]   [* + [ ]]
+L-> L [·E ]   [or and ) * + []
+E->·L   [* + ]]
+L->·L [ E ]   [* [ + ]]
+E->·int_num   [* + ]]
+
+  I334:
+E-> E·+ E   [or and ) * +]
+E-> E·* E   [or and ) * +]
+ E-> - E·   [or and ) * +]
+
+  I335:
+ L-> id [ E ]·   [== <= ) * + [ < != > >=]
+
+  I336:
+ L-> L [ E ]·   [== <= ) * + [ < != > >=]
+
+  I337:
+L-> id [ E·]   [== <= ) * [ + != < > >=]
+E-> E·* E   [* + ]]
+E-> E·+ E   [* + ]]
+
+  I338:
+ L-> id [ E ]·   [== <= * [ + != < > >=]
+
+  I339:
+D-> proc id ( Dv' ) { P·}   [call proc $ record id float while if int]
+
+  I340:
+D-> proc id·( Dv' ) { P }   [call proc record id float while } if int]
+D-> proc id·( ) { P }   [call proc record id float while if } int]
+
+  I341:
+ P-> D P·   [}]
+
+  I342:
+E->·int_num   [* ; +]
+S-> L =·E ;   [call proc record id while float } if int]
+L->·id [ E ]   [* + ; []
+E->·E + E   [* ; +]
+E->·( E )   [* ; +]
+E->·float_num   [* ; +]
+E->·L   [* + ;]
+E->·E * E   [* ; +]
+E->·id   [* ; +]
+L->·L [ E ]   [* [ + ;]
+E->·- E   [* + ;]
+
+  I343:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+E->·int_num   [== <= * + < != > >=]
+B->·false   [or and do]
+B->·B and M B   [or and do]
+B->·B or M B   [or and do]
+L->·L [ E ]   [== <= * + [ < != > >=]
+E->·id   [== <= * + < != > >=]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+B->·E >= E   [or and do]
+B->·E > E   [or and do]
+B->·E <= E   [or and do]
+S-> while M·B do { M S' }   [call proc record id while float if } int]
+B->·not B   [or and do]
+B->·true   [or and do]
+E->·E * E   [== <= * + != < > >=]
+B->·( B )   [or and do]
+B->·E != E   [or and do]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·E < E   [or and do]
+B->·E == E   [or and do]
+
+  I344:
+ D-> proc id ( ) { P }·   [call proc $ record id float while if int]
+
+  I345:
+S-> call id·( Elist ) ;   [call proc record id while float } if int]
+
+  I346:
+ P-> S P·   [}]
+
+  I347:
+Dv-> T id·;   [call proc record id while float } if int]
+
+  I348:
+D-> record id·{ Dv' }   [call proc record id while float } if int]
+
+  I349:
+E->·int_num   [* ; +]
+S-> id =·E ;   [call proc record id while float if } int]
+L->·id [ E ]   [* + ; []
+E->·E + E   [* ; +]
+E->·( E )   [* ; +]
+E->·float_num   [* ; +]
+E->·L   [* + ;]
+E->·E * E   [* ; +]
+E->·id   [* ; +]
+L->·L [ E ]   [* [ + ;]
+E->·- E   [* + ;]
+
+  I350:
+S-> if B·then { M S' N } else { M S' }   [call proc record id while float } if int]
+S-> if B·then { M S' }   [call proc record id while float } if int]
+B-> B·or M B   [or and then]
+B-> B·and M B   [or and then]
+
+  I351:
+ L-> id [ E ]·   [) * + []
+
+  I352:
+ L-> L [ E ]·   [) * [ +]
+
+  I353:
+S-> call·id ( Elist ) ;   [call id while } if]
+
+  I354:
+S'-> S·M S'   [}]
+ M->·   [call id while } if]
+
+  I355:
+S-> while M B do { M S'·}   [call proc $ record id while float if int]
+
+  I356:
+S-> id·= E ;   [call id while } if]
+L-> id·[ E ]   [[ =]
+
+  I357:
+S-> L·= E ;   [call id while } if]
+L-> L·[ E ]   [[ =]
+
+  I358:
+ M->·   [not int_num true false ( id - float_num]
+S-> while·M B do { M S' }   [call id while if }]
+
+  I359:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+B->·false   [or and then]
+E->·int_num   [== <= * + < != > >=]
+B->·not B   [or and then]
+B->·E <= E   [or and then]
+B->·( B )   [or and then]
+L->·L [ E ]   [== <= * + [ < != > >=]
+B->·true   [or and then]
+E->·id   [== <= * + < != > >=]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+S-> if·B then { M S' }   [call id while } if]
+E->·E * E   [== <= * + != < > >=]
+B->·B and M B   [or and then]
+B->·E == E   [or and then]
+B->·B or M B   [or and then]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·E < E   [or and then]
+B->·E > E   [or and then]
+B->·E != E   [or and then]
+B->·E >= E   [or and then]
+S-> if·B then { M S' N } else { M S' }   [call id while } if]
+
+  I360:
+ E-> E * E·   [or and * + do]
+E-> E·* E   [or and * + do]
+E-> E·+ E   [or and * do +]
+
+  I361:
+ E-> E + E·   [or and do +]
+E-> E·* E   [or and * + do]
+E-> E·+ E   [or and * do +]
+
+  I362:
+ E-> ( E )·   [or and * do +]
+
+  I363:
+L-> id [ E·]   [or and * do [ +]
+E-> E·* E   [* + ]]
+E-> E·+ E   [* + ]]
+
+  I364:
+E-> E·* E   [* + ]]
+L-> L [ E·]   [or and * + [ do]
+E-> E·+ E   [* + ]]
+
+  I365:
+ L-> id [ E ]·   [) * + [ ,]
+
+  I366:
+ L-> L [ E ]·   [) * [ + ,]
+
+  I367:
+S-> call id·( Elist ) ;   [call proc $ record id while float } if int]
+
+  I368:
+S->·L = E ;   [call proc $ record id while float } if int]
+S'-> S M·S'   [call proc $ record id float while if } int]
+S->·if B then { M S' N } else { M S' }   [call proc $ record id while float } if int]
+ S'->·   [proc $ record float } int]
+L->·L [ E ]   [[ =]
+S->·id = E ;   [call proc $ record id while float if } int]
+S'->·S M S'   [call proc $ record id float while if } int]
+S->·if B then { M S' }   [call proc $ record id float while } if int]
+L->·id [ E ]   [[ =]
+S->·call id ( Elist ) ;   [call proc $ record id while float } if int]
+S->·while M B do { M S' }   [call proc $ record id while float if } int]
+
+  I369:
+ S-> if B then { M S' }·   [call proc $ record id while float if int]
+
+  I370:
+S-> if B then { M S' N·} else { M S' }   [call proc $ record id while float if int]
+
+  I371:
+E->·int_num   [* ; +]
+L->·id [ E ]   [* + ; []
+S-> id =·E ;   [call proc $ record id while float if } int]
+E->·E + E   [* ; +]
+E->·( E )   [* ; +]
+E->·float_num   [* ; +]
+E->·L   [* + ;]
+E->·E * E   [* ; +]
+E->·id   [* ; +]
+L->·L [ E ]   [* [ + ;]
+E->·- E   [* + ;]
+
+  I372:
+S-> L =·E ;   [call proc $ record id while float } if int]
+E->·int_num   [* ; +]
+L->·id [ E ]   [* + ; []
+E->·E + E   [* ; +]
+E->·( E )   [* ; +]
+E->·float_num   [* ; +]
+E->·L   [* + ;]
+E->·E * E   [* ; +]
+E->·id   [* ; +]
+L->·L [ E ]   [* [ + ;]
+E->·- E   [* + ;]
+
+  I373:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+E->·int_num   [== <= * + < != > >=]
+B->·false   [or and do]
+B->·B and M B   [or and do]
+B->·B or M B   [or and do]
+L->·L [ E ]   [== <= * + [ < != > >=]
+E->·id   [== <= * + < != > >=]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+B->·E >= E   [or and do]
+B->·E > E   [or and do]
+B->·E <= E   [or and do]
+B->·not B   [or and do]
+B->·true   [or and do]
+E->·E * E   [== <= * + != < > >=]
+S-> while M·B do { M S' }   [call proc $ record id while float if } int]
+B->·( B )   [or and do]
+B->·E != E   [or and do]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·E < E   [or and do]
+B->·E == E   [or and do]
+
+  I374:
+S-> if B·then { M S' N } else { M S' }   [call proc $ record id while float } if int]
+B-> B·or M B   [or and then]
+B-> B·and M B   [or and then]
+S-> if B·then { M S' }   [call proc $ record id float while } if int]
+
+  I375:
+ L-> id [ E ]·   [or and * then [ +]
+
+  I376:
+ L-> L [ E ]·   [or and * + [ then]
+
+  I377:
+E-> E·+ E   [or and ) * +]
+E-> E·* E   [or and ) * +]
+ E-> E * E·   [or and ) * +]
+
+  I378:
+E-> E·+ E   [or and ) * +]
+ E-> E + E·   [or and ) +]
+E-> E·* E   [or and ) * +]
+
+  I379:
+ E-> ( E )·   [or and ) * +]
+
+  I380:
+E-> E·* E   [* + ]]
+L-> id [ E·]   [or and ) * [ +]
+E-> E·+ E   [* + ]]
+
+  I381:
+E-> E·* E   [* + ]]
+E-> E·+ E   [* + ]]
+L-> L [ E·]   [or and ) * + []
+
+  I382:
+ L-> id [ E ]·   [== <= ) * [ + != < > >=]
+
+  I383:
+ D-> proc id ( Dv' ) { P }·   [call proc $ record id float while if int]
+
+  I384:
+X->·int   [id []
+Dv->·T id ;   [) float int]
+D-> proc id (·) { P }   [call proc record id float while if } int]
+T->·X   [id]
+X->·float   [id []
+D-> proc id (·Dv' ) { P }   [call proc record id float while } if int]
+ Dv'->·   [)]
+T->·X C'   [id]
+Dv'->·Dv Dv'   [)]
+
+  I385:
+E-> E·+ E   [* ; +]
+E-> E·* E   [* ; +]
+S-> L = E·;   [call proc record id while float } if int]
+
+  I386:
+B-> B·or M B   [or and do]
+S-> while M B·do { M S' }   [call proc record id while float if } int]
+B-> B·and M B   [or and do]
+
+  I387:
+E->·- E   [) * + ,]
+E->·float_num   [) * + ,]
+L->·L [ E ]   [) * [ + ,]
+L->·id [ E ]   [) * + [ ,]
+E->·E + E   [) * + ,]
+Elist->·E , Elist   [)]
+E->·E * E   [) * + ,]
+E->·id   [) * + ,]
+S-> call id (·Elist ) ;   [call proc record id while float } if int]
+E->·L   [) * + ,]
+E->·( E )   [) * + ,]
+ Elist->·   [)]
+Elist->·E   [)]
+E->·int_num   [) * + ,]
+
+  I388:
+ Dv-> T id ;·   [call proc record id while float } if int]
+
+  I389:
+ Dv'->·   [}]
+X->·int   [id []
+D-> record id {·Dv' }   [call proc record id while float } if int]
+X->·float   [[ id]
+Dv'->·Dv Dv'   [}]
+T->·X   [id]
+Dv->·T id ;   [float } int]
+T->·X C'   [id]
+
+  I390:
+E-> E·+ E   [* ; +]
+E-> E·* E   [* ; +]
+S-> id = E·;   [call proc record id while float if } int]
+
+  I391:
+S-> if B then·{ M S' }   [call proc record id while float } if int]
+S-> if B then·{ M S' N } else { M S' }   [call proc record id while float } if int]
+
+  I392:
+S-> call id·( Elist ) ;   [call id while } if]
+
+  I393:
+ S'->·   [}]
+S->·call id ( Elist ) ;   [call id while } if]
+L->·L [ E ]   [[ =]
+S'->·S M S'   [}]
+S->·if B then { M S' N } else { M S' }   [call id while } if]
+S'-> S M·S'   [}]
+S->·L = E ;   [call id while } if]
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call id while } if]
+S->·while M B do { M S' }   [call id while if }]
+S->·id = E ;   [call id while } if]
+
+  I394:
+ S-> while M B do { M S' }·   [call proc $ record id while float if int]
+
+  I395:
+E->·int_num   [* ; +]
+L->·id [ E ]   [* + ; []
+S-> id =·E ;   [call id while } if]
+E->·E + E   [* ; +]
+E->·( E )   [* ; +]
+E->·float_num   [* ; +]
+E->·L   [* + ;]
+E->·E * E   [* ; +]
+E->·id   [* ; +]
+L->·L [ E ]   [* [ + ;]
+E->·- E   [* + ;]
+
+  I396:
+E->·int_num   [* ; +]
+L->·id [ E ]   [* + ; []
+S-> L =·E ;   [call id while } if]
+E->·E + E   [* ; +]
+E->·( E )   [* ; +]
+E->·float_num   [* ; +]
+E->·L   [* + ;]
+E->·E * E   [* ; +]
+E->·id   [* ; +]
+L->·L [ E ]   [* [ + ;]
+E->·- E   [* + ;]
+
+  I397:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+E->·int_num   [== <= * + < != > >=]
+B->·false   [or and do]
+B->·B and M B   [or and do]
+B->·B or M B   [or and do]
+L->·L [ E ]   [== <= * + [ < != > >=]
+E->·id   [== <= * + < != > >=]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+S-> while M·B do { M S' }   [call id while if }]
+B->·E >= E   [or and do]
+B->·E > E   [or and do]
+B->·E <= E   [or and do]
+B->·not B   [or and do]
+B->·true   [or and do]
+E->·E * E   [== <= * + != < > >=]
+B->·( B )   [or and do]
+B->·E != E   [or and do]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·E < E   [or and do]
+B->·E == E   [or and do]
+
+  I398:
+S-> if B·then { M S' }   [call id while } if]
+S-> if B·then { M S' N } else { M S' }   [call id while } if]
+B-> B·or M B   [or and then]
+B-> B·and M B   [or and then]
+
+  I399:
+ L-> id [ E ]·   [or and * do [ +]
+
+  I400:
+ L-> L [ E ]·   [or and * + [ do]
+
+  I401:
+E->·- E   [) * + ,]
+E->·float_num   [) * + ,]
+L->·L [ E ]   [) * [ + ,]
+L->·id [ E ]   [) * + [ ,]
+E->·E + E   [) * + ,]
+Elist->·E , Elist   [)]
+E->·E * E   [) * + ,]
+E->·id   [) * + ,]
+E->·L   [) * + ,]
+S-> call id (·Elist ) ;   [call proc $ record id while float } if int]
+E->·( E )   [) * + ,]
+ Elist->·   [)]
+Elist->·E   [)]
+E->·int_num   [) * + ,]
+
+  I402:
+ S'-> S M S'·   [call proc $ record id float while if } int]
+
+  I403:
+S-> if B then { M S' N }·else { M S' }   [call proc $ record id while float if int]
+
+  I404:
+E-> E·+ E   [* ; +]
+E-> E·* E   [* ; +]
+S-> id = E·;   [call proc $ record id while float if } int]
+
+  I405:
+E-> E·+ E   [* ; +]
+E-> E·* E   [* ; +]
+S-> L = E·;   [call proc $ record id while float } if int]
+
+  I406:
+B-> B·or M B   [or and do]
+B-> B·and M B   [or and do]
+S-> while M B·do { M S' }   [call proc $ record id while float if } int]
+
+  I407:
+S-> if B then·{ M S' }   [call proc $ record id float while } if int]
+S-> if B then·{ M S' N } else { M S' }   [call proc $ record id while float } if int]
+
+  I408:
+ L-> id [ E ]·   [or and ) * [ +]
+
+  I409:
+ L-> L [ E ]·   [or and ) * + []
+
+  I410:
+D-> proc id ( Dv'·) { P }   [call proc record id float while } if int]
+
+  I411:
+D-> proc id ( )·{ P }   [call proc record id float while if } int]
+
+  I412:
+ S-> L = E ;·   [call proc record id while float } if int]
+
+  I413:
+S-> while M B do·{ M S' }   [call proc record id while float if } int]
+
+  I414:
+S-> call id ( Elist·) ;   [call proc record id while float } if int]
+
+  I415:
+D-> record id { Dv'·}   [call proc record id while float } if int]
+
+  I416:
+ S-> id = E ;·   [call proc record id while float if } int]
+
+  I417:
+S-> if B then {·M S' N } else { M S' }   [call proc record id while float } if int]
+S-> if B then {·M S' }   [call proc record id while float } if int]
+ M->·   [call proc record id while float } if int]
+
+  I418:
+E->·- E   [) * + ,]
+E->·float_num   [) * + ,]
+L->·L [ E ]   [) * [ + ,]
+L->·id [ E ]   [) * + [ ,]
+E->·E + E   [) * + ,]
+Elist->·E , Elist   [)]
+E->·E * E   [) * + ,]
+E->·id   [) * + ,]
+S-> call id (·Elist ) ;   [call id while } if]
+E->·L   [) * + ,]
+E->·( E )   [) * + ,]
+ Elist->·   [)]
+Elist->·E   [)]
+E->·int_num   [) * + ,]
+
+  I419:
+ S'-> S M S'·   [}]
+
+  I420:
+E-> E·+ E   [* ; +]
+S-> id = E·;   [call id while } if]
+E-> E·* E   [* ; +]
+
+  I421:
+E-> E·+ E   [* ; +]
+E-> E·* E   [* ; +]
+S-> L = E·;   [call id while } if]
+
+  I422:
+B-> B·or M B   [or and do]
+S-> while M B·do { M S' }   [call id while if }]
+B-> B·and M B   [or and do]
+
+  I423:
+S-> if B then·{ M S' }   [call id while } if]
+S-> if B then·{ M S' N } else { M S' }   [call id while } if]
+
+  I424:
+S-> call id ( Elist·) ;   [call proc $ record id while float } if int]
+
+  I425:
+S-> if B then { M S' N } else·{ M S' }   [call proc $ record id while float if int]
+
+  I426:
+ S-> id = E ;·   [call proc $ record id while float if } int]
+
+  I427:
+ S-> L = E ;·   [call proc $ record id while float } if int]
+
+  I428:
+S-> while M B do·{ M S' }   [call proc $ record id while float if } int]
+
+  I429:
+S-> if B then {·M S' N } else { M S' }   [call proc $ record id while float } if int]
+S-> if B then {·M S' }   [call proc $ record id float while } if int]
+ M->·   [call proc $ record id while float } if int]
+
+  I430:
+D-> proc id ( Dv' )·{ P }   [call proc record id float while } if int]
+
+  I431:
+D->·proc id ( ) { P }   [call proc record id float while if } int]
+D->·Dv   [call proc record id while float if } int]
+D-> proc id ( ) {·P }   [call proc record id float while if } int]
+S->·if B then { M S' N } else { M S' }   [call proc record id while float } if int]
+L->·L [ E ]   [[ =]
+S->·id = E ;   [call proc record id while float if } int]
+S->·while M B do { M S' }   [call proc record id while float if } int]
+D->·proc id ( Dv' ) { P }   [call proc record id float while } if int]
+T->·X   [id]
+ P->·   [}]
+P->·S P   [}]
+T->·X C'   [id]
+X->·int   [id []
+Dv->·T id ;   [call proc record id while float } if int]
+D->·record id { Dv' }   [call proc record id while float } if int]
+P->·D P   [}]
+X->·float   [id []
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call proc record id while float } if int]
+S->·call id ( Elist ) ;   [call proc record id while float } if int]
+S->·L = E ;   [call proc record id while float } if int]
+
+  I432:
+S-> while M B do {·M S' }   [call proc record id while float if } int]
+ M->·   [call proc record id while float } if int]
+
+  I433:
+S-> call id ( Elist )·;   [call proc record id while float } if int]
+
+  I434:
+ D-> record id { Dv' }·   [call proc record id while float } if int]
+
+  I435:
+S'->·S M S'   [call proc record id float while if } int]
+S-> if B then { M·S' }   [call proc record id while float } if int]
+S->·if B then { M S' N } else { M S' }   [call proc record id while float } if int]
+L->·L [ E ]   [[ =]
+S->·id = E ;   [call proc record id while float if } int]
+S->·while M B do { M S' }   [call proc record id while float if } int]
+L->·id [ E ]   [[ =]
+ S'->·   [proc record float } int]
+S-> if B then { M·S' N } else { M S' }   [call proc record id while float } if int]
+S->·call id ( Elist ) ;   [call proc record id while float } if int]
+S->·if B then { M S' }   [call proc record id float while } if int]
+S->·L = E ;   [call proc record id while float } if int]
+
+  I436:
+S-> call id ( Elist·) ;   [call id while } if]
+
+  I437:
+ S-> id = E ;·   [call id while } if]
+
+  I438:
+ S-> L = E ;·   [call id while } if]
+
+  I439:
+S-> while M B do·{ M S' }   [call id while if }]
+
+  I440:
+ M->·   [call id while } if]
+S-> if B then {·M S' }   [call id while } if]
+S-> if B then {·M S' N } else { M S' }   [call id while } if]
+
+  I441:
+S-> call id ( Elist )·;   [call proc $ record id while float } if int]
+
+  I442:
+S-> if B then { M S' N } else {·M S' }   [call proc $ record id while float if int]
+ M->·   [call proc $ record id while float } if int]
+
+  I443:
+S-> while M B do {·M S' }   [call proc $ record id while float if } int]
+ M->·   [call proc $ record id while float } if int]
+
+  I444:
+S->·L = E ;   [call proc $ record id while float } if int]
+S->·if B then { M S' N } else { M S' }   [call proc $ record id while float } if int]
+S-> if B then { M·S' }   [call proc $ record id float while } if int]
+ S'->·   [proc $ record float } int]
+L->·L [ E ]   [[ =]
+S->·id = E ;   [call proc $ record id while float if } int]
+S'->·S M S'   [call proc $ record id float while if } int]
+S->·if B then { M S' }   [call proc $ record id float while } if int]
+S-> if B then { M·S' N } else { M S' }   [call proc $ record id while float } if int]
+L->·id [ E ]   [[ =]
+S->·call id ( Elist ) ;   [call proc $ record id while float } if int]
+S->·while M B do { M S' }   [call proc $ record id while float if } int]
+
+  I445:
+D->·proc id ( ) { P }   [call proc record id float while if } int]
+D->·Dv   [call proc record id while float if } int]
+S->·if B then { M S' N } else { M S' }   [call proc record id while float } if int]
+L->·L [ E ]   [[ =]
+S->·id = E ;   [call proc record id while float if } int]
+S->·while M B do { M S' }   [call proc record id while float if } int]
+D->·proc id ( Dv' ) { P }   [call proc record id float while } if int]
+T->·X   [id]
+ P->·   [}]
+P->·S P   [}]
+T->·X C'   [id]
+X->·int   [id []
+D-> proc id ( Dv' ) {·P }   [call proc record id float while } if int]
+Dv->·T id ;   [call proc record id while float } if int]
+D->·record id { Dv' }   [call proc record id while float } if int]
+P->·D P   [}]
+X->·float   [id []
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call proc record id while float } if int]
+S->·call id ( Elist ) ;   [call proc record id while float } if int]
+S->·L = E ;   [call proc record id while float } if int]
+
+  I446:
+D-> proc id ( ) { P·}   [call proc record id float while if } int]
+
+  I447:
+ S'->·   [}]
+S->·call id ( Elist ) ;   [call id while } if]
+L->·L [ E ]   [[ =]
+S'->·S M S'   [}]
+S->·if B then { M S' N } else { M S' }   [call id while } if]
+S-> while M B do { M·S' }   [call proc record id while float if } int]
+S->·L = E ;   [call id while } if]
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call id while } if]
+S->·while M B do { M S' }   [call id while if }]
+S->·id = E ;   [call id while } if]
+
+  I448:
+ S-> call id ( Elist ) ;·   [call proc record id while float } if int]
+
+  I449:
+S'-> S·M S'   [call proc record id float while if } int]
+ M->·   [call proc record id while float } if int]
+
+  I450:
+ N->·   [}]
+S-> if B then { M S'·N } else { M S' }   [call proc record id while float } if int]
+S-> if B then { M S'·}   [call proc record id while float } if int]
+
+  I451:
+E->·float_num   [== <= * + < != > >=]
+E->·E + E   [== <= * + != < > >=]
+S-> if·B then { M S' }   [call proc record id float while } if int]
+B->·false   [or and then]
+E->·int_num   [== <= * + < != > >=]
+B->·not B   [or and then]
+B->·E <= E   [or and then]
+B->·( B )   [or and then]
+L->·L [ E ]   [== <= * + [ < != > >=]
+B->·true   [or and then]
+E->·id   [== <= * + < != > >=]
+E->·- E   [== <= * + < != > >=]
+E->·L   [== <= * + < != > >=]
+S-> if·B then { M S' N } else { M S' }   [call proc record id while float } if int]
+E->·E * E   [== <= * + != < > >=]
+B->·B and M B   [or and then]
+B->·E == E   [or and then]
+B->·B or M B   [or and then]
+E->·( E )   [== <= * + != < > >=]
+L->·id [ E ]   [== <= * + [ < != > >=]
+B->·E < E   [or and then]
+B->·E > E   [or and then]
+B->·E != E   [or and then]
+B->·E >= E   [or and then]
+
+  I452:
+S-> call id ( Elist )·;   [call id while } if]
+
+  I453:
+ M->·   [call id while } if]
+S-> while M B do {·M S' }   [call id while if }]
+
+  I454:
+S'->·S M S'   [call id while if }]
+ S'->·   [}]
+S->·call id ( Elist ) ;   [call id while } if]
+L->·L [ E ]   [[ =]
+S->·if B then { M S' N } else { M S' }   [call id while } if]
+S-> if B then { M·S' N } else { M S' }   [call id while } if]
+S-> if B then { M·S' }   [call id while } if]
+S->·L = E ;   [call id while } if]
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call id while } if]
+S->·while M B do { M S' }   [call id while if }]
+S->·id = E ;   [call id while } if]
+
+  I455:
+ S-> call id ( Elist ) ;·   [call proc $ record id while float } if int]
+
+  I456:
+ S'->·   [}]
+S->·call id ( Elist ) ;   [call id while } if]
+L->·L [ E ]   [[ =]
+S'->·S M S'   [}]
+S->·if B then { M S' N } else { M S' }   [call id while } if]
+S-> if B then { M S' N } else { M·S' }   [call proc $ record id while float if int]
+S->·L = E ;   [call id while } if]
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call id while } if]
+S->·while M B do { M S' }   [call id while if }]
+S->·id = E ;   [call id while } if]
+
+  I457:
+ S'->·   [}]
+S->·call id ( Elist ) ;   [call id while } if]
+S-> while M B do { M·S' }   [call proc $ record id while float if } int]
+L->·L [ E ]   [[ =]
+S'->·S M S'   [}]
+S->·if B then { M S' N } else { M S' }   [call id while } if]
+S->·L = E ;   [call id while } if]
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call id while } if]
+S->·while M B do { M S' }   [call id while if }]
+S->·id = E ;   [call id while } if]
+
+  I458:
+S-> if B then { M S'·}   [call proc $ record id float while } if int]
+ N->·   [}]
+S-> if B then { M S'·N } else { M S' }   [call proc $ record id while float } if int]
+
+  I459:
+D-> proc id ( Dv' ) { P·}   [call proc record id float while } if int]
+
+  I460:
+ D-> proc id ( ) { P }·   [call proc record id float while if } int]
+
+  I461:
+S-> while M B do { M S'·}   [call proc record id while float if } int]
+
+  I462:
+S'->·S M S'   [call proc record id float while if } int]
+S->·if B then { M S' N } else { M S' }   [call proc record id while float } if int]
+L->·L [ E ]   [[ =]
+S->·id = E ;   [call proc record id while float if } int]
+S->·while M B do { M S' }   [call proc record id while float if } int]
+S'-> S M·S'   [call proc record id float while if } int]
+L->·id [ E ]   [[ =]
+ S'->·   [proc record float } int]
+S->·call id ( Elist ) ;   [call proc record id while float } if int]
+S->·if B then { M S' }   [call proc record id float while } if int]
+S->·L = E ;   [call proc record id while float } if int]
+
+  I463:
+ S-> if B then { M S' }·   [call proc record id while float } if int]
+
+  I464:
+S-> if B then { M S' N·} else { M S' }   [call proc record id while float } if int]
+
+  I465:
+S-> if B·then { M S' N } else { M S' }   [call proc record id while float } if int]
+B-> B·or M B   [or and then]
+S-> if B·then { M S' }   [call proc record id float while } if int]
+B-> B·and M B   [or and then]
+
+  I466:
+ S-> call id ( Elist ) ;·   [call id while } if]
+
+  I467:
+S-> while M B do { M·S' }   [call id while if }]
+ S'->·   [}]
+S->·call id ( Elist ) ;   [call id while } if]
+L->·L [ E ]   [[ =]
+S'->·S M S'   [}]
+S->·if B then { M S' N } else { M S' }   [call id while } if]
+S->·L = E ;   [call id while } if]
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call id while } if]
+S->·while M B do { M S' }   [call id while if }]
+S->·id = E ;   [call id while } if]
+
+  I468:
+ M->·   [call id while } if]
+S'-> S·M S'   [call id while if }]
+
+  I469:
+S-> if B then { M S'·N } else { M S' }   [call id while } if]
+ N->·   [}]
+S-> if B then { M S'·}   [call id while } if]
+
+  I470:
+S-> if B then { M S' N } else { M S'·}   [call proc $ record id while float if int]
+
+  I471:
+S-> while M B do { M S'·}   [call proc $ record id while float if } int]
+
+  I472:
+ S-> if B then { M S' }·   [call proc $ record id float while } if int]
+
+  I473:
+S-> if B then { M S' N·} else { M S' }   [call proc $ record id while float } if int]
+
+  I474:
+ D-> proc id ( Dv' ) { P }·   [call proc record id float while } if int]
+
+  I475:
+ S-> while M B do { M S' }·   [call proc record id while float if } int]
+
+  I476:
+ S'-> S M S'·   [call proc record id float while if } int]
+
+  I477:
+S-> if B then { M S' N }·else { M S' }   [call proc record id while float } if int]
+
+  I478:
+S-> if B then·{ M S' }   [call proc record id float while } if int]
+S-> if B then·{ M S' N } else { M S' }   [call proc record id while float } if int]
+
+  I479:
+S-> while M B do { M S'·}   [call id while if }]
+
+  I480:
+S'->·S M S'   [call id while if }]
+ S'->·   [}]
+S->·call id ( Elist ) ;   [call id while } if]
+L->·L [ E ]   [[ =]
+S->·if B then { M S' N } else { M S' }   [call id while } if]
+S'-> S M·S'   [call id while if }]
+S->·L = E ;   [call id while } if]
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call id while } if]
+S->·while M B do { M S' }   [call id while if }]
+S->·id = E ;   [call id while } if]
+
+  I481:
+ S-> if B then { M S' }·   [call id while } if]
+
+  I482:
+S-> if B then { M S' N·} else { M S' }   [call id while } if]
+
+  I483:
+ S-> if B then { M S' N } else { M S' }·   [call proc $ record id while float if int]
+
+  I484:
+ S-> while M B do { M S' }·   [call proc $ record id while float if } int]
+
+  I485:
+S-> if B then { M S' N }·else { M S' }   [call proc $ record id while float } if int]
+
+  I486:
+S-> if B then { M S' N } else·{ M S' }   [call proc record id while float } if int]
+
+  I487:
+S-> if B then {·M S' N } else { M S' }   [call proc record id while float } if int]
+S-> if B then {·M S' }   [call proc record id float while } if int]
+ M->·   [call proc record id while float } if int]
+
+  I488:
+ S-> while M B do { M S' }·   [call id while if }]
+
+  I489:
+ S'-> S M S'·   [call id while if }]
+
+  I490:
+S-> if B then { M S' N }·else { M S' }   [call id while } if]
+
+  I491:
+S-> if B then { M S' N } else·{ M S' }   [call proc $ record id while float } if int]
+
+  I492:
+S-> if B then { M S' N } else {·M S' }   [call proc record id while float } if int]
+ M->·   [call proc record id while float } if int]
+
+  I493:
+S'->·S M S'   [call proc record id float while if } int]
+S->·if B then { M S' N } else { M S' }   [call proc record id while float } if int]
+S-> if B then { M·S' }   [call proc record id float while } if int]
+L->·L [ E ]   [[ =]
+S->·id = E ;   [call proc record id while float if } int]
+S->·while M B do { M S' }   [call proc record id while float if } int]
+L->·id [ E ]   [[ =]
+ S'->·   [proc record float } int]
+S-> if B then { M·S' N } else { M S' }   [call proc record id while float } if int]
+S->·call id ( Elist ) ;   [call proc record id while float } if int]
+S->·if B then { M S' }   [call proc record id float while } if int]
+S->·L = E ;   [call proc record id while float } if int]
+
+  I494:
+S-> if B then { M S' N } else·{ M S' }   [call id while } if]
+
+  I495:
+S-> if B then { M S' N } else {·M S' }   [call proc $ record id while float } if int]
+ M->·   [call proc $ record id while float } if int]
+
+  I496:
+ S'->·   [}]
+S->·call id ( Elist ) ;   [call id while } if]
+L->·L [ E ]   [[ =]
+S'->·S M S'   [}]
+S-> if B then { M S' N } else { M·S' }   [call proc record id while float } if int]
+S->·if B then { M S' N } else { M S' }   [call id while } if]
+S->·L = E ;   [call id while } if]
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call id while } if]
+S->·while M B do { M S' }   [call id while if }]
+S->·id = E ;   [call id while } if]
+
+  I497:
+ N->·   [}]
+S-> if B then { M S'·N } else { M S' }   [call proc record id while float } if int]
+S-> if B then { M S'·}   [call proc record id float while } if int]
+
+  I498:
+S-> if B then { M S' N } else {·M S' }   [call id while } if]
+ M->·   [call id while } if]
+
+  I499:
+ S'->·   [}]
+S->·call id ( Elist ) ;   [call id while } if]
+L->·L [ E ]   [[ =]
+S'->·S M S'   [}]
+S->·if B then { M S' N } else { M S' }   [call id while } if]
+S->·L = E ;   [call id while } if]
+L->·id [ E ]   [[ =]
+S-> if B then { M S' N } else { M·S' }   [call proc $ record id while float } if int]
+S->·if B then { M S' }   [call id while } if]
+S->·while M B do { M S' }   [call id while if }]
+S->·id = E ;   [call id while } if]
+
+  I500:
+S-> if B then { M S' N } else { M S'·}   [call proc record id while float } if int]
+
+  I501:
+ S-> if B then { M S' }·   [call proc record id float while } if int]
+
+  I502:
+ S'->·   [}]
+S-> if B then { M S' N } else { M·S' }   [call id while } if]
+S->·call id ( Elist ) ;   [call id while } if]
+L->·L [ E ]   [[ =]
+S'->·S M S'   [}]
+S->·if B then { M S' N } else { M S' }   [call id while } if]
+S->·L = E ;   [call id while } if]
+L->·id [ E ]   [[ =]
+S->·if B then { M S' }   [call id while } if]
+S->·while M B do { M S' }   [call id while if }]
+S->·id = E ;   [call id while } if]
+
+  I503:
+S-> if B then { M S' N } else { M S'·}   [call proc $ record id while float } if int]
+
+  I504:
+ S-> if B then { M S' N } else { M S' }·   [call proc record id while float } if int]
+
+  I505:
+S-> if B then { M S' N } else { M S'·}   [call id while } if]
+
+  I506:
+ S-> if B then { M S' N } else { M S' }·   [call proc $ record id while float } if int]
+
+  I507:
+ S-> if B then { M S' N } else { M S' }·   [call id while } if]
+
+跳转表：  I0:
+proc: s1
+$: r3
+D: 2
+L: 3
+while: s4
+float: s5
+int: s6
+call: s7
+P: 8
+Dv: 9
+S: 10
+T: 11
+record: s12
+X: 13
+id: s14
+if: s15
+
+  I1:
+id: s16
+
+  I2:
+proc: s1
+$: r3
+D: 2
+L: 3
+while: s4
+float: s5
+int: s6
+call: s7
+P: 17
+Dv: 9
+S: 10
+T: 11
+record: s12
+X: 13
+id: s14
+if: s15
+
+  I3:
+[: s18
+=: s19
+
+  I4:
+not: r47
+int_num: r47
+true: r47
+false: r47
+(: r47
+id: r47
+-: r47
+M: 20
+float_num: r47
+
+  I5:
+id: r14
+[: r14
+
+  I6:
+id: r13
+[: r13
+
+  I7:
+id: s21
+
+  I8:
+$: acc
+
+  I9:
+call: r4
+proc: r4
+$: r4
+record: r4
+id: r4
+while: r4
+float: r4
+if: r4
+int: r4
+
+  I10:
+proc: s1
+$: r3
+D: 2
+L: 3
+while: s4
+float: s5
+int: s6
+P: 22
+call: s7
+Dv: 9
+S: 10
+T: 11
+record: s12
+X: 13
+id: s14
+if: s15
+
+  I11:
+id: s23
+
+  I12:
+id: s24
+
+  I13:
+C: 25
+C': 26
+id: r12
+[: s27
+
+  I14:
+[: s28
+=: s29
+
+  I15:
+not: s30
+B: 31
+int_num: s32
+E: 33
+false: s34
+(: s35
+true: s36
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I16:
+(: s41
+
+  I17:
+$: r1
+
+  I18:
+int_num: s42
+E: 43
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I19:
+int_num: s49
+E: 50
+(: s51
+id: s52
+L: 53
+-: s54
+float_num: s55
+
+  I20:
+B: 56
+not: s57
+int_num: s32
+E: 58
+false: s59
+true: s60
+(: s61
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I21:
+(: s62
+
+  I22:
+$: r2
+
+  I23:
+;: s63
+
+  I24:
+{: s64
+
+  I25:
+C: 25
+C': 65
+id: r16
+[: s27
+
+  I26:
+id: r11
+
+  I27:
+int_num: s66
+
+  I28:
+int_num: s42
+E: 67
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I29:
+int_num: s49
+E: 68
+(: s51
+id: s52
+L: 53
+-: s54
+float_num: s55
+
+  I30:
+not: s30
+B: 69
+int_num: s32
+E: 33
+false: s34
+(: s35
+true: s36
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I31:
+or: s70
+and: s71
+then: s72
+
+  I32:
+==: r24
+<=: r24
+*: r24
++: r24
+<: r24
+!=: r24
+>: r24
+>=: r24
+
+  I33:
+==: s73
+<=: s74
+*: s75
++: s76
+!=: s77
+<: s78
+>: s79
+>=: s80
+
+  I34:
+or: r46
+and: r46
+then: r46
+
+  I35:
+not: s81
+B: 82
+int_num: s83
+E: 84
+(: s85
+true: s86
+false: s87
+id: s88
+L: 89
+-: s90
+float_num: s91
+
+  I36:
+or: r45
+and: r45
+then: r45
+
+  I37:
+==: r23
+<=: r23
+*: r23
++: r23
+[: s92
+<: r23
+!=: r23
+>: r23
+>=: r23
+
+  I38:
+==: r26
+<=: r26
+*: r26
++: r26
+[: s93
+<: r26
+!=: r26
+>: r26
+>=: r26
+
+  I39:
+int_num: s94
+E: 95
+(: s96
+id: s97
+L: 98
+-: s39
+float_num: s40
+
+  I40:
+==: r25
+<=: r25
+*: r25
++: r25
+<: r25
+!=: r25
+>: r25
+>=: r25
+
+  I41:
+Dv: 99
+T: 100
+Dv': 101
+X: 13
+): r6
+float: s5
+int: s6
+
+  I42:
+*: r24
++: r24
+]: r24
+
+  I43:
+*: s103
++: s104
+]: s105
+
+  I44:
+int_num: s106
+E: 107
+(: s108
+id: s109
+L: 110
+-: s111
+float_num: s112
+
+  I45:
+*: r23
++: r23
+[: s113
+]: r23
+
+  I46:
+*: r26
++: r26
+[: s114
+]: r26
+
+  I47:
+int_num: s42
+E: 115
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I48:
+*: r25
++: r25
+]: r25
+
+  I49:
+*: r24
+;: r24
++: r24
+
+  I50:
+*: s116
++: s117
+;: s118
+
+  I51:
+int_num: s106
+E: 119
+(: s108
+id: s109
+L: 110
+-: s111
+float_num: s112
+
+  I52:
+*: r23
+;: r23
++: r23
+[: s120
+
+  I53:
+*: r26
++: r26
+;: r26
+[: s121
+
+  I54:
+int_num: s49
+E: 122
+(: s51
+id: s52
+L: 53
+-: s54
+float_num: s55
+
+  I55:
+*: r25
+;: r25
++: r25
+
+  I56:
+or: s123
+and: s124
+do: s125
+
+  I57:
+B: 126
+not: s57
+int_num: s32
+E: 58
+false: s59
+true: s60
+(: s61
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I58:
+==: s127
+<=: s128
+*: s75
++: s76
+!=: s129
+<: s130
+>: s131
+>=: s132
+
+  I59:
+or: r46
+and: r46
+do: r46
+
+  I60:
+or: r45
+and: r45
+do: r45
+
+  I61:
+not: s81
+B: 133
+int_num: s83
+E: 84
+(: s85
+true: s86
+false: s87
+id: s88
+L: 89
+-: s90
+float_num: s91
+
+  I62:
+int_num: s134
+E: 135
+(: s136
+): r52
+id: s137
+L: 138
+Elist: 139
+-: s140
+float_num: s141
+
+  I63:
+call: r10
+proc: r10
+$: r10
+record: r10
+id: r10
+while: r10
+float: r10
+if: r10
+int: r10
+
+  I64:
+Dv: 142
+Dv': 143
+T: 144
+X: 13
+float: s145
+}: r6
+int: s6
+
+  I65:
+id: r15
+
+  I66:
+]: s146
+
+  I67:
+*: s103
++: s104
+]: s147
+
+  I68:
+*: s116
++: s117
+;: s148
+
+  I69:
+or: r37
+and: r37
+then: r37
+
+  I70:
+not: r47
+int_num: r47
+true: r47
+false: r47
+(: r47
+id: r47
+-: r47
+M: 149
+float_num: r47
+
+  I71:
+not: r47
+int_num: r47
+true: r47
+false: r47
+(: r47
+id: r47
+-: r47
+M: 150
+float_num: r47
+
+  I72:
+{: s151
+
+  I73:
+int_num: s152
+E: 153
+(: s154
+id: s155
+L: 156
+-: s157
+float_num: s158
+
+  I74:
+int_num: s152
+E: 159
+(: s154
+id: s155
+L: 156
+-: s157
+float_num: s158
+
+  I75:
+int_num: s94
+E: 160
+(: s96
+id: s97
+L: 98
+-: s39
+float_num: s40
+
+  I76:
+int_num: s94
+E: 161
+(: s96
+id: s97
+L: 98
+-: s39
+float_num: s40
+
+  I77:
+int_num: s152
+E: 162
+(: s154
+id: s155
+L: 156
+-: s157
+float_num: s158
+
+  I78:
+int_num: s152
+E: 163
+(: s154
+id: s155
+L: 156
+-: s157
+float_num: s158
+
+  I79:
+int_num: s152
+E: 164
+(: s154
+id: s155
+L: 156
+-: s157
+float_num: s158
+
+  I80:
+int_num: s152
+E: 165
+(: s154
+id: s155
+L: 156
+-: s157
+float_num: s158
+
+  I81:
+not: s81
+B: 166
+int_num: s32
+E: 167
+(: s168
+true: s86
+false: s87
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I82:
+or: s169
+and: s170
+): s171
+
+  I83:
+==: r24
+<=: r24
+): r24
+*: r24
++: r24
+<: r24
+!=: r24
+>: r24
+>=: r24
+
+  I84:
+==: s172
+<=: s173
+): s174
+*: s175
++: s176
+!=: s177
+<: s178
+>: s179
+>=: s180
+
+  I85:
+not: s81
+B: 181
+int_num: s83
+E: 182
+(: s85
+true: s86
+false: s87
+id: s88
+L: 89
+-: s90
+float_num: s91
+
+  I86:
+or: r45
+and: r45
+): r45
+
+  I87:
+or: r46
+and: r46
+): r46
+
+  I88:
+==: r23
+<=: r23
+): r23
+*: r23
++: r23
+[: s183
+<: r23
+!=: r23
+>: r23
+>=: r23
+
+  I89:
+==: r26
+<=: r26
+): r26
+*: r26
++: r26
+[: s184
+<: r26
+!=: r26
+>: r26
+>=: r26
+
+  I90:
+int_num: s185
+E: 186
+(: s187
+id: s188
+L: 189
+-: s90
+float_num: s91
+
+  I91:
+==: r25
+<=: r25
+): r25
+*: r25
++: r25
+<: r25
+!=: r25
+>: r25
+>=: r25
+
+  I92:
+int_num: s42
+E: 190
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I93:
+int_num: s42
+E: 191
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I94:
+==: r24
+<=: r24
+*: r24
++: r24
+!=: r24
+<: r24
+>: r24
+>=: r24
+
+  I95:
+==: r21
+<=: r21
+*: r21
++: r21
+<: r21
+!=: r21
+>: r21
+>=: r21
+
+  I96:
+int_num: s106
+E: 192
+(: s108
+id: s109
+L: 110
+-: s111
+float_num: s112
+
+  I97:
+==: r23
+<=: r23
+*: r23
++: r23
+[: s193
+!=: r23
+<: r23
+>: r23
+>=: r23
+
+  I98:
+==: r26
+<=: r26
+*: r26
++: r26
+[: s93
+!=: r26
+<: r26
+>: r26
+>=: r26
+
+  I99:
+Dv: 99
+T: 100
+Dv': 194
+X: 13
+): r6
+float: s145
+int: s6
+
+  I100:
+id: s195
+
+  I101:
+): s196
+
+  I102:
+{: s197
+
+  I103:
+int_num: s42
+E: 198
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I104:
+int_num: s42
+E: 199
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I105:
+[: r28
+=: r28
+
+  I106:
+): r24
+*: r24
++: r24
+
+  I107:
+): s200
+*: s201
++: s202
+
+  I108:
+int_num: s106
+E: 203
+(: s108
+id: s109
+L: 110
+-: s111
+float_num: s112
+
+  I109:
+): r23
+*: r23
++: r23
+[: s204
+
+  I110:
+): r26
+*: r26
++: r26
+[: s205
+
+  I111:
+int_num: s106
+E: 206
+(: s108
+id: s109
+L: 110
+-: s111
+float_num: s112
+
+  I112:
+): r25
+*: r25
++: r25
+
+  I113:
+int_num: s42
+E: 207
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I114:
+int_num: s42
+E: 208
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I115:
+*: r21
++: r21
+]: r21
+
+  I116:
+int_num: s49
+E: 209
+(: s51
+id: s52
+L: 53
+-: s54
+float_num: s55
+
+  I117:
+int_num: s49
+E: 210
+(: s51
+id: s52
+L: 53
+-: s54
+float_num: s55
+
+  I118:
+call: r29
+proc: r29
+$: r29
+record: r29
+id: r29
+while: r29
+float: r29
+if: r29
+int: r29
+
+  I119:
+): s211
+*: s201
++: s202
+
+  I120:
+int_num: s42
+E: 212
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I121:
+int_num: s42
+E: 213
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I122:
+*: r21
++: r21
+;: r21
+
+  I123:
+not: r47
+int_num: r47
+true: r47
+false: r47
+(: r47
+id: r47
+-: r47
+M: 214
+float_num: r47
+
+  I124:
+not: r47
+int_num: r47
+true: r47
+false: r47
+(: r47
+id: r47
+-: r47
+M: 215
+float_num: r47
+
+  I125:
+{: s216
+
+  I126:
+or: r37
+and: r37
+do: r37
+
+  I127:
+int_num: s217
+E: 218
+(: s219
+id: s220
+L: 221
+-: s222
+float_num: s223
+
+  I128:
+int_num: s217
+E: 224
+(: s219
+id: s220
+L: 221
+-: s222
+float_num: s223
+
+  I129:
+int_num: s217
+E: 225
+(: s219
+id: s220
+L: 221
+-: s222
+float_num: s223
+
+  I130:
+int_num: s217
+E: 226
+(: s219
+id: s220
+L: 221
+-: s222
+float_num: s223
+
+  I131:
+int_num: s217
+E: 227
+(: s219
+id: s220
+L: 221
+-: s222
+float_num: s223
+
+  I132:
+int_num: s217
+E: 228
+(: s219
+id: s220
+L: 221
+-: s222
+float_num: s223
+
+  I133:
+or: s169
+and: s170
+): s229
+
+  I134:
+): r24
+*: r24
++: r24
+,: r24
+
+  I135:
+): r51
+*: s230
++: s231
+,: s232
+
+  I136:
+int_num: s106
+E: 233
+(: s108
+id: s109
+L: 110
+-: s111
+float_num: s112
+
+  I137:
+): r23
+*: r23
++: r23
+[: s234
+,: r23
+
+  I138:
+): r26
+*: r26
++: r26
+[: s235
+,: r26
+
+  I139:
+): s236
+
+  I140:
+int_num: s134
+E: 237
+(: s136
+id: s137
+L: 138
+-: s140
+float_num: s141
+
+  I141:
+): r25
+*: r25
++: r25
+,: r25
+
+  I142:
+Dv: 142
+Dv': 238
+T: 144
+X: 13
+float: s145
+}: r6
+int: s6
+
+  I143:
+}: s239
+
+  I144:
+id: s240
+
+  I145:
+[: r14
+id: r14
+
+  I146:
+id: r17
+[: r17
+
+  I147:
+[: r27
+=: r27
+
+  I148:
+call: r18
+proc: r18
+$: r18
+record: r18
+id: r18
+while: r18
+float: r18
+if: r18
+int: r18
+
+  I149:
+not: s30
+B: 241
+int_num: s32
+E: 33
+false: s34
+(: s35
+true: s36
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I150:
+not: s30
+B: 242
+int_num: s32
+E: 33
+false: s34
+(: s35
+true: s36
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I151:
+call: r47
+proc: r47
+$: r47
+record: r47
+id: r47
+while: r47
+float: r47
+}: r47
+if: r47
+M: 243
+int: r47
+
+  I152:
+or: r24
+and: r24
+*: r24
+then: r24
++: r24
+
+  I153:
+or: r43
+and: r43
+*: s244
+then: r43
++: s245
+
+  I154:
+int_num: s106
+E: 246
+(: s108
+id: s109
+L: 110
+-: s111
+float_num: s112
+
+  I155:
+or: r23
+and: r23
+*: r23
++: r23
+then: r23
+[: s247
+
+  I156:
+or: r26
+and: r26
+*: r26
++: r26
+then: r26
+[: s248
+
+  I157:
+int_num: s152
+E: 249
+(: s154
+id: s155
+L: 156
+-: s157
+float_num: s158
+
+  I158:
+or: r25
+and: r25
+*: r25
++: r25
+then: r25
+
+  I159:
+or: r40
+and: r40
+*: s244
+then: r40
++: s245
+
+  I160:
+==: r20
+<=: r20
+*: r20
++: r20
+!=: r20
+<: r20
+>: r20
+>=: r20
+
+  I161:
+==: r19
+<=: r19
++: r19
+!=: r19
+<: r19
+>: r19
+>=: r19
+
+  I162:
+or: r44
+and: r44
+*: s244
+then: r44
++: s245
+
+  I163:
+or: r39
+and: r39
+*: s244
+then: r39
++: s245
+
+  I164:
+or: r41
+and: r41
+*: s244
+then: r41
++: s245
+
+  I165:
+or: r42
+and: r42
+*: s244
+then: r42
++: s245
+
+  I166:
+or: r37
+and: r37
+): r37
+
+  I167:
+==: s172
+<=: s173
+*: s75
++: s76
+!=: s177
+<: s178
+>: s179
+>=: s180
+
+  I168:
+not: s81
+B: 181
+int_num: s83
+E: 84
+(: s85
+true: s86
+false: s87
+id: s88
+L: 89
+-: s90
+float_num: s91
+
+  I169:
+not: r47
+int_num: r47
+true: r47
+false: r47
+(: r47
+id: r47
+-: r47
+M: 250
+float_num: r47
+
+  I170:
+not: r47
+int_num: r47
+true: r47
+false: r47
+(: r47
+id: r47
+-: r47
+M: 251
+float_num: r47
+
+  I171:
+or: r38
+and: r38
+then: r38
+
+  I172:
+int_num: s252
+E: 253
+(: s254
+id: s255
+L: 256
+-: s257
+float_num: s258
+
+  I173:
+int_num: s252
+E: 259
+(: s254
+id: s255
+L: 256
+-: s257
+float_num: s258
+
+  I174:
+==: r22
+<=: r22
+*: r22
++: r22
+!=: r22
+<: r22
+>: r22
+>=: r22
+
+  I175:
+int_num: s185
+E: 260
+(: s187
+id: s188
+L: 189
+-: s90
+float_num: s91
+
+  I176:
+int_num: s185
+E: 261
+(: s187
+id: s188
+L: 189
+-: s90
+float_num: s91
+
+  I177:
+int_num: s252
+E: 262
+(: s254
+id: s255
+L: 256
+-: s257
+float_num: s258
+
+  I178:
+int_num: s252
+E: 263
+(: s254
+id: s255
+L: 256
+-: s257
+float_num: s258
+
+  I179:
+int_num: s252
+E: 264
+(: s254
+id: s255
+L: 256
+-: s257
+float_num: s258
+
+  I180:
+int_num: s252
+E: 265
+(: s254
+id: s255
+L: 256
+-: s257
+float_num: s258
+
+  I181:
+or: s169
+and: s170
+): s266
+
+  I182:
+==: s172
+<=: s173
+): s267
+*: s175
++: s176
+!=: s177
+<: s178
+>: s179
+>=: s180
+
+  I183:
+int_num: s42
+E: 268
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I184:
+int_num: s42
+E: 269
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I185:
+==: r24
+<=: r24
+): r24
+*: r24
++: r24
+!=: r24
+<: r24
+>: r24
+>=: r24
+
+  I186:
+==: r21
+<=: r21
+): r21
+*: r21
++: r21
+<: r21
+!=: r21
+>: r21
+>=: r21
+
+  I187:
+int_num: s106
+E: 270
+(: s108
+id: s109
+L: 110
+-: s111
+float_num: s112
+
+  I188:
+==: r23
+<=: r23
+): r23
+*: r23
++: r23
+[: s271
+!=: r23
+<: r23
+>: r23
+>=: r23
+
+  I189:
+==: r26
+<=: r26
+): r26
+*: r26
++: r26
+[: s184
+!=: r26
+<: r26
+>: r26
+>=: r26
+
+  I190:
+*: s103
++: s104
+]: s272
+
+  I191:
+*: s103
++: s104
+]: s273
+
+  I192:
+): s174
+*: s201
++: s202
+
+  I193:
+int_num: s42
+E: 274
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I194:
+): r5
+
+  I195:
+;: s275
+
+  I196:
+{: s276
+
+  I197:
+proc: s277
+D: 278
+L: 279
+while: s280
+float: s5
+int: s6
+P: 281
+call: s282
+Dv: 283
+S: 284
+T: 285
+record: s286
+X: 13
+id: s287
+}: r3
+if: s288
+
+  I198:
+*: r20
++: r20
+]: r20
+
+  I199:
++: r19
+]: r19
+
+  I200:
+*: r22
++: r22
+]: r22
+
+  I201:
+int_num: s106
+E: 289
+(: s108
+id: s109
+L: 110
+-: s111
+float_num: s112
+
+  I202:
+int_num: s106
+E: 290
+(: s108
+id: s109
+L: 110
+-: s111
+float_num: s112
+
+  I203:
+): s291
+*: s201
++: s202
+
+  I204:
+int_num: s42
+E: 292
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I205:
+int_num: s42
+E: 293
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I206:
+): r21
+*: r21
++: r21
+
+  I207:
+*: s103
++: s104
+]: s294
+
+  I208:
+*: s103
++: s104
+]: s295
+
+  I209:
+*: r20
+;: r20
++: r20
+
+  I210:
+;: r19
++: r19
+
+  I211:
+*: r22
+;: r22
++: r22
+
+  I212:
+*: s103
++: s104
+]: s296
+
+  I213:
+*: s103
++: s104
+]: s297
+
+  I214:
+B: 298
+not: s57
+int_num: s32
+E: 58
+false: s59
+true: s60
+(: s61
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I215:
+B: 299
+not: s57
+int_num: s32
+E: 58
+false: s59
+true: s60
+(: s61
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I216:
+call: r47
+proc: r47
+$: r47
+record: r47
+id: r47
+while: r47
+float: r47
+}: r47
+if: r47
+M: 300
+int: r47
+
+  I217:
+or: r24
+and: r24
+*: r24
+do: r24
++: r24
+
+  I218:
+or: r43
+and: r43
+*: s301
+do: r43
++: s302
+
+  I219:
+int_num: s106
+E: 303
+(: s108
+id: s109
+L: 110
+-: s111
+float_num: s112
+
+  I220:
+or: r23
+and: r23
+*: r23
++: r23
+do: r23
+[: s304
+
+  I221:
+or: r26
+and: r26
+*: r26
++: r26
+do: r26
+[: s305
+
+  I222:
+int_num: s217
+E: 306
+(: s219
+id: s220
+L: 221
+-: s222
+float_num: s223
+
+  I223:
+or: r25
+and: r25
+*: r25
++: r25
+do: r25
+
+  I224:
+or: r40
+and: r40
+*: s301
+do: r40
++: s302
+
+  I225:
+or: r44
+and: r44
+*: s301
+do: r44
++: s302
+
+  I226:
+or: r39
+and: r39
+*: s301
+do: r39
++: s302
+
+  I227:
+or: r41
+and: r41
+*: s301
+do: r41
++: s302
+
+  I228:
+or: r42
+and: r42
+*: s301
+do: r42
++: s302
+
+  I229:
+or: r38
+and: r38
+do: r38
+
+  I230:
+int_num: s134
+E: 307
+(: s136
+id: s137
+L: 138
+-: s140
+float_num: s141
+
+  I231:
+int_num: s134
+E: 308
+(: s136
+id: s137
+L: 138
+-: s140
+float_num: s141
+
+  I232:
+int_num: s134
+E: 135
+(: s136
+): r52
+id: s137
+L: 138
+Elist: 309
+-: s140
+float_num: s141
+
+  I233:
+): s310
+*: s201
++: s202
+
+  I234:
+int_num: s42
+E: 311
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I235:
+int_num: s42
+E: 312
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I236:
+;: s313
+
+  I237:
+): r21
+*: r21
++: r21
+,: r21
+
+  I238:
+}: r5
+
+  I239:
+call: r9
+proc: r9
+$: r9
+record: r9
+id: r9
+while: r9
+float: r9
+if: r9
+int: r9
+
+  I240:
+;: s314
+
+  I241:
+or: r35
+and: r35
+then: r35
+
+  I242:
+or: r36
+and: r36
+then: r36
+
+  I243:
+proc: r31
+$: r31
+record: r31
+float: r31
+}: r31
+int: r31
+
+  I244:
+int_num: s152
+E: 322
+(: s154
+id: s155
+L: 156
+-: s157
+float_num: s158
+
+  I245:
+int_num: s152
+E: 323
+(: s154
+id: s155
+L: 156
+-: s157
+float_num: s158
+
+  I246:
+): s324
+*: s201
++: s202
+
+  I247:
+int_num: s42
+E: 325
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I248:
+int_num: s42
+E: 326
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I249:
+or: r21
+and: r21
+*: r21
+then: r21
++: r21
+
+  I250:
+B: 327
+not: s81
+int_num: s32
+E: 167
+(: s168
+true: s86
+false: s87
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I251:
+B: 328
+not: s81
+int_num: s32
+E: 167
+(: s168
+true: s86
+false: s87
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I252:
+or: r24
+and: r24
+): r24
+*: r24
++: r24
+
+  I253:
+or: r43
+and: r43
+): r43
+*: s329
++: s330
+
+  I254:
+int_num: s106
+E: 331
+(: s108
+id: s109
+L: 110
+-: s111
+float_num: s112
+
+  I255:
+or: r23
+and: r23
+): r23
+*: r23
++: r23
+[: s332
+
+  I256:
+or: r26
+and: r26
+): r26
+*: r26
++: r26
+[: s333
+
+  I257:
+int_num: s252
+E: 334
+(: s254
+id: s255
+L: 256
+-: s257
+float_num: s258
+
+  I258:
+or: r25
+and: r25
+): r25
+*: r25
++: r25
+
+  I259:
+or: r40
+and: r40
+): r40
+*: s329
++: s330
+
+  I260:
+==: r20
+<=: r20
+): r20
+*: r20
++: r20
+!=: r20
+<: r20
+>: r20
+>=: r20
+
+  I261:
+==: r19
+<=: r19
+): r19
++: r19
+!=: r19
+<: r19
+>: r19
+>=: r19
+
+  I262:
+or: r44
+and: r44
+): r44
+*: s329
++: s330
+
+  I263:
+or: r39
+and: r39
+): r39
+*: s329
++: s330
+
+  I264:
+or: r41
+and: r41
+): r41
+*: s329
++: s330
+
+  I265:
+or: r42
+and: r42
+): r42
+*: s329
++: s330
+
+  I266:
+or: r38
+and: r38
+): r38
+
+  I267:
+==: r22
+<=: r22
+): r22
+*: r22
++: r22
+!=: r22
+<: r22
+>: r22
+>=: r22
+
+  I268:
+*: s103
++: s104
+]: s335
+
+  I269:
+*: s103
++: s104
+]: s336
+
+  I270:
+): s267
+*: s201
++: s202
+
+  I271:
+int_num: s42
+E: 337
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I272:
+==: r27
+<=: r27
+*: r27
++: r27
+[: r27
+<: r27
+!=: r27
+>: r27
+>=: r27
+
+  I273:
+==: r28
+<=: r28
+*: r28
++: r28
+[: r28
+<: r28
+!=: r28
+>: r28
+>=: r28
+
+  I274:
+*: s103
++: s104
+]: s338
+
+  I275:
+): r10
+float: r10
+int: r10
+
+  I276:
+proc: s277
+D: 278
+L: 279
+while: s280
+float: s5
+int: s6
+P: 339
+call: s282
+Dv: 283
+S: 284
+T: 285
+record: s286
+X: 13
+id: s287
+}: r3
+if: s288
+
+  I277:
+id: s340
+
+  I278:
+proc: s277
+D: 278
+L: 279
+while: s280
+float: s5
+int: s6
+P: 341
+call: s282
+Dv: 283
+S: 284
+T: 285
+record: s286
+X: 13
+id: s287
+}: r3
+if: s288
+
+  I279:
+[: s18
+=: s342
+
+  I280:
+not: r47
+int_num: r47
+true: r47
+false: r47
+(: r47
+id: r47
+-: r47
+M: 343
+float_num: r47
+
+  I281:
+}: s344
+
+  I282:
+id: s345
+
+  I283:
+call: r4
+proc: r4
+record: r4
+id: r4
+while: r4
+float: r4
+if: r4
+}: r4
+int: r4
+
+  I284:
+proc: s277
+D: 278
+L: 279
+while: s280
+float: s5
+int: s6
+P: 346
+call: s282
+Dv: 283
+S: 284
+T: 285
+record: s286
+X: 13
+id: s287
+}: r3
+if: s288
+
+  I285:
+id: s347
+
+  I286:
+id: s348
+
+  I287:
+[: s28
+=: s349
+
+  I288:
+not: s30
+B: 350
+int_num: s32
+E: 33
+false: s34
+(: s35
+true: s36
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I289:
+): r20
+*: r20
++: r20
+
+  I290:
+): r19
++: r19
+
+  I291:
+): r22
+*: r22
++: r22
+
+  I292:
+*: s103
++: s104
+]: s351
+
+  I293:
+*: s103
++: s104
+]: s352
+
+  I294:
+*: r27
++: r27
+[: r27
+]: r27
+
+  I295:
+*: r28
+[: r28
++: r28
+]: r28
+
+  I296:
+*: r27
++: r27
+;: r27
+[: r27
+
+  I297:
+*: r28
+[: r28
++: r28
+;: r28
+
+  I298:
+or: r35
+and: r35
+do: r35
+
+  I299:
+or: r36
+and: r36
+do: r36
+
+  I300:
+call: s353
+S: 354
+S': 355
+id: s356
+L: 357
+while: s358
+}: r31
+if: s359
+
+  I301:
+int_num: s217
+E: 360
+(: s219
+id: s220
+L: 221
+-: s222
+float_num: s223
+
+  I302:
+int_num: s217
+E: 361
+(: s219
+id: s220
+L: 221
+-: s222
+float_num: s223
+
+  I303:
+): s362
+*: s201
++: s202
+
+  I304:
+int_num: s42
+E: 363
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I305:
+int_num: s42
+E: 364
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I306:
+or: r21
+and: r21
+*: r21
+do: r21
++: r21
+
+  I307:
+): r20
+*: r20
++: r20
+,: r20
+
+  I308:
+): r19
++: r19
+,: r19
+
+  I309:
+): r50
+
+  I310:
+): r22
+*: r22
++: r22
+,: r22
+
+  I311:
+*: s103
++: s104
+]: s365
+
+  I312:
+*: s103
++: s104
+]: s366
+
+  I313:
+call: r49
+proc: r49
+$: r49
+record: r49
+id: r49
+while: r49
+float: r49
+if: r49
+int: r49
+
+  I314:
+float: r10
+}: r10
+int: r10
+
+  I315:
+id: s367
+
+  I316:
+call: r47
+proc: r47
+$: r47
+record: r47
+id: r47
+while: r47
+float: r47
+}: r47
+if: r47
+M: 368
+int: r47
+
+  I317:
+}: r48
+N: 370
+
+  I318:
+[: s28
+=: s371
+
+  I319:
+[: s18
+=: s372
+
+  I320:
+not: r47
+int_num: r47
+true: r47
+false: r47
+(: r47
+id: r47
+-: r47
+M: 373
+float_num: r47
+
+  I321:
+not: s30
+B: 374
+int_num: s32
+E: 33
+false: s34
+(: s35
+true: s36
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I322:
+or: r20
+and: r20
+*: r20
++: r20
+then: r20
+
+  I323:
+or: r19
+and: r19
+then: r19
++: r19
+
+  I324:
+or: r22
+and: r22
+*: r22
+then: r22
++: r22
+
+  I325:
+*: s103
++: s104
+]: s375
+
+  I326:
+*: s103
++: s104
+]: s376
+
+  I327:
+or: r35
+and: r35
+): r35
+
+  I328:
+or: r36
+and: r36
+): r36
+
+  I329:
+int_num: s252
+E: 377
+(: s254
+id: s255
+L: 256
+-: s257
+float_num: s258
+
+  I330:
+int_num: s252
+E: 378
+(: s254
+id: s255
+L: 256
+-: s257
+float_num: s258
+
+  I331:
+): s379
+*: s201
++: s202
+
+  I332:
+int_num: s42
+E: 380
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I333:
+int_num: s42
+E: 381
+(: s44
+id: s45
+L: 46
+-: s47
+float_num: s48
+
+  I334:
+or: r21
+and: r21
+): r21
+*: r21
++: r21
+
+  I335:
+==: r27
+<=: r27
+): r27
+*: r27
++: r27
+[: r27
+<: r27
+!=: r27
+>: r27
+>=: r27
+
+  I336:
+==: r28
+<=: r28
+): r28
+*: r28
++: r28
+[: r28
+<: r28
+!=: r28
+>: r28
+>=: r28
+
+  I337:
+*: s103
++: s104
+]: s382
+
+  I338:
+==: r27
+<=: r27
+*: r27
+[: r27
++: r27
+!=: r27
+<: r27
+>: r27
+>=: r27
+
+  I339:
+}: s383
+
+  I340:
+(: s384
+
+  I341:
+}: r1
+
+  I342:
+int_num: s49
+E: 385
+(: s51
+id: s52
+L: 53
+-: s54
+float_num: s55
+
+  I343:
+B: 386
+not: s57
+int_num: s32
+E: 58
+false: s59
+true: s60
+(: s61
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I344:
+call: r8
+proc: r8
+$: r8
+record: r8
+id: r8
+float: r8
+while: r8
+if: r8
+int: r8
+
+  I345:
+(: s387
+
+  I346:
+}: r2
+
+  I347:
+;: s388
+
+  I348:
+{: s389
+
+  I349:
+int_num: s49
+E: 390
+(: s51
+id: s52
+L: 53
+-: s54
+float_num: s55
+
+  I350:
+or: s70
+and: s71
+then: s391
+
+  I351:
+): r27
+*: r27
++: r27
+[: r27
+
+  I352:
+): r28
+*: r28
+[: r28
++: r28
+
+  I353:
+id: s392
+
+  I354:
+call: r47
+id: r47
+while: r47
+}: r47
+if: r47
+M: 393
+
+  I355:
+}: s394
+
+  I356:
+[: s28
+=: s395
+
+  I357:
+[: s18
+=: s396
+
+  I358:
+not: r47
+int_num: r47
+true: r47
+false: r47
+(: r47
+id: r47
+-: r47
+M: 397
+float_num: r47
+
+  I359:
+not: s30
+B: 398
+int_num: s32
+E: 33
+false: s34
+(: s35
+true: s36
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I360:
+or: r20
+and: r20
+*: r20
++: r20
+do: r20
+
+  I361:
+or: r19
+and: r19
+do: r19
++: r19
+
+  I362:
+or: r22
+and: r22
+*: r22
+do: r22
++: r22
+
+  I363:
+*: s103
++: s104
+]: s399
+
+  I364:
+*: s103
++: s104
+]: s400
+
+  I365:
+): r27
+*: r27
++: r27
+[: r27
+,: r27
+
+  I366:
+): r28
+*: r28
+[: r28
++: r28
+,: r28
+
+  I367:
+(: s401
+
+  I368:
+proc: r31
+$: r31
+record: r31
+float: r31
+}: r31
+int: r31
+
+  I369:
+call: r32
+proc: r32
+$: r32
+record: r32
+id: r32
+while: r32
+float: r32
+if: r32
+int: r32
+
+  I370:
+}: s403
+
+  I371:
+int_num: s49
+E: 404
+(: s51
+id: s52
+L: 53
+-: s54
+float_num: s55
+
+  I372:
+int_num: s49
+E: 405
+(: s51
+id: s52
+L: 53
+-: s54
+float_num: s55
+
+  I373:
+B: 406
+not: s57
+int_num: s32
+E: 58
+false: s59
+true: s60
+(: s61
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I374:
+or: s70
+and: s71
+then: s407
+
+  I375:
+or: r27
+and: r27
+*: r27
+then: r27
+[: r27
++: r27
+
+  I376:
+or: r28
+and: r28
+*: r28
++: r28
+[: r28
+then: r28
+
+  I377:
+or: r20
+and: r20
+): r20
+*: r20
++: r20
+
+  I378:
+or: r19
+and: r19
+): r19
++: r19
+
+  I379:
+or: r22
+and: r22
+): r22
+*: r22
++: r22
+
+  I380:
+*: s103
++: s104
+]: s408
+
+  I381:
+*: s103
++: s104
+]: s409
+
+  I382:
+==: r27
+<=: r27
+): r27
+*: r27
+[: r27
++: r27
+!=: r27
+<: r27
+>: r27
+>=: r27
+
+  I383:
+call: r7
+proc: r7
+$: r7
+record: r7
+id: r7
+float: r7
+while: r7
+if: r7
+int: r7
+
+  I384:
+Dv: 99
+T: 100
+Dv': 410
+X: 13
+): r6
+float: s5
+int: s6
+
+  I385:
+*: s116
++: s117
+;: s412
+
+  I386:
+or: s123
+and: s124
+do: s413
+
+  I387:
+int_num: s134
+E: 135
+(: s136
+): r52
+id: s137
+L: 138
+Elist: 414
+-: s140
+float_num: s141
+
+  I388:
+call: r10
+proc: r10
+record: r10
+id: r10
+while: r10
+float: r10
+}: r10
+if: r10
+int: r10
+
+  I389:
+Dv: 142
+Dv': 415
+T: 144
+X: 13
+float: s145
+}: r6
+int: s6
+
+  I390:
+*: s116
++: s117
+;: s416
+
+  I391:
+{: s417
+
+  I392:
+(: s418
+
+  I393:
+call: s353
+S: 354
+S': 419
+id: s356
+L: 357
+while: s358
+}: r31
+if: s359
+
+  I394:
+call: r34
+proc: r34
+$: r34
+record: r34
+id: r34
+while: r34
+float: r34
+if: r34
+int: r34
+
+  I395:
+int_num: s49
+E: 420
+(: s51
+id: s52
+L: 53
+-: s54
+float_num: s55
+
+  I396:
+int_num: s49
+E: 421
+(: s51
+id: s52
+L: 53
+-: s54
+float_num: s55
+
+  I397:
+B: 422
+not: s57
+int_num: s32
+E: 58
+false: s59
+true: s60
+(: s61
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I398:
+or: s70
+and: s71
+then: s423
+
+  I399:
+or: r27
+and: r27
+*: r27
+do: r27
+[: r27
++: r27
+
+  I400:
+or: r28
+and: r28
+*: r28
++: r28
+[: r28
+do: r28
+
+  I401:
+int_num: s134
+E: 135
+(: s136
+): r52
+id: s137
+L: 138
+Elist: 424
+-: s140
+float_num: s141
+
+  I402:
+call: r30
+proc: r30
+$: r30
+record: r30
+id: r30
+float: r30
+while: r30
+if: r30
+}: r30
+int: r30
+
+  I403:
+else: s425
+
+  I404:
+*: s116
++: s117
+;: s426
+
+  I405:
+*: s116
++: s117
+;: s427
+
+  I406:
+or: s123
+and: s124
+do: s428
+
+  I407:
+{: s429
+
+  I408:
+or: r27
+and: r27
+): r27
+*: r27
+[: r27
++: r27
+
+  I409:
+or: r28
+and: r28
+): r28
+*: r28
++: r28
+[: r28
+
+  I410:
+): s430
+
+  I411:
+{: s431
+
+  I412:
+call: r29
+proc: r29
+record: r29
+id: r29
+while: r29
+float: r29
+}: r29
+if: r29
+int: r29
+
+  I413:
+{: s432
+
+  I414:
+): s433
+
+  I415:
+}: s434
+
+  I416:
+call: r18
+proc: r18
+record: r18
+id: r18
+while: r18
+float: r18
+if: r18
+}: r18
+int: r18
+
+  I417:
+call: r47
+proc: r47
+record: r47
+id: r47
+while: r47
+float: r47
+}: r47
+if: r47
+M: 435
+int: r47
+
+  I418:
+int_num: s134
+E: 135
+(: s136
+): r52
+id: s137
+L: 138
+Elist: 436
+-: s140
+float_num: s141
+
+  I419:
+}: r30
+
+  I420:
+*: s116
++: s117
+;: s437
+
+  I421:
+*: s116
++: s117
+;: s438
+
+  I422:
+or: s123
+and: s124
+do: s439
+
+  I423:
+{: s440
+
+  I424:
+): s441
+
+  I425:
+{: s442
+
+  I426:
+call: r18
+proc: r18
+$: r18
+record: r18
+id: r18
+while: r18
+float: r18
+if: r18
+}: r18
+int: r18
+
+  I427:
+call: r29
+proc: r29
+$: r29
+record: r29
+id: r29
+while: r29
+float: r29
+}: r29
+if: r29
+int: r29
+
+  I428:
+{: s443
+
+  I429:
+call: r47
+proc: r47
+$: r47
+record: r47
+id: r47
+while: r47
+float: r47
+}: r47
+if: r47
+M: 444
+int: r47
+
+  I430:
+{: s445
+
+  I431:
+proc: s277
+D: 278
+L: 279
+while: s280
+float: s5
+int: s6
+P: 446
+call: s282
+Dv: 283
+S: 284
+T: 285
+record: s286
+X: 13
+id: s287
+}: r3
+if: s288
+
+  I432:
+call: r47
+proc: r47
+record: r47
+id: r47
+while: r47
+float: r47
+}: r47
+if: r47
+M: 447
+int: r47
+
+  I433:
+;: s448
+
+  I434:
+call: r9
+proc: r9
+record: r9
+id: r9
+while: r9
+float: r9
+}: r9
+if: r9
+int: r9
+
+  I435:
+proc: r31
+record: r31
+float: r31
+}: r31
+int: r31
+
+  I436:
+): s452
+
+  I437:
+call: r18
+id: r18
+while: r18
+}: r18
+if: r18
+
+  I438:
+call: r29
+id: r29
+while: r29
+}: r29
+if: r29
+
+  I439:
+{: s453
+
+  I440:
+call: r47
+id: r47
+while: r47
+}: r47
+if: r47
+M: 454
+
+  I441:
+;: s455
+
+  I442:
+call: r47
+proc: r47
+$: r47
+record: r47
+id: r47
+while: r47
+float: r47
+}: r47
+if: r47
+M: 456
+int: r47
+
+  I443:
+call: r47
+proc: r47
+$: r47
+record: r47
+id: r47
+while: r47
+float: r47
+}: r47
+if: r47
+M: 457
+int: r47
+
+  I444:
+proc: r31
+$: r31
+record: r31
+float: r31
+}: r31
+int: r31
+
+  I445:
+proc: s277
+D: 278
+L: 279
+while: s280
+float: s5
+int: s6
+P: 459
+call: s282
+Dv: 283
+S: 284
+T: 285
+record: s286
+X: 13
+id: s287
+}: r3
+if: s288
+
+  I446:
+}: s460
+
+  I447:
+call: s353
+S: 354
+S': 461
+id: s356
+L: 357
+while: s358
+}: r31
+if: s359
+
+  I448:
+call: r49
+proc: r49
+record: r49
+id: r49
+while: r49
+float: r49
+}: r49
+if: r49
+int: r49
+
+  I449:
+call: r47
+proc: r47
+record: r47
+id: r47
+while: r47
+float: r47
+}: r47
+if: r47
+M: 462
+int: r47
+
+  I450:
+}: r48
+N: 464
+
+  I451:
+B: 465
+not: s30
+int_num: s32
+E: 33
+false: s34
+(: s35
+true: s36
+id: s37
+L: 38
+-: s39
+float_num: s40
+
+  I452:
+;: s466
+
+  I453:
+call: r47
+id: r47
+while: r47
+}: r47
+if: r47
+M: 467
+
+  I454:
+}: r31
+
+  I455:
+call: r49
+proc: r49
+$: r49
+record: r49
+id: r49
+while: r49
+float: r49
+}: r49
+if: r49
+int: r49
+
+  I456:
+call: s353
+S: 354
+S': 470
+id: s356
+L: 357
+while: s358
+}: r31
+if: s359
+
+  I457:
+call: s353
+S: 354
+S': 471
+id: s356
+L: 357
+while: s358
+}: r31
+if: s359
+
+  I458:
+}: r48
+N: 473
+
+  I459:
+}: s474
+
+  I460:
+call: r8
+proc: r8
+record: r8
+id: r8
+float: r8
+while: r8
+if: r8
+}: r8
+int: r8
+
+  I461:
+}: s475
+
+  I462:
+proc: r31
+record: r31
+float: r31
+}: r31
+int: r31
+
+  I463:
+call: r32
+proc: r32
+record: r32
+id: r32
+while: r32
+float: r32
+}: r32
+if: r32
+int: r32
+
+  I464:
+}: s477
+
+  I465:
+or: s70
+and: s71
+then: s478
+
+  I466:
+call: r49
+id: r49
+while: r49
+}: r49
+if: r49
+
+  I467:
+call: s353
+S: 354
+S': 479
+id: s356
+L: 357
+while: s358
+}: r31
+if: s359
+
+  I468:
+call: r47
+id: r47
+while: r47
+}: r47
+if: r47
+M: 480
+
+  I469:
+}: r48
+N: 482
+
+  I470:
+}: s483
+
+  I471:
+}: s484
+
+  I472:
+call: r32
+proc: r32
+$: r32
+record: r32
+id: r32
+float: r32
+while: r32
+}: r32
+if: r32
+int: r32
+
+  I473:
+}: s485
+
+  I474:
+call: r7
+proc: r7
+record: r7
+id: r7
+float: r7
+while: r7
+}: r7
+if: r7
+int: r7
+
+  I475:
+call: r34
+proc: r34
+record: r34
+id: r34
+while: r34
+float: r34
+if: r34
+}: r34
+int: r34
+
+  I476:
+call: r30
+proc: r30
+record: r30
+id: r30
+float: r30
+while: r30
+if: r30
+}: r30
+int: r30
+
+  I477:
+else: s486
+
+  I478:
+{: s487
+
+  I479:
+}: s488
+
+  I480:
+}: r31
+
+  I481:
+call: r32
+id: r32
+while: r32
+}: r32
+if: r32
+
+  I482:
+}: s490
+
+  I483:
+call: r33
+proc: r33
+$: r33
+record: r33
+id: r33
+while: r33
+float: r33
+if: r33
+int: r33
+
+  I484:
+call: r34
+proc: r34
+$: r34
+record: r34
+id: r34
+while: r34
+float: r34
+if: r34
+}: r34
+int: r34
+
+  I485:
+else: s491
+
+  I486:
+{: s492
+
+  I487:
+call: r47
+proc: r47
+record: r47
+id: r47
+while: r47
+float: r47
+}: r47
+if: r47
+M: 493
+int: r47
+
+  I488:
+call: r34
+id: r34
+while: r34
+if: r34
+}: r34
+
+  I489:
+call: r30
+id: r30
+while: r30
+if: r30
+}: r30
+
+  I490:
+else: s494
+
+  I491:
+{: s495
+
+  I492:
+call: r47
+proc: r47
+record: r47
+id: r47
+while: r47
+float: r47
+}: r47
+if: r47
+M: 496
+int: r47
+
+  I493:
+proc: r31
+record: r31
+float: r31
+}: r31
+int: r31
+
+  I494:
+{: s498
+
+  I495:
+call: r47
+proc: r47
+$: r47
+record: r47
+id: r47
+while: r47
+float: r47
+}: r47
+if: r47
+M: 499
+int: r47
+
+  I496:
+call: s353
+S: 354
+S': 500
+id: s356
+L: 357
+while: s358
+}: r31
+if: s359
+
+  I497:
+}: r48
+N: 464
+
+  I498:
+call: r47
+id: r47
+while: r47
+}: r47
+if: r47
+M: 502
+
+  I499:
+call: s353
+S: 354
+S': 503
+id: s356
+L: 357
+while: s358
+}: r31
+if: s359
+
+  I500:
+}: s504
+
+  I501:
+call: r32
+proc: r32
+record: r32
+id: r32
+float: r32
+while: r32
+}: r32
+if: r32
+int: r32
+
+  I502:
+call: s353
+S: 354
+S': 505
+id: s356
+L: 357
+while: s358
+}: r31
+if: s359
+
+  I503:
+}: s506
+
+  I504:
+call: r33
+proc: r33
+record: r33
+id: r33
+while: r33
+float: r33
+}: r33
+if: r33
+int: r33
+
+  I505:
+}: s507
+
+  I506:
+call: r33
+proc: r33
+$: r33
+record: r33
+id: r33
+while: r33
+float: r33
+}: r33
+if: r33
+int: r33
+
+  I507:
+call: r33
+id: r33
+while: r33
+}: r33
+if: r33
+
