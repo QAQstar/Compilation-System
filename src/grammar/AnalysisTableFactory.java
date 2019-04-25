@@ -125,12 +125,12 @@ public class AnalysisTableFactory {
 		int projectSetIndex = 1;
 		
 		Map<Integer, Map<Symbol, Integer>> GOTOtable = new HashMap<>(); //存储每个项目集之间的跳转
-		Map<ProjectSet, Integer> projectSet2Index = new HashMap<>(); //记录每个项目集在projectSetList中的编号
-		Set<ProjectSet> projectSets = new HashSet<>(); //用来去重的项目集，与projectSetList等价
-		projectSets.add(startProjectSet);
+		Map<String, Integer> projectSetStr2Index = new HashMap<>(); //记录每个项目集在projectSetList中的编号
+		Set<String> projectSetsStr = new HashSet<>(); //用来去重的项目集，与projectSetList等价
+		projectSetsStr.add(startProjectSet.toString());
 		
 		Queue<ProjectSet> queue = new LinkedList<>();
-		projectSet2Index.put(startProjectSet, 0);
+		projectSetStr2Index.put(startProjectSet.toString(), 0);
 		queue.offer(startProjectSet);
 		table.add(new HashMap<>());
 		
@@ -138,31 +138,25 @@ public class AnalysisTableFactory {
 		
 		while(!queue.isEmpty()) {
 			ProjectSet I = queue.poll(); //C中的每个项集I
-			if(I.index == 243) {
-				System.out.println("???");
-			}
 			for(Symbol X : I.canGoSymbols()) { //每个文法符号X
 				ProjectSet nextProjectSet = GOTO(firstSet, productions, I, X, exceptOutlook, projectSetIndex); //形成一个新的后继项目集
 				
-				if(!projectSets.contains(nextProjectSet)) { //GOTO(I, X)非空且不在C中
-					if(projectSetIndex == 243) {
-						System.out.println("????");
-						debug = nextProjectSet;
-					}
+				if(!projectSetsStr.contains(nextProjectSet.toString())) { //GOTO(I, X)非空且不在C中
 					projectSetList.add(nextProjectSet);
-					projectSets.add(nextProjectSet);
+					projectSetsStr.add(nextProjectSet.toString());
 					queue.offer(nextProjectSet);
-					projectSet2Index.put(nextProjectSet, projectSetIndex);
+					projectSetStr2Index.put(nextProjectSet.toString(), projectSetIndex);
 					projectSetIndex++; //项目集编号自增
 					table.add(new HashMap<>());
+				} else {
+					nextProjectSet = projectSetList.projectSets.get(projectSetStr2Index.get(nextProjectSet.toString()));
 				}
-				Integer Iindex = projectSet2Index.get(I);
-				if(Iindex != null && GOTOtable.containsKey(Iindex)) { //跳转表中有I了
-					GOTOtable.get(Iindex).put(X, projectSet2Index.get(nextProjectSet));
+				if(GOTOtable.containsKey(I.index)) { //跳转表中有I了
+					GOTOtable.get(I.index).put(X, nextProjectSet.index);
 				} else { //跳转表中还没I
 					Map<Symbol, Integer> mapTemp = new HashMap<>();
-					mapTemp.put(X, projectSet2Index.get(nextProjectSet));
-					GOTOtable.put(Iindex, mapTemp);
+					mapTemp.put(X, nextProjectSet.index);
+					GOTOtable.put(I.index, mapTemp);
 				}
 			}
 		}
@@ -171,9 +165,6 @@ public class AnalysisTableFactory {
 		
 		boolean isFindFinalStatus = false; //是否找到了移入$能够接收
 		for(int i=0; i<table.size(); i++) {
-			if(i == 243) {
-				System.out.println("???");
-			}
 			if(GOTOtable.get(i) == null) { //没有后继状态
 				if(!isFindFinalStatus &&
 				   projectSetList.projectSets.get(i).isAcc(startProject)) { //为接收时赋值

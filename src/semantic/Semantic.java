@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -56,8 +57,11 @@ public class Semantic {
 			break;
 		case 1: //P->DP
 			break;
-		case 2: //P->SP
-			break;
+		case 2: { //P->SMP
+			List<Integer> SnextList = (List<Integer>)gt.children.get(2).property.get("nextList");
+			int Mquad = (int)gt.children.get(1).property.get("quad");
+			backPatch(SnextList, Mquad);
+		}break;
 		case 3: //P->nil
 			break;
 		case 4: //D->Dv
@@ -378,21 +382,25 @@ public class Semantic {
 		case 31: //S'->nil
 			break;
 		case 32: { //S->ifMBthen{MS'}
-			Map<String, Object> Bproperty = gt.children.get(6).property;
-			List<Integer> SnextList = new ArrayList<>();
-			SnextList.addAll((List<Integer>)Bproperty.get("falseList"));
-			SnextList.addAll((List<Integer>)gt.children.get(1).property.get("nextList"));
-			backPatch((List<Integer>)Bproperty.get("trueList"), (int)gt.children.get(2).property.get("quad"));
-			gt.property.put("nextList", SnextList);
+			Map<String, Object> Bproperty = gt.children.get(5).property;
+			List<Integer> BfalseList = (List<Integer>)Bproperty.get("falseList");
+			List<Integer> BtrueList = (List<Integer>)Bproperty.get("trueList");
+			List<Integer> S1nextList = (List<Integer>)gt.children.get(1).property.get("nextList");
+			List<Integer> S0nextList = merge(BfalseList, S1nextList);
+			backPatch(BtrueList, (int)gt.children.get(2).property.get("quad"));
+			gt.property.put("nextList", S0nextList);
 		}break;
-		case 33: { //S->ifMBthen{MS'N}else{MS'}
+		case 33: { //S->ifMBthen{MS'}Nelse{MS'}
 			Map<String, Object> Bproperty = gt.children.get(11).property;
-			List<Integer> SnextList = new ArrayList<>();
-			SnextList.addAll((List<Integer>)gt.children.get(7).property.get("nextList"));
-			SnextList.addAll((List<Integer>)gt.children.get(6).property.get("nextList"));
-			SnextList.addAll((List<Integer>)gt.children.get(1).property.get("nextList"));
-			backPatch((List<Integer>)Bproperty.get("trueList"), (int)gt.children.get(8).property.get("quad"));
-			backPatch((List<Integer>)Bproperty.get("falseList"), (int)gt.children.get(2).property.get("quad"));
+			List<Integer> BfalseList = (List<Integer>)Bproperty.get("falseList");
+			List<Integer> BtrueList = (List<Integer>)Bproperty.get("trueList");
+			List<Integer> S1nextList = (List<Integer>)gt.children.get(7).property.get("nextList");
+			List<Integer> S2nextList = (List<Integer>)gt.children.get(1).property.get("nextList");
+			List<Integer> NnextList = (List<Integer>)gt.children.get(5).property.get("nextList");
+			
+			List<Integer> SnextList = merge(S1nextList, NnextList, S2nextList);
+			backPatch(BtrueList, (int)gt.children.get(8).property.get("quad"));
+			backPatch(BfalseList, (int)gt.children.get(2).property.get("quad"));
 			gt.property.put("nextList", SnextList);
 		}break;
 		case 34: { //S->whileMBdo{MS'}
@@ -417,9 +425,8 @@ public class Semantic {
 			List<Integer> B1falseList = (List<Integer>)B1property.get("falseList");
 			List<Integer> B2trueList = (List<Integer>)B2property.get("trueList");
 			List<Integer> B2falseList = (List<Integer>)B2property.get("falseList");
-			List<Integer> BtrueList = new ArrayList<>();
-			BtrueList.addAll(B1trueList);
-			BtrueList.addAll(B2trueList);
+			
+			List<Integer> BtrueList = merge(B1trueList, B2trueList);
 			List<Integer> BfalseList = B2falseList;
 			int Mquad = (int)gt.children.get(1).property.get("quad");
 			backPatch(B1falseList, Mquad);
@@ -433,10 +440,9 @@ public class Semantic {
 			List<Integer> B1falseList = (List<Integer>)B1property.get("falseList");
 			List<Integer> B2trueList = (List<Integer>)B2property.get("trueList");
 			List<Integer> B2falseList = (List<Integer>)B2property.get("falseList");
+			
 			List<Integer> BtrueList = B2trueList;
-			List<Integer> BfalseList = new ArrayList<>();
-			BfalseList.addAll(B1falseList);
-			BfalseList.addAll(B2falseList);
+			List<Integer> BfalseList = merge(B1falseList, B2falseList);
 			int Mquad = (int)gt.children.get(1).property.get("quad");
 			backPatch(B1trueList, Mquad);
 			gt.property.put("trueList", BtrueList);
@@ -461,7 +467,7 @@ public class Semantic {
 			trueList.add(trueQuad);
 			falseList.add(falseQuad);
 			gt.property.put("trueList", trueList);
-			gt.property.put("falseList", trueList);
+			gt.property.put("falseList", falseList);
 			BoolExpression trueExpression = new BoolExpression(condition);
 			BoolExpression falseExpression = new BoolExpression();
 			codes.add(trueExpression);
@@ -476,7 +482,7 @@ public class Semantic {
 			trueList.add(trueQuad);
 			falseList.add(falseQuad);
 			gt.property.put("trueList", trueList);
-			gt.property.put("falseList", trueList);
+			gt.property.put("falseList", falseList);
 			BoolExpression trueExpression = new BoolExpression(condition);
 			BoolExpression falseExpression = new BoolExpression();
 			codes.add(trueExpression);
@@ -491,7 +497,7 @@ public class Semantic {
 			trueList.add(trueQuad);
 			falseList.add(falseQuad);
 			gt.property.put("trueList", trueList);
-			gt.property.put("falseList", trueList);
+			gt.property.put("falseList", falseList);
 			BoolExpression trueExpression = new BoolExpression(condition);
 			BoolExpression falseExpression = new BoolExpression();
 			codes.add(trueExpression);
@@ -506,7 +512,7 @@ public class Semantic {
 			trueList.add(trueQuad);
 			falseList.add(falseQuad);
 			gt.property.put("trueList", trueList);
-			gt.property.put("falseList", trueList);
+			gt.property.put("falseList", falseList);
 			BoolExpression trueExpression = new BoolExpression(condition);
 			BoolExpression falseExpression = new BoolExpression();
 			codes.add(trueExpression);
@@ -521,7 +527,7 @@ public class Semantic {
 			trueList.add(trueQuad);
 			falseList.add(falseQuad);
 			gt.property.put("trueList", trueList);
-			gt.property.put("falseList", trueList);
+			gt.property.put("falseList", falseList);
 			BoolExpression trueExpression = new BoolExpression(condition);
 			BoolExpression falseExpression = new BoolExpression();
 			codes.add(trueExpression);
@@ -536,7 +542,7 @@ public class Semantic {
 			trueList.add(trueQuad);
 			falseList.add(falseQuad);
 			gt.property.put("trueList", trueList);
-			gt.property.put("falseList", trueList);
+			gt.property.put("falseList", falseList);
 			BoolExpression trueExpression = new BoolExpression(condition);
 			BoolExpression falseExpression = new BoolExpression();
 			codes.add(trueExpression);
@@ -565,6 +571,8 @@ public class Semantic {
 			List<Integer> nextList = new ArrayList<>();
 			nextList.add(nextQuad());
 			gt.property.put("nextList", nextList);
+			BoolExpression boolExpression = new BoolExpression();
+			codes.add(boolExpression);
 		}break;
 		case 49: //S->callid(Elist);
 			break;
@@ -593,7 +601,17 @@ public class Semantic {
 		return codes.size()+1;
 	}
 	
+	private static List<Integer> merge(List<Integer>...list) {
+		List<Integer> result = new ArrayList<>();
+		for(List<Integer> l : list) {
+			if(l == null) continue;
+			result.addAll(l);
+		}
+		return result;
+	}
+	
 	private static void backPatch(List<Integer> list, int quad) {
+		if(list == null) return;
 		for(int i : list) {
 			BoolExpression boolExpression = (BoolExpression)codes.get(i-1);
 			boolExpression.setQuad(quad);

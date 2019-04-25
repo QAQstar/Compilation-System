@@ -14,7 +14,7 @@
 
 P'->P
 P->D P
-P->S P
+P->S M P
 P->nil
 
 #####################
@@ -61,7 +61,7 @@ S->L = E ;
 S'->S M S'
 S'->nil /[if while id call]
 S->if B then { M S' }
-S->if B then { M S' N } else { M S' }
+S->if B then { M S' } N else { M S' }
 S->while M B do { M S' }
 B->B or M B /[not]
 B->B and M B /[not]
