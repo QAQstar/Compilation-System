@@ -198,8 +198,9 @@ public class AnalysisTable {
 	}
 	
 	public static void main(String[] args) {
+		//TODO:
 		AnalysisTable test = AnalysisTableFactory.creator("grammar.txt", "NFA.nfa");
-		GrammarTree root = test.analysis("int [3][5][8] a;a[1][2][3] = 4;");
+		GrammarTree root = test.analysis("int a;\nif 1 < 3 then {a = 1;}");
 		System.out.println(Semantic.getCode());
 //		GrammarTree root = test.analysis("proc inc;\nint i;\ni=i+1;");
 //		AnalysisTable test = AnalysisTableFactory.creator("testGrammar.txt", "testNFA.nfa");

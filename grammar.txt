@@ -58,13 +58,13 @@ S->L = E ;
 
 # 控制语句
 
-S'->S S'
+S'->S M S'
 S'->nil /[if while id call]
-S->if B then { S' }
-S->if B then { S' } else { S' }
-S->while B do { S' }
-B->B or B /[not]
-B->B and B /[not]
+S->if B then { M S' }
+S->if B then { M S' N } else { M S' }
+S->while M B do { M S' }
+B->B or M B /[not]
+B->B and M B /[not]
 B->not B
 B->( B )
 B->E < E
@@ -75,6 +75,9 @@ B->E == E
 B->E != E
 B->true
 B->false
+
+M->nil
+N->nil
 
 #####################
 

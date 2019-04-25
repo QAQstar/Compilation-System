@@ -48,6 +48,7 @@ public class Semantic {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public static void setProperty(GrammarTree gt) {
 		//记得每个节点的孩子是从右往左存储的
 		switch(gt.productionIndex) {
@@ -367,18 +368,50 @@ public class Semantic {
 			ArrayAssign arrayAssign = new ArrayAssign(Larray, (String)Lproperty.get("offsetName"), Ename);
 			codes.add(arrayAssign);
 		}break;
-		case 30: //S'->SS'
-			break;
+		case 30: { //S'->SMS'
+			List<Integer> S2nextList = (List<Integer>)gt.children.get(0).property.get("nextList");
+			List<Integer> S1nextList = (List<Integer>)gt.children.get(2).property.get("nextList");
+			int Mquad = (int)gt.children.get(1).property.get("quad");
+			backPatch(S1nextList, Mquad);
+			gt.property.put("nextList", S2nextList);
+		}break;
 		case 31: //S'->nil
 			break;
-		case 32: //S->ifBthen{S'}
-			break;
-		case 33: //S->ifBthen{S'}else{S'}
-			break;
-		case 34: //S->whileBdo{S'}
-			break;
-		case 35: { //B->BorB
-			Map<String, Object> B1property = gt.children.get(2).property;
+		case 32: { //S->ifMBthen{MS'}
+			Map<String, Object> Bproperty = gt.children.get(6).property;
+			List<Integer> SnextList = new ArrayList<>();
+			SnextList.addAll((List<Integer>)Bproperty.get("falseList"));
+			SnextList.addAll((List<Integer>)gt.children.get(1).property.get("nextList"));
+			backPatch((List<Integer>)Bproperty.get("trueList"), (int)gt.children.get(2).property.get("quad"));
+			gt.property.put("nextList", SnextList);
+		}break;
+		case 33: { //S->ifMBthen{MS'N}else{MS'}
+			Map<String, Object> Bproperty = gt.children.get(11).property;
+			List<Integer> SnextList = new ArrayList<>();
+			SnextList.addAll((List<Integer>)gt.children.get(7).property.get("nextList"));
+			SnextList.addAll((List<Integer>)gt.children.get(6).property.get("nextList"));
+			SnextList.addAll((List<Integer>)gt.children.get(1).property.get("nextList"));
+			backPatch((List<Integer>)Bproperty.get("trueList"), (int)gt.children.get(8).property.get("quad"));
+			backPatch((List<Integer>)Bproperty.get("falseList"), (int)gt.children.get(2).property.get("quad"));
+			gt.property.put("nextList", SnextList);
+		}break;
+		case 34: { //S->whileMBdo{MS'}
+			Map<String, Object> Bproperty = gt.children.get(5).property;
+			List<Integer> BfalseList = (List<Integer>)Bproperty.get("falseList");
+			List<Integer> BtrueList = (List<Integer>)Bproperty.get("trueList");
+			List<Integer> S1nextList = (List<Integer>)gt.children.get(1).property.get("nextList");
+			int M1quad = (int)gt.children.get(6).property.get("quad");
+			int M2quad = (int)gt.children.get(2).property.get("quad");
+			List<Integer> SnextList = BfalseList;
+			backPatch(S1nextList, M1quad);
+			backPatch(BtrueList, M2quad);
+			gt.property.put("nextList", SnextList);
+			BoolExpression boolExpression = new BoolExpression();
+			boolExpression.setQuad(M1quad);
+			codes.add(boolExpression);
+		}break;
+		case 35: { //B->BorMB
+			Map<String, Object> B1property = gt.children.get(3).property;
 			Map<String, Object> B2property = gt.children.get(0).property;
 			List<Integer> B1trueList = (List<Integer>)B1property.get("trueList");
 			List<Integer> B1falseList = (List<Integer>)B1property.get("falseList");
@@ -388,141 +421,158 @@ public class Semantic {
 			BtrueList.addAll(B1trueList);
 			BtrueList.addAll(B2trueList);
 			List<Integer> BfalseList = B2falseList;
-			int B2start = (int)B2property.get("start");
+			int Mquad = (int)gt.children.get(1).property.get("quad");
+			backPatch(B1falseList, Mquad);
 			gt.property.put("trueList", BtrueList);
 			gt.property.put("falseList", BfalseList);
-			gt.property.put("start", B2start);
 		}break;
-		case 36: { //B->BandB
-			
+		case 36: { //B->BandMB
+			Map<String, Object> B1property = gt.children.get(3).property;
+			Map<String, Object> B2property = gt.children.get(0).property;
+			List<Integer> B1trueList = (List<Integer>)B1property.get("trueList");
+			List<Integer> B1falseList = (List<Integer>)B1property.get("falseList");
+			List<Integer> B2trueList = (List<Integer>)B2property.get("trueList");
+			List<Integer> B2falseList = (List<Integer>)B2property.get("falseList");
+			List<Integer> BtrueList = B2trueList;
+			List<Integer> BfalseList = new ArrayList<>();
+			BfalseList.addAll(B1falseList);
+			BfalseList.addAll(B2falseList);
+			int Mquad = (int)gt.children.get(1).property.get("quad");
+			backPatch(B1trueList, Mquad);
+			gt.property.put("trueList", BtrueList);
+			gt.property.put("falseList", BfalseList);
 		}break;
 		case 37: { //B->notB
-			
+			Map<String, Object> B1property = gt.children.get(2).property;
+			List<Integer> B1trueList = (List<Integer>)B1property.get("trueList");
+			List<Integer> B1falseList = (List<Integer>)B1property.get("falseList");
+			gt.property.put("trueList", B1falseList);
+			gt.property.put("falseList", B1trueList);
 		}break;
 		case 38: { //B->(B)
-			
+			gt.property = gt.children.get(1).property;
 		}break;
 		case 39: { //B->E<E
 			int trueQuad = nextQuad();
 			int falseQuad = nextQuad()+1;
 			String condition = gt.children.get(2).property.get("name")+" < "+gt.children.get(0).property.get("name");
-			BoolExpression falseExpression = new BoolExpression();
-			BoolExpression trueExpression = new BoolExpression(condition);
-			gt.property.put("start", codes.size());
-			codes.add(falseExpression);
-			codes.add(trueExpression);
 			List<Integer> trueList = new ArrayList<>();
 			List<Integer> falseList = new ArrayList<>();
 			trueList.add(trueQuad);
 			falseList.add(falseQuad);
 			gt.property.put("trueList", trueList);
-			gt.property.put("false", trueList);
+			gt.property.put("falseList", trueList);
+			BoolExpression trueExpression = new BoolExpression(condition);
+			BoolExpression falseExpression = new BoolExpression();
+			codes.add(trueExpression);
+			codes.add(falseExpression);
 		}break;
 		case 40: { //B->E<=E
 			int trueQuad = nextQuad();
 			int falseQuad = nextQuad()+1;
 			String condition = gt.children.get(2).property.get("name")+" <= "+gt.children.get(0).property.get("name");
-			BoolExpression falseExpression = new BoolExpression();
-			BoolExpression trueExpression = new BoolExpression(condition);
-			gt.property.put("start", codes.size());
-			codes.add(falseExpression);
-			codes.add(trueExpression);
 			List<Integer> trueList = new ArrayList<>();
 			List<Integer> falseList = new ArrayList<>();
 			trueList.add(trueQuad);
 			falseList.add(falseQuad);
 			gt.property.put("trueList", trueList);
-			gt.property.put("false", trueList);
+			gt.property.put("falseList", trueList);
+			BoolExpression trueExpression = new BoolExpression(condition);
+			BoolExpression falseExpression = new BoolExpression();
+			codes.add(trueExpression);
+			codes.add(falseExpression);
 		}break;
 		case 41: { //B->E>E
 			int trueQuad = nextQuad();
 			int falseQuad = nextQuad()+1;
 			String condition = gt.children.get(2).property.get("name")+" > "+gt.children.get(0).property.get("name");
-			BoolExpression falseExpression = new BoolExpression();
-			BoolExpression trueExpression = new BoolExpression(condition);
-			gt.property.put("start", codes.size());
-			codes.add(falseExpression);
-			codes.add(trueExpression);
 			List<Integer> trueList = new ArrayList<>();
 			List<Integer> falseList = new ArrayList<>();
 			trueList.add(trueQuad);
 			falseList.add(falseQuad);
 			gt.property.put("trueList", trueList);
-			gt.property.put("false", trueList);
+			gt.property.put("falseList", trueList);
+			BoolExpression trueExpression = new BoolExpression(condition);
+			BoolExpression falseExpression = new BoolExpression();
+			codes.add(trueExpression);
+			codes.add(falseExpression);
 		}break;
 		case 42: { //B->E>=E
 			int trueQuad = nextQuad();
 			int falseQuad = nextQuad()+1;
 			String condition = gt.children.get(2).property.get("name")+" >= "+gt.children.get(0).property.get("name");
-			BoolExpression falseExpression = new BoolExpression();
-			BoolExpression trueExpression = new BoolExpression(condition);
-			gt.property.put("start", codes.size());
-			codes.add(falseExpression);
-			codes.add(trueExpression);
 			List<Integer> trueList = new ArrayList<>();
 			List<Integer> falseList = new ArrayList<>();
 			trueList.add(trueQuad);
 			falseList.add(falseQuad);
 			gt.property.put("trueList", trueList);
-			gt.property.put("false", trueList);
+			gt.property.put("falseList", trueList);
+			BoolExpression trueExpression = new BoolExpression(condition);
+			BoolExpression falseExpression = new BoolExpression();
+			codes.add(trueExpression);
+			codes.add(falseExpression);
 		}break;
 		case 43: { //B->E==E
 			int trueQuad = nextQuad();
 			int falseQuad = nextQuad()+1;
 			String condition = gt.children.get(2).property.get("name")+" == "+gt.children.get(0).property.get("name");
-			BoolExpression falseExpression = new BoolExpression();
-			BoolExpression trueExpression = new BoolExpression(condition);
-			gt.property.put("start", codes.size());
-			codes.add(falseExpression);
-			codes.add(trueExpression);
 			List<Integer> trueList = new ArrayList<>();
 			List<Integer> falseList = new ArrayList<>();
 			trueList.add(trueQuad);
 			falseList.add(falseQuad);
 			gt.property.put("trueList", trueList);
-			gt.property.put("false", trueList);
+			gt.property.put("falseList", trueList);
+			BoolExpression trueExpression = new BoolExpression(condition);
+			BoolExpression falseExpression = new BoolExpression();
+			codes.add(trueExpression);
+			codes.add(falseExpression);
 		}break;
 		case 44: { //B->E!=E
 			int trueQuad = nextQuad();
 			int falseQuad = nextQuad()+1;
 			String condition = gt.children.get(2).property.get("name")+" != "+gt.children.get(0).property.get("name");
-			BoolExpression falseExpression = new BoolExpression();
-			BoolExpression trueExpression = new BoolExpression(condition);
-			gt.property.put("start", codes.size());
-			codes.add(falseExpression);
-			codes.add(trueExpression);
 			List<Integer> trueList = new ArrayList<>();
 			List<Integer> falseList = new ArrayList<>();
 			trueList.add(trueQuad);
 			falseList.add(falseQuad);
 			gt.property.put("trueList", trueList);
-			gt.property.put("false", trueList);
+			gt.property.put("falseList", trueList);
+			BoolExpression trueExpression = new BoolExpression(condition);
+			BoolExpression falseExpression = new BoolExpression();
+			codes.add(trueExpression);
+			codes.add(falseExpression);
 		}break;
 		case 45: { //B->true
 			int trueQuad = nextQuad();
 			List<Integer> trueList = new ArrayList<>();
 			trueList.add(trueQuad);
-			BoolExpression trueExpression = new BoolExpression();
-			gt.property.put("start", codes.size());
-			codes.add(trueExpression);
 			gt.property.put("trueList", trueList);
+			BoolExpression trueExpression = new BoolExpression();
+			codes.add(trueExpression);
 		}break;
 		case 46: { //B->false
 			int flaseQuad = nextQuad();
 			List<Integer> falseList = new ArrayList<>();
 			falseList.add(flaseQuad);
+			gt.property.put("falseList", falseList);
 			BoolExpression falseExpression = new BoolExpression();
-			gt.property.put("start", codes.size());
 			codes.add(falseExpression);
-			gt.property.put("trueList", falseList);
 		}break;
-		case 47: //S->callid(Elist);
+		case 47: { //M->nil
+			gt.property.put("quad", nextQuad());
+		}break;
+		case 48: { //N->nil
+			List<Integer> nextList = new ArrayList<>();
+			nextList.add(nextQuad());
+			gt.property.put("nextList", nextList);
+		}break;
+		case 49: //S->callid(Elist);
 			break;
-		case 48: //Elist->E,Elist
+		case 50: //Elist->E,Elist
 			break;
-		case 49: //Elist->E
+		case 51: //Elist->E
 			break;
-		case 50: //Elist->nil
+		case 52: //Elist->nil
 			break;
 
 		}
@@ -540,7 +590,14 @@ public class Semantic {
 	}
 	
 	private static int nextQuad() {
-		return codes.size();
+		return codes.size()+1;
+	}
+	
+	private static void backPatch(List<Integer> list, int quad) {
+		for(int i : list) {
+			BoolExpression boolExpression = (BoolExpression)codes.get(i-1);
+			boolExpression.setQuad(quad);
+		}
 	}
 	
 	public static String getCode() {
@@ -549,13 +606,6 @@ public class Semantic {
 			sb.append(i+": "+codes.get(i-1)+"\n");
 		}
 		return sb.toString();
-	}
-	
-	public static void backPatch(List<Integer> list, int quad) {
-		for(int i : list) {
-			BoolExpression boolExpression = (BoolExpression)codes.get(i-1);
-			boolExpression.setQuad(quad);
-		}
 	}
 	
 	public static void main(String[] args) {
