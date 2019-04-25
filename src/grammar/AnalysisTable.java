@@ -200,7 +200,7 @@ public class AnalysisTable {
 	public static void main(String[] args) {
 		//TODO:
 		AnalysisTable test = AnalysisTableFactory.creator("grammar.txt", "NFA.nfa");
-		GrammarTree root = test.analysis("int a;int b; int c;\nif a < b & b < c then {a = 1;}\n a = 4;");
+		GrammarTree root = test.analysis("proc test (int a; int b;) { a = 1; b = 2; int c; c = 3;} int d; d = 1; call test(1, d,);");
 		System.out.println(Semantic.getCode());
 //		GrammarTree root = test.analysis("proc inc;\nint i;\ni=i+1;");
 //		AnalysisTable test = AnalysisTableFactory.creator("testGrammar.txt", "testNFA.nfa");

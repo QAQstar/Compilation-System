@@ -24,13 +24,14 @@ P->nil
 D->Dv
 Dv'->Dv Dv'
 Dv'->nil /[int float]
-D->proc id ( Dv' ) { P }
-D->proc id ( ) { P }
-D->record id { Dv' }
+D->proc id Mp ( Dv' ) { P }
+D->proc id Mp ( ) { P }
+D->record id Mp { Dv' }
+Mp->nil
 Dv->T id ;
 
 T->X C'
-T->X /[[]
+#T->X /[[]
 X->int
 X->float
 C'->C C'
@@ -85,8 +86,8 @@ N->nil
 
 S->call id ( Elist ) ;
 Elist->E , Elist
-Elist->E /[,]
-Elist->nil
+#Elist->E /[,]
+Elist->nil /[,]
 
 #####################
 

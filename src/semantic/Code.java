@@ -84,7 +84,7 @@ class ArrayAssign implements Code {
 	
 	@Override
 	public String toString() {
-		return x+"["+z+"] = "+y;
+		return x+"["+y+"] = "+z;
 	}
 }
 
@@ -130,5 +130,18 @@ class BoolExpression implements Code {
 	public String toString() {
 		if(condition == null) return "goto "+quad;
 		return "if "+condition+" goto "+quad;
+	}
+}
+
+class Common implements Code {
+	String code;
+	
+	public Common(String code) {
+		this.code = code;
+	}
+	
+	@Override
+	public String toString() {
+		return this.code;
 	}
 }

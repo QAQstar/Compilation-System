@@ -29,6 +29,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -46,12 +47,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lexical.DFA;
 import lexical.DFAFactory;
 import lexical.Token;
+import semantic.Code;
+import semantic.Semantic;
+import semantic.SymbolTable;
+import semantic.SymbolTableRow;
 
 public class GUI extends Application{
 //	private DFA dfa = null;
@@ -69,9 +75,9 @@ public class GUI extends Application{
 		MenuItem itemLexRun = new MenuItem("运行");
 		Menu menuLex = new Menu("词法分析", null, itemLoadRule, itemWriteRule, itemLoadCode, itemlexRule, itemLexRun);
 		MenuItem itemLoadGrammar = new MenuItem("导入文法");
-		MenuItem itemAnalysisTable = new MenuItem("分析表");
+		MenuItem itemAnalysisTable = new MenuItem("LR分析表");
 		MenuItem itemGrammarRun = new MenuItem("运行");
-		Menu menuGrammar = new Menu("语法分析", null, itemLoadGrammar, itemAnalysisTable, itemGrammarRun);
+		Menu menuGrammar = new Menu("语法制导翻译", null, itemLoadGrammar, itemAnalysisTable, itemGrammarRun);
 		MenuBar menubar = new MenuBar(menuLex, menuGrammar);
 		
 		CodeArea codeArea = new CodeArea();
@@ -549,9 +555,11 @@ public class GUI extends Application{
 		}
 		
 		Button bTree = new Button("生成语法分析树");
+		Button bSemantic = new Button("语义分析");
 		HBox box = new HBox();
-		box.getChildren().add(bTree);
-		box.setStyle("-fx-alignment:center");
+		box.getChildren().addAll(bTree, bSemantic);
+		box.setStyle("-fx-alignment:center;"
+				   + "-fx-spacing:5;");
 		
 		BorderPane mainPane = new BorderPane();
 		mainPane.setCenter(treeView);
@@ -601,9 +609,114 @@ public class GUI extends Application{
 			});
 		});
 		
+		bSemantic.setOnAction(event->{
+			Stage s = new Stage();
+			ChoiceBox<String> cb = new ChoiceBox<>();
+			Map<String, SymbolTable> tables = Semantic.getSymbolTables();
+			VBox vb = new VBox();
+			vb.setStyle("-fx-spacing:10;"
+					  + "-fx-alignment:center;"
+					  + "-fx-insets:10;");
+			cb.getItems().addAll(tables.keySet());
+			cb.getSelectionModel().select("main");
+			Label lTip = new Label("请选择符号表");
+			Button bSure = new Button("确定");
+			bSure.setPrefSize(70, 30);
+			vb.getChildren().addAll(lTip, cb, bSure);
+			s.setScene(new Scene(vb, 150, 100));
+			s.initModality(Modality.WINDOW_MODAL);
+			s.initOwner(stage);
+			s.show();
+			bSure.setOnAction(event2->{
+				s.close();
+				symbolTable(tables.get(cb.getSelectionModel().getSelectedItem())).show();
+			});
+		});
+		
 		stage.setScene(new Scene(mainPane));
 		stage.setTitle("语法树");
 		
+		return stage;
+	}
+	
+	private Stage symbolTable(SymbolTable st) {
+		Stage stage = new Stage();
+		stage.setTitle(st.getName());
+		StringBuilder tableInfo = new StringBuilder();
+		if(st.getParent() != null) {
+			tableInfo.append("外围符号表："+st.getParent().getName()+"\t");
+		}
+		tableInfo.append("总长度："+st.getSpaceSum());
+		
+		ObservableList<SymbolTableRow> list = FXCollections.observableArrayList();
+		for(SymbolTableRow row : st.getRows()) {
+			list.add(row);
+		}
+		
+		TableView<SymbolTableRow> tableView = new TableView<>(list);
+		TableColumn<SymbolTableRow, String> tc_varName = new TableColumn<>("变量名");
+		TableColumn<SymbolTableRow, String> tc_type = new TableColumn<>("类型");
+		TableColumn<SymbolTableRow, String> tc_value = new TableColumn<>("值");
+		TableColumn<SymbolTableRow, Number> tc_space = new TableColumn<>("占用空间");
+		TableColumn<SymbolTableRow, Number> tc_addr = new TableColumn<>("地址");
+		tc_varName.setStyle("-fx-alignment:center;");
+		tc_type.setStyle("-fx-alignment:center;");
+		tc_value.setStyle("-fx-alignment:center;");
+		tc_space.setStyle("-fx-alignment:center;");
+		tc_addr.setStyle("-fx-alignment:center;");
+		
+		tc_varName.setCellValueFactory(new PropertyValueFactory<>("varName")); //利用反射机制
+		tc_type.setCellValueFactory(new PropertyValueFactory<>("type")); //利用反射机制
+		tc_value.setCellValueFactory(param->{
+			SimpleStringProperty value = new SimpleStringProperty(String.valueOf(param.getValue().getValue()));
+			return value;
+		});
+		tc_space.setCellValueFactory(param->{
+			SimpleIntegerProperty space = new SimpleIntegerProperty(param.getValue().getSpace());
+			return space;
+		});
+		tc_addr.setCellValueFactory(param->{
+			SimpleIntegerProperty addr = new SimpleIntegerProperty(param.getValue().getAddr());
+			return addr;
+		});
+		
+		tableView.getColumns().add(tc_varName);
+		tableView.getColumns().add(tc_type);
+		tableView.getColumns().add(tc_value);
+		tableView.getColumns().add(tc_space);
+		tableView.getColumns().add(tc_addr);
+		tableView.setTableMenuButtonVisible(true);
+		
+		TextArea taError = new TextArea();
+		TextArea taInfo = new TextArea();
+		taError.setEditable(false);
+		taInfo.setEditable(false);
+		taError.setStyle("-fx-text-fill:#ff0000;");
+		taInfo.setStyle("-fx-text-fill:#a9a9a9;");
+		taError.setPrefHeight(100);
+		taInfo.setPrefHeight(100);
+		taError.setWrapText(true);
+		taInfo.setWrapText(true);
+		taError.setText(st.getError().toString());
+		taInfo.setText(st.getInfo().toString());
+		HBox hb = new HBox();
+		hb.setStyle("-fx-alignment:center;");
+		hb.getChildren().addAll(taError, taInfo);
+		
+		TextArea taCode = new TextArea();
+		taCode.setEditable(false);
+		taCode.setPrefWidth(230);
+		List<Code> codes = st.getCodes();
+		for(int i=1; i<=codes.size(); i++) {
+			taCode.appendText(i+": "+codes.get(i-1)+"\n");
+		}
+		
+		BorderPane bp = new BorderPane();
+		bp.setTop(new Label(tableInfo.toString()));
+		bp.setCenter(tableView);
+		bp.setBottom(hb);
+		bp.setLeft(taCode);
+		stage.setScene(new Scene(bp));
 		return stage;
 	}
 	

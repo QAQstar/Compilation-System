@@ -6,9 +6,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Stack;
+
+import javax.print.DocFlavor.STRING;
 
 import grammar.GrammarTree;
 
@@ -20,9 +26,12 @@ public class Semantic {
 	private static Stack<SymbolTable> stack;
 	private static SymbolTable curSymbolTable;
 	
-	private static StringBuilder error;
+	private static StringBuilder error, info;
 	
 	private static List<Code> codes; //三地址码
+	
+	/* 所有的符号表 */
+	private static Map<String, SymbolTable> tables;
 	
 	/* 将类型和宽度信息从语法分析树中的B节点传递到对应于产生式C->nil的结点 */
 	private static String t;
@@ -31,21 +40,23 @@ public class Semantic {
 	/* 作为生成新的临时变量的下标 */
 	private static int temp;
 	
-	/* 作为生成新的指令标号的下标 */
-	private static int quadIndex;
 	
 	/**
 	 * 语义分析初始化
 	 */
 	public static void init() {
 		stack = new Stack<>();
-		SymbolTable mainTable = new SymbolTable("main");
+		codes = new ArrayList<>();
+		SymbolTable mainTable = new SymbolTable("main", codes);
+		tables = new HashMap<>();
+		tables.put("main", mainTable);
 		stack.push(mainTable);
 		curSymbolTable = mainTable;
 		error = new StringBuilder();
-		codes = new ArrayList<>();
+		info = new StringBuilder();
+		curSymbolTable.setError(error);
+		curSymbolTable.setInfo(info);
 		temp = 1;
-		quadIndex = 1;
 	}
 	
 	
@@ -66,22 +77,90 @@ public class Semantic {
 			break;
 		case 4: //D->Dv
 			break;
-		case 5: //Dv'->DvDv'
-			break;
-		case 6: //Dv'->nil
-			break;
-		case 7: //D->procid(Dv'){P}
-			break;
-		case 8: //D->procid(){P}
-			break;
-		case 9: //D->recordid{Dv'}
-			break;
-		case 10: { //Dv->Tid;
+		case 5: { //Dv'->DvDv'
+			gt.property.put("num", (int)gt.children.get(0).property.get("num")+1);
+		}break;
+		case 6: { //Dv'->nil
+			gt.property.put("num", 0);
+		}break;
+		case 7: { //D->procidMp(Dv'){P}
+			String procName = gt.children.get(7).token.getValue();
+			curSymbolTable.setName(procName);
+			curSymbolTable.setParamNum((int)gt.children.get(4).property.get("num"));
+			int width = curSymbolTable.getSpaceSum();
+			SymbolTableRow procSymbolTableRow = (SymbolTableRow)gt.children.get(6).property.get("SymbolTableRow");
+			procSymbolTableRow.setSpace(width);
+			tables.put(procName, curSymbolTable);
+			stack.pop();
+			curSymbolTable = stack.peek();
+			if(curSymbolTable.lookUp(procName) != null) {
+				appendError(gt.children.get(7).token.getLineNumber(), "函数"+procName+"已存在");
+				break;
+			}
+			curSymbolTable.changeVarName("nil", procName);
+			curSymbolTable.addSpace(width);
+			codes = curSymbolTable.getCodes();
+			error = curSymbolTable.getError();
+			info = curSymbolTable.getInfo();
+		}break;
+		case 8: { //D->procidMp(){P}
+			String procName = gt.children.get(6).token.getValue();
+			curSymbolTable.setName(procName);
+			int width = curSymbolTable.getSpaceSum();
+			SymbolTableRow procSymbolTableRow = (SymbolTableRow)gt.children.get(5).property.get("SymbolTableRow");
+			procSymbolTableRow.setSpace(width);
+			tables.put(procName, curSymbolTable);
+			stack.pop();
+			curSymbolTable = stack.peek();
+			if(curSymbolTable.lookUp(procName) != null) {
+				appendError(gt.children.get(6).token.getLineNumber(), "函数"+procName+"已存在");
+				break;
+			}
+			curSymbolTable.changeVarName("nil", procName);
+			curSymbolTable.addSpace(width);
+			codes = curSymbolTable.getCodes();
+			error = curSymbolTable.getError();
+			info = curSymbolTable.getInfo();
+		}break;
+		case 9: { //D->recordidMp{Dv'}
+			String recordName = gt.children.get(4).token.getValue();
+			curSymbolTable.setName(recordName);
+			int width = curSymbolTable.getSpaceSum();
+			SymbolTableRow recordSymbolTableRow = (SymbolTableRow)gt.children.get(3).property.get("SymbolTableRow");
+			recordSymbolTableRow.setSpace(width);
+			recordSymbolTableRow.setType("record");
+			tables.put(recordName, curSymbolTable);
+			stack.pop();
+			curSymbolTable = stack.peek();
+			if(curSymbolTable.lookUp(recordName) != null) {
+				appendError(gt.children.get(4).token.getLineNumber(), "结构体"+recordName+"已存在");
+				break;
+			}
+			curSymbolTable.changeVarName("nil", recordName);
+			curSymbolTable.addSpace(width);
+			codes = curSymbolTable.getCodes();
+			error = curSymbolTable.getError();
+			info = curSymbolTable.getInfo();
+		}break;
+		case 10: { // Mp->nil
+			codes = new ArrayList<>();
+			SymbolTable t = new SymbolTable("nil", curSymbolTable, codes);
+			curSymbolTable.enter("nil", "proc", 0, t);
+			SymbolTableRow SymbolTableRow = curSymbolTable.lookUp("nil");
+			stack.push(t);
+			curSymbolTable = t;
+			error = new StringBuilder();
+			info = new StringBuilder();
+			curSymbolTable.setError(error);
+			curSymbolTable.setInfo(info);
+			gt.property.put("SymbolTableRow", SymbolTableRow);
+		}break;
+		case 11: { //Dv->Tid;
 			String idName = (String)gt.children.get(1).token.getValue();
 			String Ttype = (String)gt.children.get(2).property.get("type");
 			int Tspace = (int)gt.children.get(2).property.get("width");
 			curSymbolTable.enter(idName, Ttype, Tspace, null);
-			if(Ttype.charAt(Ttype.length()-1) == ')') {
+			if(Ttype.charAt(Ttype.length()-1) == ')') { //数组
 				Object idvalue;
 				if(Ttype.charAt(Ttype.lastIndexOf(',')+2) == 'i') { //int数组
 					idvalue = new int[Tspace/4];
@@ -91,17 +170,11 @@ public class Semantic {
 				curSymbolTable.setValue(idName, idvalue);
 			}
 		}break;
-		case 11: { //T->XC'
+		case 12: { //T->XC'
 			String C_type = (String)gt.children.get(0).property.get("type");
 			int C_width = (int)gt.children.get(0).property.get("width");
 			gt.property.put("type", C_type);
 			gt.property.put("width", C_width);
-		}break;
-		case 12: { //T->X
-			String Btype = (String)gt.children.get(0).property.get("type");
-			int Bwidth = (int)gt.children.get(0).property.get("width");
-			gt.property.put("type", Btype);
-			gt.property.put("width", Bwidth);
 		}break;
 		case 13: { //X->int
 			t = "int";
@@ -132,21 +205,22 @@ public class Semantic {
 		}break;
 		case 18: { //S->id=E;
 			String idName = gt.children.get(3).token.getValue();
-			Row p = curSymbolTable.lookUp(idName);
+			SymbolTableRow p = curSymbolTable.lookUp(idName);
 			Map<String, Object> Eproperty = gt.children.get(1).property;
 			String Etype = (String)Eproperty.get("type");
 			String Ename = (String)Eproperty.get("name");
 			Object Evalue = Eproperty.get("value");
 			if(p == null) { //变量未经声明就使用
-				error.append("Error at Line ["+gt.lineNumber+"]: 变量"+idName+"未经声明就使用\n");
+				appendError(gt.lineNumber, "变量"+idName+"未经声明就使用");
 				break;
 			}
 			Object idvalue;
 			if(!p.getType().equals(Etype)) { //两者类型不一样
 				if(p.getType().equals("int")) { //id是int，表达式右边是float，则无法强转，出错
-					//TODO:无法强转
+					appendError(gt.lineNumber, "类型\""+p.getType()+"\"不能强转为\""+Etype+"\"");
 					break;
 				} else { //id是float，表达式右边是int，则可以强转
+					appendInfo(gt.lineNumber, "类型\""+p.getType()+"\"强转为\""+Etype+"\"");
 					idvalue = (float)((int)Evalue);
 				}
 			} else { //类型一样
@@ -177,9 +251,11 @@ public class Semantic {
 			} else if(E1type.equals("int")) { //E1是int，E2是float
 				E0type = E2type;
 				E0value = (float)((int)E1value+(float)E2value);
+				appendInfo(gt.lineNumber, "类型\"int\"强转为\"float\"");
 			} else { //E1是float，E2是int
 				E0type = E1type;
 				E0value = (float)((float)E1value*(int)E2value);
+				appendInfo(gt.lineNumber, "类型\"int\"强转为\"float\"");
 			}
 			String t_ = newTemp();
 			gt.property.put("type", E0type);
@@ -209,9 +285,11 @@ public class Semantic {
 			} else if(E1type.equals("int")) { //E1是int，E2是float
 				E0type = E2type;
 				E0value = (float)((int)E1value*(float)E2value);
+				appendInfo(gt.lineNumber, "类型\"int\"强转为\"float\"");
 			} else { //E1是float，E2是int
 				E0type = E1type;
 				E0value = (float)((float)E1value*(int)E2value);
+				appendInfo(gt.lineNumber, "类型\"int\"强转为\"float\"");
 			}
 			String t_ = newTemp();
 			gt.property.put("type", E0type);
@@ -229,7 +307,7 @@ public class Semantic {
 			} else if(E1type.equals("float")) {
 				E0value = -(float)gt.children.get(0).property.get("value");
 			} else {
-				//TODO:错误处理
+				appendError(gt.lineNumber, "未对类型\""+E1type+"\"定义符号'-'");
 				break;
 			}
 			String tempStr = newTemp();
@@ -244,7 +322,7 @@ public class Semantic {
 		}break;
 		case 23: { //E->id
 			String idName = gt.children.get(0).token.getValue();
-			Row p = curSymbolTable.lookUp(idName);
+			SymbolTableRow p = curSymbolTable.lookUp(idName);
 			if(p == null) { //变量未经声明就使用
 				error.append("Error at Line ["+gt.lineNumber+"]: 变量"+idName+"未经声明就使用\n");
 				break;
@@ -254,43 +332,38 @@ public class Semantic {
 			gt.property.put("type", p.getType());
 		}break;
 		case 24: { //E->int_num
-			String Ename = newTemp();
 			int Evalue = (int)Integer.valueOf(gt.children.get(0).token.getValue());
-			gt.property.put("name", Ename);
+			gt.property.put("name", String.valueOf(Evalue));
 			gt.property.put("value", Evalue);
 			gt.property.put("type", "int");
-			Assign assign = new Assign(Ename, String.valueOf(Evalue));
-			codes.add(assign);
 		}break;
 		case 25: { //E->float_num
-			String Ename = newTemp();
-			float Evalue = (float)Integer.valueOf(gt.children.get(0).token.getValue());
-			gt.property.put("name", Ename);
+			float Evalue = (float)Float.valueOf(gt.children.get(0).token.getValue());
+			gt.property.put("name", String.valueOf(Evalue));
 			gt.property.put("value", Evalue);
 			gt.property.put("type", "float");
-			Assign assign = new Assign(Ename, String.valueOf(Evalue));
-			codes.add(assign);
 		}break;
 		case 26: { //E->L
 			String t_ = newTemp();
-			int Loffset = (int)gt.children.get(0).property.get("offset");
+			Map<String, Object> Lproperty = gt.children.get(0).property;
+			int Loffset = (int)Lproperty.get("offset");
+			SymbolTableRow array = curSymbolTable.lookUp((String)gt.children.get(0).property.get("array"));
 			gt.property.put("name", t_);
-			Row array = curSymbolTable.lookUp((String)gt.children.get(0).property.get("array"));
-			gt.property.put("type", array.getType());
+			gt.property.put("type", Lproperty.get("type"));
 			gt.property.put("value", ((int[])array.getValue())[Loffset/4]);
 			Assign assign = new Assign(t_, array.getVarName(), (String)gt.children.get(0).property.get("offsetName"));
 			codes.add(assign);
 		}break;
 		case 27: { //L->id[E]
 			String idName = gt.children.get(3).token.getValue();
-			Row p = curSymbolTable.lookUp(idName);
+			SymbolTableRow p = curSymbolTable.lookUp(idName);
 			Map<String, Object> Eproperty = gt.children.get(1).property;
 			String Etype = (String)Eproperty.get("type");
 			if(p == null) { //变量未经声明就使用
-				error.append("Error at Line ["+gt.lineNumber+"]: 变量"+idName+"未经声明就使用\n");
+				appendError(gt.lineNumber, "变量"+idName+"未经声明就使用");
 				break;
 			} else if(!Etype.equals("int")) {
-				//TODO:数组中的维数不是整数
+				appendError(gt.lineNumber, "数组"+idName+"的维数非整数");
 				break;
 			}
 			String Ltype = p.getType().substring(p.getType().indexOf(' ')+1, p.getType().length()-1);
@@ -315,7 +388,7 @@ public class Semantic {
 			Map<String, Object> Eproperty = gt.children.get(1).property;
 			String Etype = (String)Eproperty.get("type");
 			if(!Etype.equals("int")) {
-				//TODO:数组中的数字不是整数
+				appendError(gt.lineNumber, "数组"+L1property.get("array")+"的维数非整数");
 				break;
 			}
 			String L1type = (String)L1property.get("type");
@@ -350,7 +423,7 @@ public class Semantic {
 			String Ltype = (String)Lproperty.get("type");
 			String Larray = (String)Lproperty.get("array");
 			int Loffset = (int)Lproperty.get("offset");
-			Row array = curSymbolTable.lookUp(Larray);
+			SymbolTableRow array = curSymbolTable.lookUp(Larray);
 			if(Etype.equals(Ltype)) { //相同类型
 				if(Ltype.equals("int")) { //都是int
 					int[] L = (int[])array.getValue();
@@ -360,13 +433,14 @@ public class Semantic {
 					L[Loffset/4] = (float)Evalue;
 				}
 			} else if(Ltype.equals("int")) { //数组是int，表达式是float
-				//TODO:强转失败
+				appendError(gt.lineNumber, "类型\"float\"不能强转为\"int\"");
 				break;
 			} else if(Ltype.equals("float")) { //数组是float，表达式是int
 				float[] L = (float[])array.getValue();
 				L[Loffset/4] = (float)((int)Evalue);
+				appendInfo(gt.lineNumber, "类型\"int\"强转为\"float\"");
 			} else {
-				//TODO:错误处理，没到数组最后一维
+				appendError(gt.lineNumber, "类型\""+Etype+"\"不能强转为\""+Ltype+"\"");
 				break;
 			}
 			ArrayAssign arrayAssign = new ArrayAssign(Larray, (String)Lproperty.get("offsetName"), Ename);
@@ -574,15 +648,34 @@ public class Semantic {
 			BoolExpression boolExpression = new BoolExpression();
 			codes.add(boolExpression);
 		}break;
-		case 49: //S->callid(Elist);
-			break;
-		case 50: //Elist->E,Elist
-			break;
-		case 51: //Elist->E
-			break;
-		case 52: //Elist->nil
-			break;
-
+		case 49: { //S->callid(Elist);
+			Stack<String> s = (Stack<String>)gt.children.get(2).property.get("stack");
+			int n = 0;
+			String procName = (String)gt.children.get(4).token.getValue();
+			if(s != null) {
+				n = s.size();
+				while(!s.isEmpty()) {
+					Common code = new Common("param " + s.pop());
+					codes.add(code);
+				}
+				Common code = new Common("call "+procName+", "+n);
+				codes.add(code);
+			}
+			SymbolTable procTable = (SymbolTable)(curSymbolTable.lookUp(procName).getValue());
+			if(n != procTable.getParamNum()) {
+				appendError(gt.lineNumber, "参数类型错误，应有"+n+"个参数");
+				break;
+			}
+		}break;
+		case 50: { //Elist->E,Elist
+			Stack<String> q = (Stack<String>)gt.children.get(0).property.get("stack");
+			q.add((String)gt.children.get(2).property.get("name"));
+			gt.property.put("stack", q);
+		}break;
+		case 51: { //Elist->nil
+			Stack<String> q = new Stack<>();
+			gt.property.put("stack", q);
+		}break;
 		}
 	}
 	
@@ -625,6 +718,18 @@ public class Semantic {
 		}
 		return sb.toString();
 	}
+	
+	public static void appendError(int lineNumber, String errorInfo) {
+		error.append("Error at Line ["+lineNumber+"]: "+errorInfo+"\n");
+	}
+	
+	public static void appendInfo(int lineNumber, String info) {
+		Semantic.info.append("Error at Line ["+lineNumber+"]: "+info+"\n");
+	}
+	
+	public static SymbolTable getSymbolTable() {return curSymbolTable;}
+	
+	public static Map<String, SymbolTable> getSymbolTables() {return tables;}
 	
 	public static void main(String[] args) {
 //		File file = new File("Productions.txt");
