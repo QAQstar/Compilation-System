@@ -95,36 +95,36 @@ class BoolExpression implements Code {
 	 */
 	
 	private String condition;
-	private StringBuilder quad;
+	private String quad;
 	
 	/**
 	 * goto _
 	 */
-	public BoolExpression(String quad) {
+	public BoolExpression() {
 		condition = null;
-		this.quad = new StringBuilder(quad);
+		this.quad = "_";
 	}
 	
 	/**
 	 * if E1 relop E2 goto _
 	 */
-	public BoolExpression(String condition, String quad) {
+	public BoolExpression(String condition) {
 		this.condition = condition;
-		this.quad = new StringBuilder(quad);
+		this.quad = "_";
 	}
 	
 	/**
 	 * 重新设置指令标号，即回填
 	 * @param newQuad 新的指令标号
 	 */
-	public void setQuad(StringBuilder newQuad) {
-		this.quad = newQuad;
+	public void setQuad(int newQuad) {
+		this.quad = String.valueOf(newQuad);
 	}
 	
 	/**
 	 * 得到指令标号，为了以后的回填
 	 */
-	public StringBuilder getQuad() {return this.quad;}
+	public String getQuad() {return this.quad;}
 	
 	@Override
 	public String toString() {

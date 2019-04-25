@@ -378,7 +378,20 @@ public class Semantic {
 		case 34: //S->whileBdo{S'}
 			break;
 		case 35: { //B->BorB
-			
+			Map<String, Object> B1property = gt.children.get(2).property;
+			Map<String, Object> B2property = gt.children.get(0).property;
+			List<Integer> B1trueList = (List<Integer>)B1property.get("trueList");
+			List<Integer> B1falseList = (List<Integer>)B1property.get("falseList");
+			List<Integer> B2trueList = (List<Integer>)B2property.get("trueList");
+			List<Integer> B2falseList = (List<Integer>)B2property.get("falseList");
+			List<Integer> BtrueList = new ArrayList<>();
+			BtrueList.addAll(B1trueList);
+			BtrueList.addAll(B2trueList);
+			List<Integer> BfalseList = B2falseList;
+			int B2start = (int)B2property.get("start");
+			gt.property.put("trueList", BtrueList);
+			gt.property.put("falseList", BfalseList);
+			gt.property.put("start", B2start);
 		}break;
 		case 36: { //B->BandB
 			
@@ -390,82 +403,118 @@ public class Semantic {
 			
 		}break;
 		case 39: { //B->E<E
-			String trueQuad = nextQuad();
-			String falseQuad = nextQuad();
+			int trueQuad = nextQuad();
+			int falseQuad = nextQuad()+1;
 			String condition = gt.children.get(2).property.get("name")+" < "+gt.children.get(0).property.get("name");
-			BoolExpression falseExpression = new BoolExpression(falseQuad);
-			BoolExpression trueExpression = new BoolExpression(condition, trueQuad);
+			BoolExpression falseExpression = new BoolExpression();
+			BoolExpression trueExpression = new BoolExpression(condition);
+			gt.property.put("start", codes.size());
 			codes.add(falseExpression);
 			codes.add(trueExpression);
-			gt.property.put("trueList", trueExpression.getQuad());
-			gt.property.put("false", falseExpression.getQuad());
+			List<Integer> trueList = new ArrayList<>();
+			List<Integer> falseList = new ArrayList<>();
+			trueList.add(trueQuad);
+			falseList.add(falseQuad);
+			gt.property.put("trueList", trueList);
+			gt.property.put("false", trueList);
 		}break;
 		case 40: { //B->E<=E
-			String trueQuad = nextQuad();
-			String falseQuad = nextQuad();
+			int trueQuad = nextQuad();
+			int falseQuad = nextQuad()+1;
 			String condition = gt.children.get(2).property.get("name")+" <= "+gt.children.get(0).property.get("name");
-			BoolExpression falseExpression = new BoolExpression(falseQuad);
-			BoolExpression trueExpression = new BoolExpression(condition, trueQuad);
+			BoolExpression falseExpression = new BoolExpression();
+			BoolExpression trueExpression = new BoolExpression(condition);
+			gt.property.put("start", codes.size());
 			codes.add(falseExpression);
 			codes.add(trueExpression);
-			gt.property.put("trueList", trueExpression.getQuad());
-			gt.property.put("false", falseExpression.getQuad());
+			List<Integer> trueList = new ArrayList<>();
+			List<Integer> falseList = new ArrayList<>();
+			trueList.add(trueQuad);
+			falseList.add(falseQuad);
+			gt.property.put("trueList", trueList);
+			gt.property.put("false", trueList);
 		}break;
 		case 41: { //B->E>E
-			String trueQuad = nextQuad();
-			String falseQuad = nextQuad();
+			int trueQuad = nextQuad();
+			int falseQuad = nextQuad()+1;
 			String condition = gt.children.get(2).property.get("name")+" > "+gt.children.get(0).property.get("name");
-			BoolExpression falseExpression = new BoolExpression(falseQuad);
-			BoolExpression trueExpression = new BoolExpression(condition, trueQuad);
+			BoolExpression falseExpression = new BoolExpression();
+			BoolExpression trueExpression = new BoolExpression(condition);
+			gt.property.put("start", codes.size());
 			codes.add(falseExpression);
 			codes.add(trueExpression);
-			gt.property.put("trueList", trueExpression.getQuad());
-			gt.property.put("false", falseExpression.getQuad());
+			List<Integer> trueList = new ArrayList<>();
+			List<Integer> falseList = new ArrayList<>();
+			trueList.add(trueQuad);
+			falseList.add(falseQuad);
+			gt.property.put("trueList", trueList);
+			gt.property.put("false", trueList);
 		}break;
 		case 42: { //B->E>=E
-			String trueQuad = nextQuad();
-			String falseQuad = nextQuad();
+			int trueQuad = nextQuad();
+			int falseQuad = nextQuad()+1;
 			String condition = gt.children.get(2).property.get("name")+" >= "+gt.children.get(0).property.get("name");
-			BoolExpression falseExpression = new BoolExpression(falseQuad);
-			BoolExpression trueExpression = new BoolExpression(condition, trueQuad);
+			BoolExpression falseExpression = new BoolExpression();
+			BoolExpression trueExpression = new BoolExpression(condition);
+			gt.property.put("start", codes.size());
 			codes.add(falseExpression);
 			codes.add(trueExpression);
-			gt.property.put("trueList", trueExpression.getQuad());
-			gt.property.put("false", falseExpression.getQuad());
+			List<Integer> trueList = new ArrayList<>();
+			List<Integer> falseList = new ArrayList<>();
+			trueList.add(trueQuad);
+			falseList.add(falseQuad);
+			gt.property.put("trueList", trueList);
+			gt.property.put("false", trueList);
 		}break;
 		case 43: { //B->E==E
-			String trueQuad = nextQuad();
-			String falseQuad = nextQuad();
+			int trueQuad = nextQuad();
+			int falseQuad = nextQuad()+1;
 			String condition = gt.children.get(2).property.get("name")+" == "+gt.children.get(0).property.get("name");
-			BoolExpression falseExpression = new BoolExpression(falseQuad);
-			BoolExpression trueExpression = new BoolExpression(condition, trueQuad);
+			BoolExpression falseExpression = new BoolExpression();
+			BoolExpression trueExpression = new BoolExpression(condition);
+			gt.property.put("start", codes.size());
 			codes.add(falseExpression);
 			codes.add(trueExpression);
-			gt.property.put("trueList", trueExpression.getQuad());
-			gt.property.put("false", falseExpression.getQuad());
+			List<Integer> trueList = new ArrayList<>();
+			List<Integer> falseList = new ArrayList<>();
+			trueList.add(trueQuad);
+			falseList.add(falseQuad);
+			gt.property.put("trueList", trueList);
+			gt.property.put("false", trueList);
 		}break;
 		case 44: { //B->E!=E
-			String trueQuad = nextQuad();
-			String falseQuad = nextQuad();
+			int trueQuad = nextQuad();
+			int falseQuad = nextQuad()+1;
 			String condition = gt.children.get(2).property.get("name")+" != "+gt.children.get(0).property.get("name");
-			BoolExpression falseExpression = new BoolExpression(falseQuad);
-			BoolExpression trueExpression = new BoolExpression(condition, trueQuad);
+			BoolExpression falseExpression = new BoolExpression();
+			BoolExpression trueExpression = new BoolExpression(condition);
+			gt.property.put("start", codes.size());
 			codes.add(falseExpression);
 			codes.add(trueExpression);
-			gt.property.put("trueList", trueExpression.getQuad());
-			gt.property.put("false", falseExpression.getQuad());
+			List<Integer> trueList = new ArrayList<>();
+			List<Integer> falseList = new ArrayList<>();
+			trueList.add(trueQuad);
+			falseList.add(falseQuad);
+			gt.property.put("trueList", trueList);
+			gt.property.put("false", trueList);
 		}break;
 		case 45: { //B->true
-			String trueQuad = nextQuad();
-			BoolExpression trueExpression = new BoolExpression(trueQuad);
+			int trueQuad = nextQuad();
+			List<Integer> trueList = new ArrayList<>();
+			trueList.add(trueQuad);
+			BoolExpression trueExpression = new BoolExpression();
+			gt.property.put("start", codes.size());
 			codes.add(trueExpression);
-			gt.property.put("trueList", trueExpression.getQuad());
+			gt.property.put("trueList", trueList);
 		}break;
 		case 46: { //B->false
-			String falseQuad = nextQuad();
-			BoolExpression falseExpression = new BoolExpression(falseQuad);
+			int flaseQuad = nextQuad();
+			List<Integer> falseList = new ArrayList<>();
+			falseList.add(flaseQuad);
+			BoolExpression falseExpression = new BoolExpression();
+			gt.property.put("start", codes.size());
 			codes.add(falseExpression);
-			gt.property.put("falseList", falseExpression.getQuad());
+			gt.property.put("trueList", falseList);
 		}break;
 		case 47: //S->callid(Elist);
 			break;
@@ -490,10 +539,8 @@ public class Semantic {
 		return t_;
 	}
 	
-	private static String nextQuad() {
-		String nextQuad = "L"+quadIndex;
-		quadIndex ++;
-		return nextQuad;
+	private static int nextQuad() {
+		return codes.size();
 	}
 	
 	public static String getCode() {
@@ -502,6 +549,13 @@ public class Semantic {
 			sb.append(i+": "+codes.get(i-1)+"\n");
 		}
 		return sb.toString();
+	}
+	
+	public static void backPatch(List<Integer> list, int quad) {
+		for(int i : list) {
+			BoolExpression boolExpression = (BoolExpression)codes.get(i-1);
+			boolExpression.setQuad(quad);
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -517,9 +571,13 @@ public class Semantic {
 //			e.printStackTrace();
 //		}
 		
-		float a = 1;
-		Object b = a;
-		
-		System.out.println();
+		StringBuilder a = new StringBuilder("a");
+		StringBuilder b = new StringBuilder("b");
+		List<Object> list = new ArrayList<>();
+		list.add(a);
+		list.add(b);
+		StringBuilder c = (StringBuilder)list.get(1);
+		c = a;
+		System.out.println(b);
 	}
 }
