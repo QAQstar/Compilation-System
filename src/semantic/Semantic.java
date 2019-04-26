@@ -85,6 +85,16 @@ public class Semantic {
 		}break;
 		case 7: { //D->procidMp(Dv'){P}
 			String procName = gt.children.get(7).token.getValue();
+			if(tables.containsKey(procName)) {
+				stack.pop();
+				curSymbolTable = stack.peek();
+				codes = curSymbolTable.getCodes();
+				error = curSymbolTable.getError();
+				info = curSymbolTable.getInfo();
+				curSymbolTable.delete();
+				appendError(gt.children.get(7).token.getLineNumber(), "函数或结构体或变量"+procName+"已存在");
+				break;
+			}
 			curSymbolTable.setName(procName);
 			curSymbolTable.setParamNum((int)gt.children.get(4).property.get("num"));
 			int width = curSymbolTable.getSpaceSum();
@@ -93,18 +103,24 @@ public class Semantic {
 			tables.put(procName, curSymbolTable);
 			stack.pop();
 			curSymbolTable = stack.peek();
-			if(curSymbolTable.lookUp(procName) != null) {
-				appendError(gt.children.get(7).token.getLineNumber(), "函数"+procName+"已存在");
-				break;
-			}
-			curSymbolTable.changeVarName("nil", procName);
 			curSymbolTable.addSpace(width);
 			codes = curSymbolTable.getCodes();
 			error = curSymbolTable.getError();
 			info = curSymbolTable.getInfo();
+			curSymbolTable.changeVarName("nil", procName);
 		}break;
 		case 8: { //D->procidMp(){P}
 			String procName = gt.children.get(6).token.getValue();
+			if(tables.containsKey(procName)) {
+				stack.pop();
+				curSymbolTable = stack.peek();
+				codes = curSymbolTable.getCodes();
+				error = curSymbolTable.getError();
+				info = curSymbolTable.getInfo();
+				curSymbolTable.delete();
+				appendError(gt.children.get(6).token.getLineNumber(), "函数或结构体或变量"+procName+"已存在");
+				break;
+			}
 			curSymbolTable.setName(procName);
 			int width = curSymbolTable.getSpaceSum();
 			SymbolTableRow procSymbolTableRow = (SymbolTableRow)gt.children.get(5).property.get("SymbolTableRow");
@@ -112,18 +128,24 @@ public class Semantic {
 			tables.put(procName, curSymbolTable);
 			stack.pop();
 			curSymbolTable = stack.peek();
-			if(curSymbolTable.lookUp(procName) != null) {
-				appendError(gt.children.get(6).token.getLineNumber(), "函数"+procName+"已存在");
-				break;
-			}
-			curSymbolTable.changeVarName("nil", procName);
 			curSymbolTable.addSpace(width);
 			codes = curSymbolTable.getCodes();
 			error = curSymbolTable.getError();
 			info = curSymbolTable.getInfo();
+			curSymbolTable.changeVarName("nil", procName);
 		}break;
 		case 9: { //D->recordidMp{Dv'}
 			String recordName = gt.children.get(4).token.getValue();
+			if(tables.containsKey(recordName)) {
+				stack.pop();
+				curSymbolTable = stack.peek();
+				codes = curSymbolTable.getCodes();
+				error = curSymbolTable.getError();
+				info = curSymbolTable.getInfo();
+				curSymbolTable.delete();
+				appendError(gt.children.get(4).token.getLineNumber(), "函数或结构体或变量"+recordName+"已存在");
+				break;
+			}
 			curSymbolTable.setName(recordName);
 			int width = curSymbolTable.getSpaceSum();
 			SymbolTableRow recordSymbolTableRow = (SymbolTableRow)gt.children.get(3).property.get("SymbolTableRow");
@@ -132,15 +154,11 @@ public class Semantic {
 			tables.put(recordName, curSymbolTable);
 			stack.pop();
 			curSymbolTable = stack.peek();
-			if(curSymbolTable.lookUp(recordName) != null) {
-				appendError(gt.children.get(4).token.getLineNumber(), "结构体"+recordName+"已存在");
-				break;
-			}
-			curSymbolTable.changeVarName("nil", recordName);
 			curSymbolTable.addSpace(width);
 			codes = curSymbolTable.getCodes();
 			error = curSymbolTable.getError();
 			info = curSymbolTable.getInfo();
+			curSymbolTable.changeVarName("nil", recordName);
 		}break;
 		case 10: { // Mp->nil
 			codes = new ArrayList<>();
@@ -157,6 +175,10 @@ public class Semantic {
 		}break;
 		case 11: { //Dv->Tid;
 			String idName = (String)gt.children.get(1).token.getValue();
+			if(curSymbolTable.lookUp(idName) != null) {
+				appendError(gt.lineNumber, "变量"+idName+"重复声明");
+				break;
+			}
 			String Ttype = (String)gt.children.get(2).property.get("type");
 			int Tspace = (int)gt.children.get(2).property.get("width");
 			curSymbolTable.enter(idName, Ttype, Tspace, null);
@@ -346,6 +368,9 @@ public class Semantic {
 		case 26: { //E->L
 			String t_ = newTemp();
 			Map<String, Object> Lproperty = gt.children.get(0).property;
+			
+			if(Lproperty.get("offset") == null) break; //数组出错了
+			
 			int Loffset = (int)Lproperty.get("offset");
 			SymbolTableRow array = curSymbolTable.lookUp((String)gt.children.get(0).property.get("array"));
 			gt.property.put("name", t_);
@@ -364,6 +389,16 @@ public class Semantic {
 				break;
 			} else if(!Etype.equals("int")) {
 				appendError(gt.lineNumber, "数组"+idName+"的维数非整数");
+				break;
+			}
+			
+			if(p.getType().charAt(0) != 'a') {
+				appendError(gt.lineNumber, "数组"+idName+"的维数过多");
+				break;
+			}
+			int arrayLen = Integer.valueOf(p.getType().substring(p.getType().indexOf('(')+1, p.getType().indexOf(' ')-1));
+			if((int)Eproperty.get("value") >= arrayLen) {
+				appendError(gt.lineNumber, "数组"+idName+"越界访问");
 				break;
 			}
 			String Ltype = p.getType().substring(p.getType().indexOf(' ')+1, p.getType().length()-1);
@@ -387,11 +422,22 @@ public class Semantic {
 			Map<String, Object> L1property = gt.children.get(3).property;
 			Map<String, Object> Eproperty = gt.children.get(1).property;
 			String Etype = (String)Eproperty.get("type");
+			SymbolTableRow arrayRow = curSymbolTable.lookUp((String)L1property.get("array"));
 			if(!Etype.equals("int")) {
 				appendError(gt.lineNumber, "数组"+L1property.get("array")+"的维数非整数");
 				break;
 			}
 			String L1type = (String)L1property.get("type");
+			if(L1type == null) break; //数组维数过少
+			if(L1type.charAt(0) != 'a') {
+				appendError(gt.lineNumber, "数组"+L1property.get("array")+"的维数过多");
+				break;
+			}
+			int arrayLen = Integer.valueOf(L1type.substring(L1type.indexOf('(')+1, L1type.indexOf(' ')-1));
+			if((int)Eproperty.get("value") >= arrayLen) {
+				appendError(gt.lineNumber, "数组"+L1property.get("array")+"越界访问");
+				break;
+			}
 			String L0type = L1type.substring(L1type.indexOf(' ')+1, L1type.length()-1);
 			int L0offset = 4;
 			// 以下计算offset
@@ -400,6 +446,11 @@ public class Semantic {
 			while((index=temp.indexOf(',')) != -1) {
 				L0offset = L0offset * Integer.valueOf(temp.substring(6, index));
 				temp = temp.substring(index+2, temp.length()-1);
+			}
+			
+			if(L0offset >= arrayRow.getSpace()) {
+				appendError(gt.lineNumber, "数组"+L1property.get("array")+"越界访问");
+				break;
 			}
 			
 			gt.property.put("array", (String)L1property.get("array"));
@@ -422,7 +473,11 @@ public class Semantic {
 			Object Evalue = Eproperty.get("value");
 			String Ltype = (String)Lproperty.get("type");
 			String Larray = (String)Lproperty.get("array");
+			
+			if(Lproperty.get("offset") == null) break; //出现了数组越界错误
+
 			int Loffset = (int)Lproperty.get("offset");
+			
 			SymbolTableRow array = curSymbolTable.lookUp(Larray);
 			if(Etype.equals(Ltype)) { //相同类型
 				if(Ltype.equals("int")) { //都是int

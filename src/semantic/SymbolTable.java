@@ -93,6 +93,15 @@ public class SymbolTable {
 		content.add(SymbolTableRow);
 	}
 	
+	/**
+	 * 删除符号表中最后一行的内容
+	 */
+	public void delete() {
+		int space = content.get(content.size()-1).getSpace();
+		content.remove(content.size()-1);
+		spaceSum = spaceSum - space;
+	}
+	
 	public void changeVarName(String oldVarName, String newVarName) {
 		Integer SymbolTableRowNum = index.get(oldVarName);
 		if(SymbolTableRowNum == null) return;
