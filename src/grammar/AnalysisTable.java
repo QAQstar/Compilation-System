@@ -97,7 +97,7 @@ public class AnalysisTable {
 			} else if(item.type == ItemType.REDUCE) { //规约
 				stack.reduce(table, item.statusIndex);
 				isReduce = true;
-				System.out.println(productions.productions.get(item.statusIndex));
+//				System.out.println(productions.productions.get(item.statusIndex));
 				Semantic.setProperty(stack.peekGrammarTree());
 			}
 		}
@@ -198,16 +198,19 @@ public class AnalysisTable {
 	}
 	
 	public static void main(String[] args) {
-		//TODO:
 		AnalysisTable test = AnalysisTableFactory.creator("grammar.txt", "NFA.nfa");
-		GrammarTree root = test.analysis("proc test (int a; int b;) { a = 1; b = 2; int c; c = 3;} int d; d = 1; call test(1, d,);");
-		System.out.println(Semantic.getCode());
-//		GrammarTree root = test.analysis("proc inc;\nint i;\ni=i+1;");
-//		AnalysisTable test = AnalysisTableFactory.creator("testGrammar.txt", "testNFA.nfa");
-//		GrammarTree root = test.analysis("bab");
-//		System.out.println(root.getGraphvizCode());
-//		GrammarTree root = test.analysis("b\na\nb");
-//		System.out.println(root.getResultString());
+		String code = "proc test (int a; int b;) {"
+					+ "a = 1;"
+					+ "b = 2;"
+					+ "int c;"
+					+ "c = 3;"
+					+ "}"
+					+ "int d;"
+					+ "d = 1;"
+					+ "call test(1, d,);";
+		GrammarTree root = test.analysis(code);
+		System.out.println("语法分析: \n" + root.getResultString());
+		System.out.println("\n语义分析: \n" + Semantic.getCode());
 	}
 }
 

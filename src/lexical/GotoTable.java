@@ -168,10 +168,4 @@ public class GotoTable {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void main(String[] args) {
-		int i,a=1;
-		for(i=1;i<=10;i++) a*=i;
-		System.out.println(i);
-	}
 }

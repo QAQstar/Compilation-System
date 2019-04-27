@@ -1,10 +1,8 @@
 package grammar;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -134,8 +132,6 @@ public class AnalysisTableFactory {
 		queue.offer(startProjectSet);
 		table.add(new HashMap<>());
 		
-		ProjectSet debug = null;
-		
 		while(!queue.isEmpty()) {
 			ProjectSet I = queue.poll(); //C中的每个项集I
 			for(Symbol X : I.canGoSymbols()) { //每个文法符号X
@@ -161,7 +157,7 @@ public class AnalysisTableFactory {
 			}
 		}
 		
-		StringBuilder conflict = new StringBuilder();
+//		StringBuilder conflict = new StringBuilder(); //记录有冲突的表项，debug时用
 		
 		boolean isFindFinalStatus = false; //是否找到了移入$能够接收
 		for(int i=0; i<table.size(); i++) {
@@ -175,7 +171,7 @@ public class AnalysisTableFactory {
 					for(Project p : projectSetList.projectSets.get(i).projects) { //看看项目集中有没有可归约的项目集
 						if(p.isReduce) { //可归约的项目
 							for(Symbol outlook : p.outlook) { //把每一个展望符加入到表中
-								if(table.get(i).get(outlook) != null) conflict.append("I"+i+"  ");
+//								if(table.get(i).get(outlook) != null) conflict.append("I"+i+"  ");
 								Item item = new Item(ItemType.REDUCE, p.productionIndex);
 								table.get(i).put(outlook, item);
 							}
@@ -188,7 +184,7 @@ public class AnalysisTableFactory {
 			for(Project p : projectSetList.projectSets.get(i).projects) { //看看项目集中有没有可归约的项目集
 				if(p.isReduce) { //可归约的项目
 					for(Symbol outlook : p.outlook) { //把每一个展望符加入到表中
-						if(table.get(i).get(outlook) != null) conflict.append("I"+i+"  ");
+//						if(table.get(i).get(outlook) != null) conflict.append("I"+i+"  ");
 						Item item = new Item(ItemType.REDUCE, p.productionIndex);
 						table.get(i).put(outlook, item);
 					}
@@ -196,7 +192,7 @@ public class AnalysisTableFactory {
 			}
 			for(Symbol s : canGo) {
 				if(table.get(i).get(s) != null) { //已经有规约动作了，规约的优先级比移入高
-					conflict.append("I"+i+":  ");
+//					conflict.append("I"+i+":  ");
 					continue;
 				}
 				Item item = null;
@@ -426,7 +422,6 @@ public class AnalysisTableFactory {
 		}
 		
 		result = CLOSURE(firstSet, productions, result, index);
-//		result.merge();
 		
 		return result;
 	}

@@ -1,20 +1,10 @@
 package semantic;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Stack;
-
-import javax.print.DocFlavor.STRING;
 
 import grammar.GrammarTree;
 
@@ -64,19 +54,19 @@ public class Semantic {
 	public static void setProperty(GrammarTree gt) {
 		//记得每个节点的孩子是从右往左存储的
 		switch(gt.productionIndex) {
-		case 0: //P'->P
-			break;
-		case 1: //P->DP
-			break;
+//		case 0: //P'->P
+//			break;
+//		case 1: //P->DP
+//			break;
 		case 2: { //P->SMP
 			List<Integer> SnextList = (List<Integer>)gt.children.get(2).property.get("nextList");
 			int Mquad = (int)gt.children.get(1).property.get("quad");
 			backPatch(SnextList, Mquad);
 		}break;
-		case 3: //P->nil
-			break;
-		case 4: //D->Dv
-			break;
+//		case 3: //P->nil
+//			break;
+//		case 4: //D->Dv
+//			break;
 		case 5: { //Dv'->DvDv'
 			gt.property.put("num", (int)gt.children.get(0).property.get("num")+1);
 		}break;
@@ -749,7 +739,8 @@ public class Semantic {
 		return codes.size()+1;
 	}
 	
-	private static List<Integer> merge(List<Integer>...list) {
+	@SuppressWarnings("unchecked")
+	private static List<Integer> merge(final List<Integer>...list) {
 		List<Integer> result = new ArrayList<>();
 		for(List<Integer> l : list) {
 			if(l == null) continue;
@@ -785,27 +776,4 @@ public class Semantic {
 	public static SymbolTable getSymbolTable() {return curSymbolTable;}
 	
 	public static Map<String, SymbolTable> getSymbolTables() {return tables;}
-	
-	public static void main(String[] args) {
-//		File file = new File("Productions.txt");
-//		try(FileReader fr = new FileReader(file);
-//			BufferedReader br = new BufferedReader(fr)) {
-//			String line = null;
-//			int i = 1;
-//			while((line = br.readLine()) != null) {
-//				System.out.println("case " + (i++)+": //"+line.substring(5)+"\n\tbreak;");
-//			}
-//		} catch(IOException e) {
-//			e.printStackTrace();
-//		}
-		
-		StringBuilder a = new StringBuilder("a");
-		StringBuilder b = new StringBuilder("b");
-		List<Object> list = new ArrayList<>();
-		list.add(a);
-		list.add(b);
-		StringBuilder c = (StringBuilder)list.get(1);
-		c = a;
-		System.out.println(b);
-	}
 }

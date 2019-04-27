@@ -149,10 +149,4 @@ public class Token {
 		}
 		return false;
 	}
-	
-//	@Override
-//	public int hashCode() {
-//		if(value == null) return type.hashCode();
-//		return (type+value).hashCode();
-//	}
 }
