@@ -232,7 +232,7 @@ public class Semantic {
 					appendError(gt.lineNumber, "类型\""+p.getType()+"\"不能强转为\""+Etype+"\"");
 					break;
 				} else { //id是float，表达式右边是int，则可以强转
-					appendInfo(gt.lineNumber, "类型\""+p.getType()+"\"强转为\""+Etype+"\"");
+					appendInfo(gt.lineNumber, "类型\""+Etype+"\"强转为\""+p.getType()+"\"");
 					idvalue = (float)((int)Evalue);
 				}
 			} else { //类型一样
@@ -770,7 +770,7 @@ public class Semantic {
 	}
 	
 	public static void appendInfo(int lineNumber, String info) {
-		Semantic.info.append("Error at Line ["+lineNumber+"]: "+info+"\n");
+		Semantic.info.append("warning at Line ["+lineNumber+"]: "+info+"\n");
 	}
 	
 	public static SymbolTable getSymbolTable() {return curSymbolTable;}
