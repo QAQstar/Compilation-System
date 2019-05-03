@@ -31,7 +31,6 @@ Mp->nil
 Dv->T id ;
 
 T->X C'
-#T->X /[[]
 X->int
 X->float
 C'->C C'

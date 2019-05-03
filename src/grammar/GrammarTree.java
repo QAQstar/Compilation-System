@@ -12,13 +12,12 @@ import lexical.Token;
 
 public class GrammarTree {
 	/**
-	 * 作为符号栈中的符号
-	 * 每个符号有以下属性
+	 * 作为注释分析树中的一个节点
 	 * symbol 它对应的符号
 	 * token 它对应的token，若是非终结符则为null
 	 * lineNumber 对应的行号
 	 * productionIndex 该符号所对应的产生式编号，若该符号是终结符，则为-1
-	 * children 它的孩子节点
+	 * children 它的孩子节点列表，倒序
 	 * property 它的属性，包括继承属性和综合属性
 	 * isVisited 用来递归遍历的时候作为是否访问过的标记
 	 */

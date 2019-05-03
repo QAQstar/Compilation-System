@@ -1,15 +1,20 @@
-DFAFactory.class是一个工厂类，接收FA转换文件的路径，并构造出DFA
-	FA转换文件的格式已经在文件中用注释说明
+AnalysisTableFactory.class
+工厂类，构造出LR分析表；同时一些重要的准备函数也在该类中完成，如求FIRST集、CLOSURE函数、GOTO函数等
 
-DFA.class是有穷自动机，通过init方法对DFA进行初始化，也就是告诉DFA输入流
-	然后就可以用getNext得到Token序列，得到最后一个序列时返回空
-	write2File是将DFA转换表写入文件中
+AnalysisTable.class
+LR分析表，所有的分析工作在此完成。若要运行语法分析，请在该类的main方法中运行，代码中已给出示例。
 
-GOTOTable和Token分别是维护转换表和Token的两个数据结构
+Grammar.class
+存放与语法分析的准备工作有关的数据结构，包括产生式、产生式集、项目、项目集等等，每个数据结构中均有详细注释
+
+GrammarTree.class
+语法树的数据结构
+
+Symbol.class
+文法符号的数据结构
 
 测试用例见code.txt
 
-里边类的作用、属性、方法均有详细的注释
+代码中都有详细注释，真的很详细
 
 环境：windows10 e(fx)clipse
-

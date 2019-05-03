@@ -1,13 +1,12 @@
-/* Test record */
-record testRecord {
-    int a;
-    float b;
-    int [7][1][8] c;
-}
-
 /* Bubble Sort */
 int [10] list;
 proc bubbleSort(int [10] list;) {
+    /* Test record */
+    record testRecord {
+        int i;
+        float j;
+        int [7][1][8] c;
+    }
     int i;
     int j;
     i = 0;
@@ -24,3 +23,45 @@ proc bubbleSort(int [10] list;) {
     }
 }
 call bubbleSort(list,);
+
+int [1][2] testArray;
+testArray[0][0] = 1;
+float f;
+f = testArray[0][0];
+
+/* test error */
+proc error() {
+    /* repeated vary */
+    int a;
+    float a;
+
+    /* use without a declaration */
+    b = 3;
+
+    /* array out of bounds */
+    int [1][2] array;
+    array[0][2] = 0;
+
+    /* array dimension error */
+    array[0] = 0;
+    array[0][1][2] = 0;
+
+    /* calculate component error */
+    array[0][1] = -array;
+
+    /* array component is no-integer */
+    array[0][0.8] = 0;
+
+    /* wrong cast */
+    float f;
+    int i;
+    f = 3.14;
+    i = f;
+
+    /* repeated proc */
+    proc function(int a; int b;) {}
+    proc function() {}
+
+    /* number of param error */
+    call function(a,);
+}

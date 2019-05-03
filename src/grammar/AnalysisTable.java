@@ -290,12 +290,12 @@ class LRStack {
 						statusStack.push(table.get(statusIndex).get(s).statusIndex);
 						symbolStack.push(new GrammarTree(s, null));
 						return sb.toString();
-					} else if (s.getName().equals("S")) {
+					} else if(s.getName().equals("S")) {
 						sb.append("Error at Line ["+(lineNumber==-1?1:lineNumber)+"]: 可执行语句出错！");
 						statusStack.push(table.get(statusIndex).get(s).statusIndex);
 						symbolStack.push(new GrammarTree(s, null));
 						return sb.toString();
-					} 
+					}
 					
 				}
 			}

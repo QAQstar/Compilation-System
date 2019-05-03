@@ -7,15 +7,15 @@ import java.util.Map;
 
 public class SymbolTable {
 	/**
-	 * 该类维护一个符号表
+	 * 该类维护一个符号表和关于此符号表的额外信息
 	 * name 表示该符号表的名字
 	 * content 是符号表中的内容，包含符号表中的每一行
 	 * index 表示某个变量名是在符号表的第几行
 	 * out 表示外围符号表
 	 * spaceSum 表示该符号表所有符号占用的总空间
-	 * paramNum 表示参数的个数
-	 * codes 表示该函数的三地址码
-	 * error info 分别为解析代码时的错误信息和一般信息
+	 * paramNum 表示参数的个数(没有参数则为0)
+	 * codes 表示该符号表对应的三地址码
+	 * error info 分别为解析代码时的错误信息和警告信息
 	 */
 	
 	private String name;

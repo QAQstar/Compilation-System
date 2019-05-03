@@ -232,7 +232,7 @@ public class Semantic {
 					appendError(gt.lineNumber, "类型\""+p.getType()+"\"不能强转为\""+Etype+"\"");
 					break;
 				} else { //id是float，表达式右边是int，则可以强转
-					appendInfo(gt.lineNumber, "类型\""+p.getType()+"\"强转为\""+Etype+"\"");
+					appendInfo(gt.lineNumber, "类型\"int\"强转为\"float\"");
 					idvalue = (float)((int)Evalue);
 				}
 			} else { //类型一样
@@ -378,7 +378,7 @@ public class Semantic {
 				appendError(gt.lineNumber, "变量"+idName+"未经声明就使用");
 				break;
 			} else if(!Etype.equals("int")) {
-				appendError(gt.lineNumber, "数组"+idName+"的维数非整数");
+				appendError(gt.lineNumber, "数组"+idName+"的分量非整数");
 				break;
 			}
 			
@@ -414,7 +414,7 @@ public class Semantic {
 			String Etype = (String)Eproperty.get("type");
 			SymbolTableRow arrayRow = curSymbolTable.lookUp((String)L1property.get("array"));
 			if(!Etype.equals("int")) {
-				appendError(gt.lineNumber, "数组"+L1property.get("array")+"的维数非整数");
+				appendError(gt.lineNumber, "数组"+L1property.get("array")+"的分量非整数");
 				break;
 			}
 			String L1type = (String)L1property.get("type");
@@ -469,6 +469,7 @@ public class Semantic {
 			int Loffset = (int)Lproperty.get("offset");
 			
 			SymbolTableRow array = curSymbolTable.lookUp(Larray);
+			if(Etype == null) break; //计算分量有错
 			if(Etype.equals(Ltype)) { //相同类型
 				if(Ltype.equals("int")) { //都是int
 					int[] L = (int[])array.getValue();
@@ -708,7 +709,7 @@ public class Semantic {
 			}
 			SymbolTable procTable = (SymbolTable)(curSymbolTable.lookUp(procName).getValue());
 			if(n != procTable.getParamNum()) {
-				appendError(gt.lineNumber, "参数类型错误，应有"+n+"个参数");
+				appendError(gt.lineNumber, "参数类型错误，应有"+procTable.getParamNum()+"个参数");
 				break;
 			}
 		}break;
@@ -770,7 +771,7 @@ public class Semantic {
 	}
 	
 	public static void appendInfo(int lineNumber, String info) {
-		Semantic.info.append("Error at Line ["+lineNumber+"]: "+info+"\n");
+		Semantic.info.append("Warning at Line ["+lineNumber+"]: "+info+"\n");
 	}
 	
 	public static SymbolTable getSymbolTable() {return curSymbolTable;}

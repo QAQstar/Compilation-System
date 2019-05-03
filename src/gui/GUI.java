@@ -57,6 +57,7 @@ import semantic.SymbolTableRow;
 
 public class GUI extends Application{
 //	private DFA dfa = null;
+//	private AnalysisTable at = null;
 	private DFA dfa = DFAFactory.creatorUseNFA("NFA.nfa");
 	private AnalysisTable at = AnalysisTableFactory.creator("grammar.txt", dfa);
 	
