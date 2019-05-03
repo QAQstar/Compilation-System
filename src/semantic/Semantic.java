@@ -53,6 +53,7 @@ public class Semantic {
 	@SuppressWarnings("unchecked")
 	public static void setProperty(GrammarTree gt) {
 		//记得每个节点的孩子是从右往左存储的
+		//被注释掉的没有语义动作
 		switch(gt.productionIndex) {
 //		case 0: //P'->P
 //			break;
