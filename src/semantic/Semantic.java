@@ -771,7 +771,11 @@ public class Semantic {
 	}
 	
 	public static void appendInfo(int lineNumber, String info) {
+<<<<<<< HEAD
 		Semantic.info.append("Warning at Line ["+lineNumber+"]: "+info+"\n");
+=======
+		Semantic.info.append("warning at Line ["+lineNumber+"]: "+info+"\n");
+>>>>>>> 6ab6d738aaeb4a0c79557e350926d120689e5cda
 	}
 	
 	public static SymbolTable getSymbolTable() {return curSymbolTable;}
